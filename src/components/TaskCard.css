@@ -1,0 +1,77 @@
+.task-card {
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+  color: white;
+  font-size: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.task-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.task-card--staging {
+  margin: 4px 0;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+.task-card--placed {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  margin: 2px 0;
+  min-width: 60px;
+}
+
+.task-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-weight: bold;
+}
+
+.task-card__name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+.task-card__duration {
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+.task-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.task-card__resource {
+  font-weight: 500;
+}
+
+.task-card__time {
+  font-family: monospace;
+}
+
+/* Drag and drop states */
+.task-card:active {
+  cursor: grabbing;
+}
+
+.task-card--dragging {
+  opacity: 0.5;
+  transform: rotate(5deg);
+}

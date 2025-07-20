@@ -1,0 +1,153 @@
+.task-sidebar {
+  width: 320px;
+  background: white;
+  border-left: 1px solid #ddd;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.task-sidebar--empty {
+  justify-content: center;
+  align-items: center;
+}
+
+.task-sidebar__empty-message {
+  color: #999;
+  font-size: 16px;
+  text-align: center;
+}
+
+.task-sidebar__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.task-sidebar__header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.task-sidebar__close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.task-sidebar__close:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.task-sidebar__content {
+  flex: 1;
+}
+
+.task-sidebar__field {
+  margin-bottom: 20px;
+}
+
+.task-sidebar__field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.task-sidebar__field input,
+.task-sidebar__field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.task-sidebar__field input:focus,
+.task-sidebar__field select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.task-sidebar__info {
+  background-color: #f8f9fa;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.task-sidebar__actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.task-sidebar__save,
+.task-sidebar__remove {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.task-sidebar__save {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.task-sidebar__save:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.task-sidebar__save:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.task-sidebar__remove {
+  background-color: #f44336;
+  color: white;
+}
+
+.task-sidebar__remove:hover {
+  background-color: #da190b;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .task-sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 50vh;
+    border-left: none;
+    border-top: 1px solid #ddd;
+  }
+  
+  .task-sidebar__actions {
+    flex-direction: column;
+  }
+}
