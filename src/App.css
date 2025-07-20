@@ -26,6 +26,7 @@
 .app__main {
   display: flex;
   height: calc(100vh - 120px);
+  overflow: hidden;
 }
 
 /* Responsive design */

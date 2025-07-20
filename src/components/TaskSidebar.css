@@ -5,8 +5,8 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow-y: auto;
+  height: 100%;
+  overflow: hidden;
 }
 
 .task-sidebar--empty {
@@ -57,6 +57,7 @@
 
 .task-sidebar__content {
   flex: 1;
+  overflow-y: auto;
 }
 
 .task-sidebar__field {
@@ -145,6 +146,7 @@
     max-height: 50vh;
     border-left: none;
     border-top: 1px solid #ddd;
+    overflow-y: auto;
   }
   
   .task-sidebar__actions {
