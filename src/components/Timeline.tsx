@@ -40,9 +40,16 @@ export const Timeline: React.FC<TimelineProps> = ({
     const taskId = e.dataTransfer.getData('text/plain');
     const task = tasks.find(t => t.id === taskId);
     
-    if (task && !task.isPlaced) {
+    if (task) {
+      // For placed tasks being moved, exclude their current slots from collision detection
+      const occupiedSlotsForCheck = new Set(occupiedSlots);
+      if (task.isPlaced && task.startTime) {
+        const taskSlots = getTaskSlots(task.startTime, task.duration);
+        taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
+      }
+      
       // Check if the task can be placed at this time
-      if (canPlaceTask(dropTime, task.duration, occupiedSlots, timeSlots)) {
+      if (canPlaceTask(dropTime, task.duration, occupiedSlotsForCheck, timeSlots)) {
         onTaskDrop(taskId, dropTime);
       }
     }
