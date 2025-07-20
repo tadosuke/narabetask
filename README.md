@@ -1,69 +1,84 @@
-# React + TypeScript + Vite
+# ナラベタスク (NarabeTask)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+効率的なタスク実行順序を調整するWebアプリケーションです。
 
-Currently, two official plugins are available:
+## 機能概要
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **タスク管理**: タスクの作成、編集、削除
+- **タイムライン配置**: ドラッグ&ドロップでタスクをタイムラインに配置
+- **リソース管理**: 自己・他者・機械・ネットワークのリソース種別に対応
+- **営業時間対応**: 営業時間と昼休み時間を考慮したスケジューリング
+- **レスポンシブデザイン**: モバイル、タブレット、デスクトップに対応
 
-## Expanding the ESLint configuration
+## 技術スタック
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **フロントエンド**: React 19 + TypeScript + Vite
+- **スタイリング**: CSS Modules
+- **テスト**: Vitest + Testing Library
+- **リンター**: ESLint + TypeScript ESLint
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 開発環境セットアップ
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### 前提条件
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js 18以上
+- npm または yarn
+
+### インストールと起動
+
+```bash
+# 依存関係をインストール
+npm install
+
+# 開発サーバーを起動
+npm run dev
+
+# ビルド
+npm run build
+
+# テスト実行
+npm run test
+
+# リンター実行
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## コーディング規約
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+このプロジェクトでは [GitHub Copilot カスタム指示](./.copilot-instructions.md) に従って開発を行っています。
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 主な規約
+
+- **日本語対応**: UIテキスト、コメント、テストの説明は日本語を使用
+- **単一責任の原則**: 各コンポーネント・関数は明確な単一の責務を持つ
+- **レスポンシブデザイン**: モバイルファーストで全デバイスに対応
+- **TypeScript**: 厳格な型定義でコードの安全性を確保
+
+詳細は [.copilot-instructions.md](./.copilot-instructions.md) をご覧ください。
+
+## プロジェクト構成
+
 ```
+src/
+├── components/       # React コンポーネント
+│   ├── TaskCard/     # タスクカードコンポーネント
+│   ├── TaskSidebar/  # タスク詳細サイドバー
+│   ├── TaskStaging/  # タスクステージングエリア
+│   └── Timeline/     # タイムラインコンポーネント
+├── utils/           # ユーティリティ関数
+├── test/           # テストファイル
+├── types.ts        # TypeScript型定義
+└── App.tsx         # メインアプリケーション
+```
+
+## 貢献方法
+
+1. Issue を確認または作成
+2. フィーチャーブランチを作成
+3. [コーディング規約](./.copilot-instructions.md) に従って実装
+4. テストを追加・実行
+5. プルリクエストを作成
+
+## ライセンス
+
+MIT License

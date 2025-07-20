@@ -5,8 +5,8 @@ import {
   minutesToTime, 
   canPlaceTask, 
   getTaskSlots 
-} from '../utils/timeUtils';
-import type { BusinessHours, LunchBreak } from '../types';
+} from '../../src/utils/timeUtils';
+import type { BusinessHours, LunchBreak } from '../../src/types';
 
 describe('timeUtils', () => {
   const businessHours: BusinessHours = {
