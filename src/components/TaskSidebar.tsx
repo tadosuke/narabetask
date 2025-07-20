@@ -2,13 +2,21 @@ import React, { useState, useEffect } from 'react';
 import type { Task, ResourceType } from '../types';
 import './TaskSidebar.css';
 
+/**
+ * TaskSidebarコンポーネントのプロパティ
+ */
 interface TaskSidebarProps {
+  /** 選択されているタスク */
   selectedTask: Task | null;
+  /** タスク更新時のハンドラ */
   onTaskUpdate: (task: Task) => void;
+  /** タスク削除時のハンドラ */
   onTaskRemove: (taskId: string) => void;
+  /** サイドバーを閉じる際のハンドラ */
   onClose: () => void;
 }
 
+/** リソースタイプの選択肢一覧 */
 const resourceTypes: Array<{ value: ResourceType; label: string }> = [
   { value: 'self', label: '自分' },
   { value: 'others', label: '他人' },
@@ -16,7 +24,13 @@ const resourceTypes: Array<{ value: ResourceType; label: string }> = [
   { value: 'network', label: 'ネットワーク' }
 ];
 
+/** 所要時間の選択肢一覧（15分刻み） */
 const durationOptions = [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180];
+
+/**
+ * タスクサイドバーコンポーネント
+ * 選択されたタスクの詳細編集機能を提供します
+ */
 
 export const TaskSidebar: React.FC<TaskSidebarProps> = ({
   selectedTask,
@@ -40,6 +54,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
     }
   }, [selectedTask]);
 
+  /** タスクの変更を保存 */
   const handleSave = () => {
     if (selectedTask && name.trim()) {
       const updatedTask: Task = {
@@ -52,11 +67,14 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
     }
   };
 
+  /** タスクを削除 */
   const handleRemove = () => {
     if (selectedTask && window.confirm('このタスクを削除しますか？')) {
       onTaskRemove(selectedTask.id);
     }
   };
+
+  /** 所要時間を読みやすい日本語形式にフォーマット */
 
   const formatDuration = (minutes: number) => {
     if (minutes >= 60) {

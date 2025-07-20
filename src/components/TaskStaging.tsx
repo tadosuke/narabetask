@@ -3,17 +3,28 @@ import type { Task } from '../types';
 import { TaskCard } from './TaskCard';
 import './TaskStaging.css';
 
+/**
+ * TaskStagingコンポーネントのプロパティ
+ */
 interface TaskStagingProps {
+  /** タスクの配列 */
   tasks: Task[];
+  /** タスククリック時のハンドラ */
   onTaskClick: (task: Task) => void;
+  /** 新しいタスク追加時のハンドラ */
   onAddTask: () => void;
 }
 
+/**
+ * タスクステージングコンポーネント
+ * 配置前のタスク一覧を表示し、新しいタスクの作成機能を提供します
+ */
 export const TaskStaging: React.FC<TaskStagingProps> = ({
   tasks,
   onTaskClick,
   onAddTask
 }) => {
+  /** まだタイムラインに配置されていないタスクを取得 */
   const unplacedTasks = tasks.filter(task => !task.isPlaced);
 
   return (
