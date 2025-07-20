@@ -5,8 +5,8 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow-y: auto;
+  height: 100%;
+  overflow: hidden;
 }
 
 .task-staging__header {
@@ -43,6 +43,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .task-staging__empty {
@@ -91,6 +92,7 @@
     max-height: 50vh;
     border-right: none;
     border-bottom: 1px solid #ddd;
+    overflow-y: auto;
   }
   
   .task-staging__header {
