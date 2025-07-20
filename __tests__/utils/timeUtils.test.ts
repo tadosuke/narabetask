@@ -99,4 +99,37 @@ describe('timeUtils', () => {
       expect(slots).toEqual(['10:00', '10:15', '10:30', '10:45']);
     });
   });
+
+  describe('task movement collision detection', () => {
+    const availableSlots = ['09:00', '09:15', '09:30', '09:45', '10:00', '10:15', '10:30', '10:45', '11:00', '11:15'];
+    
+    it('should allow moving a task to a free slot', () => {
+      // Simulate task at 09:00-09:30, want to move to 10:00-10:30
+      const otherOccupiedSlots = new Set(['11:00', '11:15']); // Another task at 11:00
+      
+      // For movement, exclude the moving task's current slots
+      const occupiedSlotsForCheck = new Set(otherOccupiedSlots);
+      
+      expect(canPlaceTask('10:00', 30, occupiedSlotsForCheck, availableSlots)).toBe(true);
+    });
+    
+    it('should prevent moving a task to overlap with another task', () => {
+      // Simulate task at 09:00-09:30, want to move to 10:45-11:15
+      const otherOccupiedSlots = new Set(['11:00', '11:15']); // Another task at 11:00
+      
+      // For movement, exclude the moving task's current slots
+      const occupiedSlotsForCheck = new Set(otherOccupiedSlots);
+      
+      // Moving to 10:45 would occupy 10:45 and 11:00, conflicting with the task at 11:00
+      expect(canPlaceTask('10:45', 30, occupiedSlotsForCheck, availableSlots)).toBe(false);
+    });
+    
+    it('should allow moving a task to its current position', () => {
+      // Simulate task at 09:00-09:30, want to move back to 09:00 (same position)
+      // For movement, exclude the moving task's current slots
+      const occupiedSlotsForCheck = new Set<string>();
+      
+      expect(canPlaceTask('09:00', 30, occupiedSlotsForCheck, availableSlots)).toBe(true);
+    });
+  });
 });
