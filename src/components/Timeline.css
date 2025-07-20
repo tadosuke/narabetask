@@ -1,0 +1,103 @@
+.timeline {
+  flex: 1;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  margin: 0 10px;
+}
+
+.timeline__header {
+  margin-bottom: 20px;
+}
+
+.timeline__header h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.timeline__business-hours {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.timeline__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.timeline__slot {
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+  background: white;
+  border-bottom: 1px solid #eee;
+  position: relative;
+  padding: 4px 8px;
+  transition: background-color 0.2s ease;
+}
+
+.timeline__slot:hover {
+  background-color: #f8f8f8;
+}
+
+.timeline__slot--lunch {
+  background-color: #fff3e0 !important;
+}
+
+.timeline__slot--occupied {
+  background-color: #f0f0f0;
+}
+
+.timeline__slot--occupied:hover {
+  background-color: #f0f0f0;
+}
+
+.timeline__time-label {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 3px;
+  z-index: 1;
+}
+
+/* Drag and drop feedback */
+.timeline__slot--drag-over {
+  background-color: #e8f5e8 !important;
+  border: 2px dashed #4CAF50;
+}
+
+.timeline__slot--drag-invalid {
+  background-color: #ffebee !important;
+  border: 2px dashed #f44336;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .timeline {
+    padding: 10px;
+    margin: 0 5px;
+  }
+  
+  .timeline__slot {
+    min-height: 50px;
+    padding: 2px 4px;
+  }
+  
+  .timeline__time-label {
+    font-size: 10px;
+    left: 4px;
+    top: 4px;
+  }
+}
