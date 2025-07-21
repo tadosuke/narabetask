@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import type { Task, ResourceType } from "../types";
-import "./TaskSidebar.css";
+import React, { useState, useEffect } from 'react';
+import type { Task, ResourceType } from '../types';
+import { calculateEndTime } from '../utils/timeUtils';
+import './TaskSidebar.css';
 
 /**
  * TaskSidebarコンポーネントのプロパティ
@@ -24,8 +25,10 @@ const resourceTypeOptions: Array<{ value: ResourceType; label: string }> = [
   { value: "network", label: "ネットワーク" },
 ];
 
-/** 所要時間の選択肢一覧（15分刻み） */
-const durationOptions = [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180];
+/** 所要時間のスライダー設定 */
+const DURATION_MIN = 15; // 最小値: 15分
+const DURATION_MAX = 240; // 最大値: 4時間 = 240分
+const DURATION_STEP = 15; // 15分刻み
 
 /**
  * タスクサイドバーコンポーネント
@@ -60,7 +63,6 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
     updatedDuration: number,
     updatedResourceTypes: ResourceType[]
   ) => {
-    // リソースが未選択（配列が空）でも保存できるよう、リソース数のチェックを削除
     if (selectedTask && updatedName.trim()) {
       const updatedTask: Task = {
         ...selectedTask,
@@ -192,7 +194,8 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
 
         {selectedTask.isPlaced && selectedTask.startTime && (
           <div className="task-sidebar__info">
-            <strong>配置時間:</strong> {selectedTask.startTime}
+            <div><strong>開始時間:</strong> {selectedTask.startTime}</div>
+            <div><strong>終了時間:</strong> {calculateEndTime(selectedTask.startTime, selectedTask.duration)}</div>
           </div>
         )}
       </div>
