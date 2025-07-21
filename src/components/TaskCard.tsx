@@ -1,5 +1,7 @@
 import React from 'react';
 import type { Task } from '../types';
+import { TaskHeader } from './TaskHeader';
+import { TaskFooter } from './TaskFooter';
 import './TaskCard.css';
 
 /**
@@ -22,22 +24,6 @@ interface TaskCardProps {
   isOverlapping?: boolean;
 }
 
-/** リソースタイプごとの色設定 */
-const resourceTypeColors: Record<string, string> = {
-  self: '#4CAF50',
-  others: '#2196F3',
-  machine: '#FF9800',
-  network: '#9C27B0'
-};
-
-/** リソースタイプごとの日本語ラベル */
-const resourceTypeLabels: Record<string, string> = {
-  self: '自分',
-  others: '他人',
-  machine: 'マシン',
-  network: 'ネットワーク'
-};
-
 /**
  * タスクカードコンポーネント
  * タスクの情報を表示し、ドラッグ&ドロップに対応します
@@ -59,11 +45,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       onDragStart(e);
     }
   };
-
-  /** 所要時間を読みやすい形式でフォーマット */
-  const durationText = task.duration >= 60 
-    ? `${Math.floor(task.duration / 60)}h ${task.duration % 60}m`
-    : `${task.duration}m`;
 
   /** タスクの高さを計算（15分 = 40px の基本高さ） */
   const calculateHeight = (duration: number): number => {
@@ -88,27 +69,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         minHeight: `${taskHeight}px`
       }}
     >
-      <div className="task-card__header">
-        <span className="task-card__name">{task.name}</span>
-        <div className="task-card__header-right">
-          <span className="task-card__duration">{durationText}</span>
-        </div>
-      </div>
-      {task.resourceTypes && task.resourceTypes.length > 0 && (
-        <div className="task-card__resource-squares">
-          {task.resourceTypes.map(resourceType => (
-            <span
-              key={resourceType}
-              className="task-card__resource-square"
-              style={{ backgroundColor: resourceTypeColors[resourceType] }}
-              title={resourceTypeLabels[resourceType]}
-            >
-              ■
-            </span>
-          ))}
-        </div>
-      )}
-
+      <TaskHeader task={task} />
+      <TaskFooter task={task} />
     </div>
   );
 };
