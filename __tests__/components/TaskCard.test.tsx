@@ -13,7 +13,7 @@ describe("TaskCard", () => {
     isPlaced: false,
   };
 
-  it("should render task information correctly", () => {
+  it("タスク情報を正しく表示する", () => {
     render(<TaskCard task={mockTask} />);
 
     expect(screen.getByText("テストタスク")).toBeInTheDocument();
@@ -22,21 +22,21 @@ describe("TaskCard", () => {
     expect(screen.getByTitle("自分")).toBeInTheDocument();
   });
 
-  it("should show duration in minutes when less than 60 minutes", () => {
+  it("60分未満の場合は分単位で所要時間を表示する", () => {
     const shortTask = { ...mockTask, duration: 45 };
     render(<TaskCard task={shortTask} />);
 
     expect(screen.getByText("45m")).toBeInTheDocument();
   });
 
-  it("should show start time when task is placed", () => {
+  it("タスクが配置されている場合は開始時刻を表示する", () => {
     const placedTask = { ...mockTask, isPlaced: true, startTime: "09:00" };
     render(<TaskCard task={placedTask} />);
 
     expect(screen.getByText("09:00")).toBeInTheDocument();
   });
 
-  it("should call onClick when clicked", () => {
+  it("クリックされたときにonClickを呼び出す", () => {
     const mockOnClick = vi.fn();
     render(<TaskCard task={mockTask} onClick={mockOnClick} />);
 
@@ -44,7 +44,7 @@ describe("TaskCard", () => {
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
 
-  it("should have correct styling classes", () => {
+  it("正しいスタイルクラスを持つ", () => {
     render(<TaskCard task={mockTask} />);
     const taskCard = screen.getByText("テストタスク").closest(".task-card");
 
@@ -52,12 +52,26 @@ describe("TaskCard", () => {
     expect(taskCard).not.toHaveClass("task-card--placed");
   });
 
-  it("should have placed styling when task is placed", () => {
+  it("タスクが配置されている場合は配置済みスタイルを持つ", () => {
     const placedTask = { ...mockTask, isPlaced: true };
     render(<TaskCard task={placedTask} />);
     const taskCard = screen.getByText("テストタスク").closest(".task-card");
 
     expect(taskCard).toHaveClass("task-card--placed");
     expect(taskCard).not.toHaveClass("task-card--staging");
+  });
+
+  it("選択中の場合は選択済みスタイルを持つ", () => {
+    render(<TaskCard task={mockTask} isSelected={true} />);
+    const taskCard = screen.getByText("テストタスク").closest(".task-card");
+
+    expect(taskCard).toHaveClass("task-card--selected");
+  });
+
+  it("選択されていない場合は選択済みスタイルを持たない", () => {
+    render(<TaskCard task={mockTask} isSelected={false} />);
+    const taskCard = screen.getByText("テストタスク").closest(".task-card");
+
+    expect(taskCard).not.toHaveClass("task-card--selected");
   });
 });

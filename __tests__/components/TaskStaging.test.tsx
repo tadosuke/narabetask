@@ -40,25 +40,25 @@ describe("TaskStaging", () => {
     vi.clearAllMocks();
   });
 
-  it("should render header with title and add button", () => {
+  it("タイトルと追加ボタンを含むヘッダーを表示する", () => {
     render(<TaskStaging {...defaultProps} />);
 
     expect(screen.getByText("タスク一覧")).toBeInTheDocument();
     expect(screen.getByText("+ 新しいタスク")).toBeInTheDocument();
   });
 
-  it("should render only unplaced tasks", () => {
+  it("配置されていないタスクのみを表示する", () => {
     render(<TaskStaging {...defaultProps} />);
 
-    // Unplaced tasks should be visible
+    // 配置されていないタスクが表示される
     expect(screen.getByText("タスク1")).toBeInTheDocument();
     expect(screen.getByText("タスク3")).toBeInTheDocument();
 
-    // Placed task should not be visible
+    // 配置済みタスクは表示されない
     expect(screen.queryByText("タスク2")).not.toBeInTheDocument();
   });
 
-  it("should call onAddTask when add button is clicked", () => {
+  it("追加ボタンをクリックするとonAddTaskが呼ばれる", () => {
     const mockOnAddTask = vi.fn();
     render(<TaskStaging {...defaultProps} onAddTask={mockOnAddTask} />);
 
@@ -67,7 +67,7 @@ describe("TaskStaging", () => {
     expect(mockOnAddTask).toHaveBeenCalledTimes(1);
   });
 
-  it("should call onTaskClick when task is clicked", () => {
+  it("タスクをクリックするとonTaskClickが呼ばれる", () => {
     const mockOnTaskClick = vi.fn();
     render(<TaskStaging {...defaultProps} onTaskClick={mockOnTaskClick} />);
 
@@ -76,7 +76,7 @@ describe("TaskStaging", () => {
     expect(mockOnTaskClick).toHaveBeenCalledWith(mockTasks[0]);
   });
 
-  it("should show empty state when no unplaced tasks exist", () => {
+  it("配置されていないタスクが存在しない場合は空の状態を表示する", () => {
     const tasksAllPlaced: Task[] = [
       {
         id: "1",
@@ -99,11 +99,11 @@ describe("TaskStaging", () => {
       })
     ).toBeInTheDocument();
 
-    // Task list should not be present
+    // タスクリストは表示されない
     expect(screen.queryByText("タスク1")).not.toBeInTheDocument();
   });
 
-  it("should show empty state when tasks array is empty", () => {
+  it("タスク配列が空の場合は空の状態を表示する", () => {
     render(<TaskStaging {...defaultProps} tasks={[]} />);
 
     expect(
@@ -116,7 +116,7 @@ describe("TaskStaging", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render instructions section", () => {
+  it("説明セクションを表示する", () => {
     render(<TaskStaging {...defaultProps} />);
 
     expect(screen.getByText("使い方:")).toBeInTheDocument();
@@ -127,11 +127,11 @@ describe("TaskStaging", () => {
       screen.getByText("タスクをドラッグしてタイムラインに配置")
     ).toBeInTheDocument();
     expect(
-      screen.getByText("配置したタスクは重複できません")
+      screen.getByText("配置したタスクをドラッグしてここに戻すことも可能")
     ).toBeInTheDocument();
   });
 
-  it("should have correct CSS classes", () => {
+  it("正しいCSSクラスを持つ", () => {
     render(<TaskStaging {...defaultProps} />);
 
     const stagingContainer = screen
@@ -143,7 +143,7 @@ describe("TaskStaging", () => {
     expect(addButton).toHaveClass("task-staging__add-button");
   });
 
-  it("should render task list when unplaced tasks exist", () => {
+  it("配置されていないタスクが存在する場合はタスクリストを表示する", () => {
     render(<TaskStaging {...defaultProps} />);
 
     const taskList = screen.getByText("タスク1").closest(".task-staging__list");

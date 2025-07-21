@@ -75,6 +75,15 @@ function App() {
     ));
   };
 
+  /** タスクをタイムラインから一覧に戻す処理 */
+  const handleTaskReturn = (taskId: string) => {
+    setTasks(prev => prev.map(task => 
+      task.id === taskId
+        ? { ...task, startTime: undefined, isPlaced: false }
+        : task
+    ));
+  };
+
   /** タスクをクリックした際の処理 */
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
@@ -105,14 +114,17 @@ function App() {
       <main className="app__main">
         <TaskStaging
           tasks={tasks}
+          selectedTask={selectedTask}
           onTaskClick={handleTaskClick}
           onAddTask={handleAddTask}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          onTaskReturn={handleTaskReturn}
         />
         
         <Timeline
           tasks={tasks}
+          selectedTask={selectedTask}
           businessHours={settings.businessHours}
           lunchBreak={settings.lunchBreak}
           onTaskDrop={handleTaskDrop}

@@ -100,3 +100,14 @@
   opacity: 0.5;
   transform: rotate(5deg);
 }
+/* Selected state - brighter appearance */
+.task-card--selected {
+  background-color: #e8f4fd;
+  border-color: #2196F3;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+}
+
+.task-card--selected:hover {
+  background-color: #ddeeff;
+  box-shadow: 0 6px 16px rgba(33, 150, 243, 0.25);
+}

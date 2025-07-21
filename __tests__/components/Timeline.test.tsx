@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { Timeline } from "../../src/components/Timeline";
 import type { Task, BusinessHours, LunchBreak } from "../../src/types";
 
-// Mock the timeUtils module
+// timeUtilsモジュールをモック
 vi.mock("../../src/utils/timeUtils", () => ({
   generateTimeSlots: vi.fn(() => [
     "09:00",
@@ -61,38 +61,38 @@ describe("Timeline", () => {
     vi.clearAllMocks();
   });
 
-  it("should render timeline header correctly", () => {
+  it("タイムラインヘッダーを正しく表示する", () => {
     render(<Timeline {...defaultProps} />);
 
     expect(screen.getByText("タイムライン")).toBeInTheDocument();
     expect(screen.getByText("業務時間: 09:00 - 17:00")).toBeInTheDocument();
   });
 
-  it("should render time slots", () => {
+  it("タイムスロットを表示する", () => {
     render(<Timeline {...defaultProps} />);
 
-    // Check for time labels specifically
+    // 時刻ラベルを具体的に確認
     const timeLabels = screen.getAllByText("09:00");
     expect(timeLabels.length).toBeGreaterThan(0);
     expect(screen.getByText("09:15")).toBeInTheDocument();
     expect(screen.getByText("09:30")).toBeInTheDocument();
   });
 
-  it("should render placed tasks in their time slots", () => {
+  it("配置済みタスクをタイムスロット内に表示する", () => {
     render(<Timeline {...defaultProps} />);
 
-    // The placed task should be rendered in the timeline
+    // 配置済みタスクがタイムライン内に表示される
     expect(screen.getByText("テストタスク1")).toBeInTheDocument();
   });
 
-  it("should apply lunch time styling to lunch break slots", () => {
+  it("昼休みスロットに昼休み時間のスタイルを適用する", () => {
     const { container } = render(<Timeline {...defaultProps} />);
 
     const lunchSlot = container.querySelector('[data-time="12:00"]');
     expect(lunchSlot).toHaveClass("timeline__slot--lunch");
   });
 
-  it("should handle drag over event", () => {
+  it("ドラッグオーバーイベントを処理する", () => {
     const { container } = render(<Timeline {...defaultProps} />);
 
     const timeSlot = container.querySelector('[data-time="09:30"]');
@@ -103,7 +103,7 @@ describe("Timeline", () => {
     expect(dragOverEvent.preventDefault).toHaveBeenCalled();
   });
 
-  it("should handle task drop and call onTaskDrop", () => {
+  it("タスクドロップを処理してonTaskDropを呼び出す", () => {
     const mockOnTaskDrop = vi.fn();
     const { container } = render(
       <Timeline {...defaultProps} onTaskDrop={mockOnTaskDrop} />
@@ -123,7 +123,7 @@ describe("Timeline", () => {
     expect(mockOnTaskDrop).toHaveBeenCalledWith("2", "09:30");
   });
 
-  it("should call onTaskClick when placed task is clicked", () => {
+  it("配置済みタスクがクリックされたときにonTaskClickを呼び出す", () => {
     const mockOnTaskClick = vi.fn();
     render(<Timeline {...defaultProps} onTaskClick={mockOnTaskClick} />);
 
@@ -132,16 +132,16 @@ describe("Timeline", () => {
     expect(mockOnTaskClick).toHaveBeenCalledWith(mockTasks[0]);
   });
 
-  it("should only render placed tasks", () => {
+  it("配置済みタスクのみを表示する", () => {
     render(<Timeline {...defaultProps} />);
 
-    // Placed task should be visible
+    // 配置済みタスクが表示される
     expect(screen.getByText("テストタスク1")).toBeInTheDocument();
-    // Unplaced task should not be visible
+    // 配置されていないタスクは表示されない
     expect(screen.queryByText("テストタスク2")).not.toBeInTheDocument();
   });
 
-  it("should apply occupied styling to occupied slots", () => {
+  it("占有済みスロットに占有スタイルを適用する", () => {
     const { container } = render(<Timeline {...defaultProps} />);
 
     const occupiedSlot = container.querySelector('[data-time="09:00"]');

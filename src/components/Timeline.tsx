@@ -10,6 +10,8 @@ import './Timeline.css';
 interface TimelineProps {
   /** タスクの配列 */
   tasks: Task[];
+  /** 選択中のタスク */
+  selectedTask: Task | null;
   /** 営業時間設定 */
   businessHours: BusinessHours;
   /** 昼休み時間設定 */
@@ -33,6 +35,7 @@ interface TimelineProps {
 
 export const Timeline: React.FC<TimelineProps> = ({
   tasks,
+  selectedTask,
   businessHours,
   lunchBreak,
   onTaskDrop,
@@ -175,6 +178,7 @@ export const Timeline: React.FC<TimelineProps> = ({
         {task && (
           <TaskCard
             task={task}
+            isSelected={selectedTask?.id === task.id}
             onClick={() => onTaskClick(task)}
             onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
             onDragEnd={onDragEnd}
