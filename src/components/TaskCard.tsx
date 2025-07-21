@@ -109,7 +109,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         </div>
       )}
       <div className="task-card__footer">
-        {task.startTime && (
+        {task.startTime && task.duration > 15 && (
           <span className="task-card__time">{task.startTime}</span>
         )}
       </div>
