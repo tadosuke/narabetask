@@ -1,0 +1,22 @@
+.task-staging__instructions {
+  background-color: #f8f9fa;
+  padding: 16px;
+  border-radius: 6px;
+  margin-top: auto;
+  font-size: 12px;
+}
+
+.task-staging__instructions p {
+  margin: 0 0 8px 0;
+  font-weight: 500;
+}
+
+.task-staging__instructions ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.task-staging__instructions li {
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
