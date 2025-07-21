@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import type { Task, ResourceType } from '../types';
-import { calculateEndTime } from '../utils/timeUtils';
+import { TaskNameField } from './TaskNameField';
+import { TaskDurationField } from './TaskDurationField';
+import { ResourceTypeField } from './ResourceTypeField';
+import { TaskInfoDisplay } from './TaskInfoDisplay';
+import { TaskActions } from './TaskActions';
 import './TaskSidebar.css';
 
 /**
@@ -14,19 +18,6 @@ interface TaskSidebarProps {
   /** タスク削除時のハンドラ */
   onTaskRemove: (taskId: string) => void;
 }
-
-/** リソースタイプの選択肢一覧 */
-const resourceTypeOptions: Array<{ value: ResourceType; label: string }> = [
-  { value: "self", label: "自分" },
-  { value: "others", label: "他人" },
-  { value: "machine", label: "マシンパワー" },
-  { value: "network", label: "ネットワーク" },
-];
-
-/** 所要時間のスライダー設定 */
-const DURATION_MIN = 15; // 最小値: 15分
-const DURATION_MAX = 240; // 最大値: 4時間 = 240分
-const DURATION_STEP = 15; // 15分刻み
 
 /**
  * タスクサイドバーコンポーネント
@@ -98,26 +89,6 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
     autoSaveTask(name, duration, newResourceTypes);
   };
 
-  /** タスクを削除 */
-  const handleRemove = () => {
-    if (selectedTask && window.confirm("このタスクを削除しますか？")) {
-      onTaskRemove(selectedTask.id);
-    }
-  };
-
-  /** 所要時間を読みやすい日本語形式にフォーマット */
-
-  const formatDuration = (minutes: number) => {
-    if (minutes >= 60) {
-      const hours = Math.floor(minutes / 60);
-      const remainingMinutes = minutes % 60;
-      return remainingMinutes > 0
-        ? `${hours}時間${remainingMinutes}分`
-        : `${hours}時間`;
-    }
-    return `${minutes}分`;
-  };
-
   if (!selectedTask) {
     return (
       <div className="task-sidebar task-sidebar--empty">
@@ -135,71 +106,30 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
       </div>
 
       <div className="task-sidebar__content">
-        <div className="task-sidebar__field">
-          <label htmlFor="task-name">タスク名</label>
-          <input
-            id="task-name"
-            type="text"
-            value={name}
-            onChange={(e) => handleNameChange(e.target.value)}
-            onFocus={(e) => e.target.select()}
-            placeholder="タスク名を入力"
-          />
-        </div>
+        <TaskNameField
+          name={name}
+          onNameChange={handleNameChange}
+        />
 
-        <div className="task-sidebar__field">
-          <label htmlFor="task-duration">工数</label>
-          <div className="task-sidebar__slider-container">
-            <input
-              id="task-duration"
-              type="range"
-              min={DURATION_MIN}
-              max={DURATION_MAX}
-              step={DURATION_STEP}
-              value={duration}
-              onChange={(e) => handleDurationChange(Number(e.target.value))}
-              className="task-sidebar__slider"
-            />
-            <div className="task-sidebar__slider-display">
-              {formatDuration(duration)}
-            </div>
-          </div>
-        </div>
+        <TaskDurationField
+          duration={duration}
+          onDurationChange={handleDurationChange}
+        />
 
-        <div className="task-sidebar__field">
-          <label>リソースタイプ</label>
-          <div className="task-sidebar__checkbox-group">
-            {resourceTypeOptions.map((type) => (
-              <label key={type.value} className="task-sidebar__checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={resourceTypes.includes(type.value)}
-                  onChange={(e) =>
-                    handleResourceTypeChange(type.value, e.target.checked)
-                  }
-                  className="task-sidebar__checkbox"
-                />
-                <span className="task-sidebar__checkbox-text">
-                  {type.label}
-                </span>
-              </label>
-            ))}
-          </div>
-        </div>
+        <ResourceTypeField
+          resourceTypes={resourceTypes}
+          onResourceTypeChange={handleResourceTypeChange}
+        />
 
-        {selectedTask.isPlaced && selectedTask.startTime && (
-          <div className="task-sidebar__info">
-            <div><strong>開始時間:</strong> {selectedTask.startTime}</div>
-            <div><strong>終了時間:</strong> {calculateEndTime(selectedTask.startTime, selectedTask.duration)}</div>
-          </div>
+        {selectedTask && (
+          <TaskInfoDisplay task={selectedTask} />
         )}
       </div>
 
-      <div className="task-sidebar__actions">
-        <button className="task-sidebar__remove" onClick={handleRemove}>
-          削除
-        </button>
-      </div>
+      <TaskActions
+        taskId={selectedTask.id}
+        onTaskRemove={onTaskRemove}
+      />
     </div>
   );
 };
