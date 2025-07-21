@@ -104,6 +104,18 @@ function App() {
     setDraggedTaskId(null);
   };
 
+  /** メインエリアクリック時の処理 - カード以外をクリックした場合は選択解除 */
+  const handleMainClick = (e: React.MouseEvent) => {
+    // クリックされた要素がタスクカードまたはサイドバー内の要素でない場合のみ選択解除
+    const target = e.target as HTMLElement;
+    const isTaskCard = target.closest('.task-card');
+    const isSidebar = target.closest('.task-sidebar');
+    
+    if (!isTaskCard && !isSidebar && selectedTask) {
+      setSelectedTask(null);
+    }
+  };
+
   return (
     <div className="app">
       <header className="app__header">
@@ -111,7 +123,7 @@ function App() {
         <p>効率的なタスク実行順序を調整するアプリ</p>
       </header>
       
-      <main className="app__main">
+      <main className="app__main" onClick={handleMainClick}>
         <TaskStaging
           tasks={tasks}
           selectedTask={selectedTask}
