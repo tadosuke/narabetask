@@ -1,7 +1,7 @@
-import { createContext, useState, useCallback, useEffect } from 'react';
-import type { Task } from '../types';
-import { generateId } from '../utils/idGenerator';
-import { saveToStorage, loadFromStorage } from '../utils/storage';
+import { createContext, useState, useCallback, useEffect } from "react";
+import type { Task } from "../types";
+import { generateId } from "../utils/idGenerator";
+import { saveToStorage, loadFromStorage } from "../utils/storage";
 
 /**
  * TaskContextの型定義
@@ -36,7 +36,9 @@ interface TaskContextType {
 /**
  * TaskContext
  */
-export const TaskContext = createContext<TaskContextType | undefined>(undefined);
+export const TaskContext = createContext<TaskContextType | undefined>(
+  undefined
+);
 
 /**
  * TaskProviderコンポーネントのプロパティ
@@ -53,16 +55,17 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
-
-  // Load saved state on component mount
+  // コンポーネントのマウント時に保存された状態を読み込む
   useEffect(() => {
     const savedState = loadFromStorage();
     if (savedState) {
       setTasks(savedState.tasks);
-      
-      // Restore selected task if it exists in the loaded tasks
+
+      // 保存されたselectedTaskIdが存在し、tasks内に該当タスクがあれば選択状態を復元
       if (savedState.selectedTaskId) {
-        const task = savedState.tasks.find(t => t.id === savedState.selectedTaskId);
+        const task = savedState.tasks.find(
+          (t) => t.id === savedState.selectedTaskId
+        );
         if (task) {
           setSelectedTask(task);
         }
@@ -70,13 +73,13 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     }
   }, []);
 
-  // Save state whenever tasks or selectedTask change
+  // tasksやselectedTaskが変更されるたびに状態を保存する
   useEffect(() => {
-    // Don't save immediately on mount when state might be initializing
+    // マウント直後の初期化時に即保存しないように少し遅延させる
     const timeoutId = setTimeout(() => {
       saveToStorage(tasks, selectedTask);
     }, 100);
-    
+
     return () => clearTimeout(timeoutId);
   }, [tasks, selectedTask]);
 
@@ -86,14 +89,21 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
    * @param updatedTask 更新されたタスク
    * @returns プレースメント状態が保持された更新タスク
    */
-  const preservePlacementState = (originalTask: Task, updatedTask: Task): Task => {
+  const preservePlacementState = (
+    originalTask: Task,
+    updatedTask: Task
+  ): Task => {
     // 元のタスクが配置されていて、更新タスクに配置情報が含まれていない場合
-    if (originalTask.isPlaced && originalTask.startTime && 
-        (updatedTask.isPlaced === undefined || updatedTask.startTime === undefined)) {
+    if (
+      originalTask.isPlaced &&
+      originalTask.startTime &&
+      (updatedTask.isPlaced === undefined ||
+        updatedTask.startTime === undefined)
+    ) {
       return {
         ...updatedTask,
         isPlaced: originalTask.isPlaced,
-        startTime: originalTask.startTime
+        startTime: originalTask.startTime,
       };
     }
     return updatedTask;
@@ -106,11 +116,13 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
    * @param startTime 開始時刻
    * @returns 更新されたタスクリスト
    */
-  const updateTaskPlacement = (tasks: Task[], taskId: string, startTime: string): Task[] => {
-    return tasks.map(task => 
-      task.id === taskId
-        ? { ...task, startTime, isPlaced: true }
-        : task
+  const updateTaskPlacement = (
+    tasks: Task[],
+    taskId: string,
+    startTime: string
+  ): Task[] => {
+    return tasks.map((task) =>
+      task.id === taskId ? { ...task, startTime, isPlaced: true } : task
     );
   };
 
@@ -121,7 +133,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
    * @returns 更新されたタスクリスト
    */
   const resetTaskToStaging = (tasks: Task[], taskId: string): Task[] => {
-    return tasks.map(task => 
+    return tasks.map((task) =>
       task.id === taskId
         ? { ...task, startTime: undefined, isPlaced: false, isLocked: false }
         : task
@@ -131,7 +143,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   /**
    * 選択されているタスクが指定されたタスクIDの場合、提供された更新内容で同期する
    * @param selectedTask 現在選択されているタスク
-   * @param taskId 対象のタスクID  
+   * @param taskId 対象のタスクID
    * @param updates 適用する更新内容
    * @param setSelectedTask selectedTask更新用のsetter関数
    */
@@ -142,7 +154,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setSelectedTask: React.Dispatch<React.SetStateAction<Task | null>>
   ): void => {
     if (selectedTask?.id === taskId) {
-      setSelectedTask(prev => prev ? { ...prev, ...updates } : null);
+      setSelectedTask((prev) => (prev ? { ...prev, ...updates } : null));
     }
   };
 
@@ -157,7 +169,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     taskId: string,
     setSelectedTask: React.Dispatch<React.SetStateAction<Task | null>>
   ): void => {
-    const task = tasks.find(t => t.id === taskId);
+    const task = tasks.find((t) => t.id === taskId);
     if (task) {
       setSelectedTask(task);
     }
@@ -170,10 +182,8 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
    * @returns ロック状態が切り替えられたタスクリスト
    */
   const toggleTaskLock = (tasks: Task[], taskId: string): Task[] => {
-    return tasks.map(task => 
-      task.id === taskId
-        ? { ...task, isLocked: !task.isLocked }
-        : task
+    return tasks.map((task) =>
+      task.id === taskId ? { ...task, isLocked: !task.isLocked } : task
     );
   };
 
@@ -181,54 +191,75 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const addTask = useCallback(() => {
     const newTask: Task = {
       id: generateId(),
-      name: '新しいタスク',
+      name: "新しいタスク",
       duration: 30,
-      resourceTypes: ['self'],
-      isPlaced: false
+      resourceTypes: ["self"],
+      isPlaced: false,
     };
-    
-    setTasks(prev => [...prev, newTask]);
+
+    setTasks((prev) => [...prev, newTask]);
     setSelectedTask(newTask);
   }, []);
 
   /** タスクの情報を更新する */
   const updateTask = useCallback((updatedTask: Task) => {
-    setTasks(prev => prev.map(task => {
-      if (task.id === updatedTask.id) {
-        return preservePlacementState(task, updatedTask);
-      }
-      return task;
-    }));
+    setTasks((prev) =>
+      prev.map((task) => {
+        if (task.id === updatedTask.id) {
+          return preservePlacementState(task, updatedTask);
+        }
+        return task;
+      })
+    );
     setSelectedTask(updatedTask);
   }, []);
 
   /** タスクを削除する */
-  const removeTask = useCallback((taskId: string) => {
-    setTasks(prev => prev.filter(task => task.id !== taskId));
-    if (selectedTask?.id === taskId) {
-      setSelectedTask(null);
-    }
-  }, [selectedTask]);
+  const removeTask = useCallback(
+    (taskId: string) => {
+      setTasks((prev) => prev.filter((task) => task.id !== taskId));
+      if (selectedTask?.id === taskId) {
+        setSelectedTask(null);
+      }
+    },
+    [selectedTask]
+  );
 
   /** タスクをタイムラインにドロップした際の処理 */
-  const dropTask = useCallback((taskId: string, startTime: string) => {
-    setTasks(prev => updateTaskPlacement(prev, taskId, startTime));
-    
-    // 選択中のタスクが移動された場合は、selectedTaskも更新する
-    syncSelectedTaskWithUpdate(selectedTask, taskId, { startTime, isPlaced: true }, setSelectedTask);
-  }, [selectedTask]);
+  const dropTask = useCallback(
+    (taskId: string, startTime: string) => {
+      setTasks((prev) => updateTaskPlacement(prev, taskId, startTime));
+
+      // 選択中のタスクが移動された場合は、selectedTaskも更新する
+      syncSelectedTaskWithUpdate(
+        selectedTask,
+        taskId,
+        { startTime, isPlaced: true },
+        setSelectedTask
+      );
+    },
+    [selectedTask]
+  );
 
   /** タスクをタイムラインから一覧に戻す処理 */
-  const returnTask = useCallback((taskId: string) => {
-    setTasks(prev => resetTaskToStaging(prev, taskId));
-    
-    // 選択中のタスクが戻された場合は、selectedTaskも更新する
-    syncSelectedTaskWithUpdate(selectedTask, taskId, { startTime: undefined, isPlaced: false, isLocked: false }, setSelectedTask);
-  }, [selectedTask]);
+  const returnTask = useCallback(
+    (taskId: string) => {
+      setTasks((prev) => resetTaskToStaging(prev, taskId));
+
+      // 選択中のタスクが戻された場合は、selectedTaskも更新する
+      syncSelectedTaskWithUpdate(
+        selectedTask,
+        taskId,
+        { startTime: undefined, isPlaced: false, isLocked: false },
+        setSelectedTask
+      );
+    },
+    [selectedTask]
+  );
 
   /** ロック状態を切り替える処理 */
   const toggleLock = useCallback((taskId: string) => {
-    setTasks(prev => toggleTaskLock(prev, taskId));
+    setTasks((prev) => toggleTaskLock(prev, taskId));
   }, []);
 
   /** タスクをクリックした際の処理 */
@@ -240,7 +271,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const startDrag = useCallback((taskId: string) => {
     setDraggedTaskId(taskId);
     // ドラッグ中のタスクを選択状態にする
-    setTasks(prev => {
+    setTasks((prev) => {
       findAndSelectTask(prev, taskId, setSelectedTask);
       return prev;
     });
@@ -267,8 +298,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   };
 
   return (
-    <TaskContext.Provider value={contextValue}>
-      {children}
-    </TaskContext.Provider>
+    <TaskContext.Provider value={contextValue}>{children}</TaskContext.Provider>
   );
 };
