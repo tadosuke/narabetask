@@ -14,12 +14,8 @@ interface TaskCardProps {
   onDragStart?: (e: React.DragEvent) => void;
   /** ドラッグ終了時のハンドラ */
   onDragEnd?: (e: React.DragEvent) => void;
-  /** ドラッグオーバー時のハンドラ */
-  onDragOver?: (e: React.DragEvent) => void;
-  /** ドラッグエンター時のハンドラ */
-  onDragEnter?: (e: React.DragEvent) => void;
-  /** ドロップ時のハンドラ */
-  onDrop?: (e: React.DragEvent) => void;
+  /** 現在ドラッグ中かどうか */
+  isDragging?: boolean;
   /** 追加のスタイル */
   style?: React.CSSProperties;
   /** 選択中かどうか */
@@ -52,9 +48,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onClick,
   onDragStart,
   onDragEnd,
-  onDragOver,
-  onDragEnter,
-  onDrop,
+  isDragging = false,
   style,
   isSelected = false
 }) => {
@@ -87,14 +81,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       draggable
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
-      onDragOver={onDragOver}
-      onDragEnter={onDragEnter}
-      onDrop={onDrop}
       style={{
         ...style,
         width: task.isPlaced ? '120px' : '200px',
         height: `${taskHeight}px`,
-        minHeight: `${taskHeight}px`
+        minHeight: `${taskHeight}px`,
+        // ドラッグ中は pointer-events を none にして、下層への event 透過を可能にする
+        pointerEvents: isDragging ? 'none' : 'auto'
       }}
     >
       <div className="task-card__header">
