@@ -330,4 +330,19 @@ describe("TaskSidebar", () => {
     const machineCheckbox = screen.getByRole('checkbox', { name: 'マシンパワー' });
     expect(machineCheckbox).toBeChecked();
   });
+
+  it("タスク名入力フィールドにフォーカスしたときにテキストが全選択される", async () => {
+    const user = userEvent.setup();
+    render(<TaskSidebar {...defaultProps} />);
+
+    const nameInput = screen.getByLabelText("タスク名") as HTMLInputElement;
+    
+    // Focus the input field
+    await user.click(nameInput);
+    
+    // Check that all text is selected
+    expect(nameInput.selectionStart).toBe(0);
+    expect(nameInput.selectionEnd).toBe(nameInput.value.length);
+    expect(nameInput.value).toBe("テストタスク");
+  });
 });
