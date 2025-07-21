@@ -1,6 +1,6 @@
-import React from 'react';
-import type { Task } from '../types';
-import './TaskCard.css';
+import React from "react";
+import type { Task } from "../types";
+import "./TaskCard.css";
 
 /**
  * TaskCardコンポーネントのプロパティ
@@ -22,18 +22,18 @@ interface TaskCardProps {
 
 /** リソースタイプごとの色設定 */
 const resourceTypeColors: Record<string, string> = {
-  self: '#4CAF50',
-  others: '#2196F3',
-  machine: '#FF9800',
-  network: '#9C27B0'
+  self: "#4CAF50",
+  others: "#2196F3",
+  machine: "#FF9800",
+  network: "#9C27B0",
 };
 
 /** リソースタイプごとの日本語ラベル */
 const resourceTypeLabels: Record<string, string> = {
-  self: '自分',
-  others: '他人',
-  machine: 'マシン',
-  network: 'ネットワーク'
+  self: "自分",
+  others: "他人",
+  machine: "マシン",
+  network: "ネットワーク",
 };
 
 /**
@@ -47,20 +47,21 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onDragStart,
   onDragEnd,
   style,
-  isSelected = false
+  isSelected = false,
 }) => {
   /** ドラッグ開始時の処理 */
   const handleDragStart = (e: React.DragEvent) => {
-    e.dataTransfer.setData('text/plain', task.id);
+    e.dataTransfer.setData("text/plain", task.id);
     if (onDragStart) {
       onDragStart(e);
     }
   };
 
   /** 所要時間を読みやすい形式でフォーマット */
-  const durationText = task.duration >= 60 
-    ? `${Math.floor(task.duration / 60)}h ${task.duration % 60}m`
-    : `${task.duration}m`;
+  const durationText =
+    task.duration >= 60
+      ? `${Math.floor(task.duration / 60)}h ${task.duration % 60}m`
+      : `${task.duration}m`;
 
   /** タスクの高さを計算（15分 = 40px の基本高さ） */
   const calculateHeight = (duration: number): number => {
@@ -73,16 +74,18 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <div
-      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''}`}
+      className={`task-card ${
+        task.isPlaced ? "task-card--placed" : "task-card--staging"
+      } ${isSelected ? "task-card--selected" : ""}`}
       onClick={onClick}
       draggable
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
       style={{
         ...style,
-        width: task.isPlaced ? `${(task.duration / 15) * 60}px` : '200px',
+        width: task.isPlaced ? `${(task.duration / 15) * 60}px` : "200px",
         height: `${taskHeight}px`,
-        minHeight: `${taskHeight}px`
+        minHeight: `${taskHeight}px`,
       }}
     >
       <div className="task-card__header">
@@ -93,16 +96,15 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       </div>
       <div className="task-card__footer">
         <div className="task-card__resource-squares">
-          {task.resourceTypes && task.resourceTypes.map(resourceType => (
-            <span
-              key={resourceType}
-              className="task-card__resource-square"
-              style={{ backgroundColor: resourceTypeColors[resourceType] }}
-              title={resourceTypeLabels[resourceType]}
-            >
-              ■
-            </span>
-          ))}
+          {task.resourceTypes &&
+            task.resourceTypes.map((resourceType) => (
+              <div
+                key={resourceType}
+                className="task-card__resource-square"
+                style={{ backgroundColor: resourceTypeColors[resourceType] }}
+                title={resourceTypeLabels[resourceType]}
+              />
+            ))}
         </div>
         {task.startTime && (
           <span className="task-card__time">{task.startTime}</span>

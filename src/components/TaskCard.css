@@ -51,15 +51,15 @@
   display: flex;
   gap: 2px;
   align-items: center;
+  margin-bottom: 2px;
 }
 
 .task-card__resource-square {
-  font-size: 8px;
-  line-height: 1;
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
   display: inline-block;
-  border-radius: 1px;
+  border-radius: 2px;
+  vertical-align: middle;
 }
 
 .task-card__name {
@@ -103,7 +103,7 @@
 /* Selected state - brighter appearance */
 .task-card--selected {
   background-color: #e8f4fd;
-  border-color: #2196F3;
+  border-color: #2196f3;
   box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
 }
 
