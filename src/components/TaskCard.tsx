@@ -2,14 +2,23 @@ import React from 'react';
 import type { Task } from '../types';
 import './TaskCard.css';
 
+/**
+ * TaskCardコンポーネントのプロパティ
+ */
 interface TaskCardProps {
+  /** 表示するタスク */
   task: Task;
+  /** クリック時のハンドラ */
   onClick?: () => void;
+  /** ドラッグ開始時のハンドラ */
   onDragStart?: (e: React.DragEvent) => void;
+  /** ドラッグ終了時のハンドラ */
   onDragEnd?: (e: React.DragEvent) => void;
+  /** 追加のスタイル */
   style?: React.CSSProperties;
 }
 
+/** リソースタイプごとの色設定 */
 const resourceTypeColors: Record<string, string> = {
   self: '#4CAF50',
   others: '#2196F3',
@@ -17,12 +26,18 @@ const resourceTypeColors: Record<string, string> = {
   network: '#9C27B0'
 };
 
+/** リソースタイプごとの日本語ラベル */
 const resourceTypeLabels: Record<string, string> = {
   self: '自分',
   others: '他人',
   machine: 'マシン',
   network: 'ネットワーク'
 };
+
+/**
+ * タスクカードコンポーネント
+ * タスクの情報を表示し、ドラッグ&ドロップに対応します
+ */
 
 export const TaskCard: React.FC<TaskCardProps> = ({
   task,
@@ -31,12 +46,15 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onDragEnd,
   style
 }) => {
+  /** ドラッグ開始時の処理 */
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData('text/plain', task.id);
     if (onDragStart) {
       onDragStart(e);
     }
   };
+
+  /** 所要時間を読みやすい形式でフォーマット */
 
   const durationText = task.duration >= 60 
     ? `${Math.floor(task.duration / 60)}h ${task.duration % 60}m`
