@@ -52,7 +52,6 @@ export const TaskFooter: React.FC<TaskFooterProps> = ({ task, onLockToggle }) =>
               style={{ backgroundColor: resourceTypeColors[resourceType] }}
               title={resourceTypeLabels[resourceType]}
             >
-              ■
             </span>
           ))
         }
