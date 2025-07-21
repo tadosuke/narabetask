@@ -93,7 +93,7 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   let dragSpanningClass = '';
   if (dragOverSlot && draggedTaskId) {
     const draggedTask = tasks.find(t => t.id === draggedTaskId);
-    if (draggedTask && dragOverSlot) {
+    if (draggedTask) {
       const draggedTaskSlots = getTaskSlots(dragOverSlot, draggedTask.duration);
       if (draggedTaskSlots.includes(time)) {
         const slotIndex = draggedTaskSlots.indexOf(time);

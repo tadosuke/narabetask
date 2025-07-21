@@ -42,8 +42,6 @@
 }
 
 .timeline__slot--drag-invalid {
-  background-color: #ffebee !important;
-  border: 2px dashed #f44336;
   cursor: not-allowed;
 }
 
@@ -70,6 +68,32 @@
 
 .timeline__slot--drag-spanning-single {
   border: 2px dashed #2196F3;
+}
+
+/* Red styling for invalid drag spans */
+.timeline__slot--drag-invalid.timeline__slot--drag-spanning {
+  background-color: #ffebee !important;
+}
+
+.timeline__slot--drag-invalid.timeline__slot--drag-spanning-first {
+  border-top: 2px dashed #f44336;
+  border-left: 2px dashed #f44336;
+  border-right: 2px dashed #f44336;
+}
+
+.timeline__slot--drag-invalid.timeline__slot--drag-spanning-middle {
+  border-left: 2px dashed #f44336;
+  border-right: 2px dashed #f44336;
+}
+
+.timeline__slot--drag-invalid.timeline__slot--drag-spanning-last {
+  border-bottom: 2px dashed #f44336;
+  border-left: 2px dashed #f44336;
+  border-right: 2px dashed #f44336;
+}
+
+.timeline__slot--drag-invalid.timeline__slot--drag-spanning-single {
+  border: 2px dashed #f44336;
 }
 
 .timeline__slot--drag-invalid * {
