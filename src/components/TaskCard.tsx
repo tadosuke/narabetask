@@ -88,21 +88,23 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       <div className="task-card__header">
         <span className="task-card__name">{task.name}</span>
         <div className="task-card__header-right">
-          <div className="task-card__resource-squares">
-            {task.resourceTypes && task.resourceTypes.map(resourceType => (
-              <span
-                key={resourceType}
-                className="task-card__resource-square"
-                style={{ backgroundColor: resourceTypeColors[resourceType] }}
-                title={resourceTypeLabels[resourceType]}
-              >
-                ■
-              </span>
-            ))}
-          </div>
           <span className="task-card__duration">{durationText}</span>
         </div>
       </div>
+      {task.resourceTypes && task.resourceTypes.length > 0 && (
+        <div className="task-card__resource-squares">
+          {task.resourceTypes.map(resourceType => (
+            <span
+              key={resourceType}
+              className="task-card__resource-square"
+              style={{ backgroundColor: resourceTypeColors[resourceType] }}
+              title={resourceTypeLabels[resourceType]}
+            >
+              ■
+            </span>
+          ))}
+        </div>
+      )}
       <div className="task-card__footer">
         {task.startTime && (
           <span className="task-card__time">{task.startTime}</span>

@@ -60,7 +60,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
     updatedDuration: number,
     updatedResourceTypes: ResourceType[]
   ) => {
-    if (selectedTask && updatedName.trim() && updatedResourceTypes.length > 0) {
+    if (selectedTask && updatedName.trim()) {
       const updatedTask: Task = {
         ...selectedTask,
         name: updatedName.trim(),
