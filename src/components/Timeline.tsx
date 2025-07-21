@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Task, BusinessHours, LunchBreak } from '../types';
+import type { Task, BusinessHours } from '../types';
 import { generateTimeSlots, canPlaceTask, getTaskSlots, findOverlappingTasks } from '../utils/timeUtils';
 import { TimeSlot } from './TimeSlot';
 import './Timeline.css';
@@ -14,8 +14,6 @@ interface TimelineProps {
   selectedTask: Task | null;
   /** 営業時間設定 */
   businessHours: BusinessHours;
-  /** 昼休み時間設定 */
-  lunchBreak: LunchBreak;
   /** タスクドロップ時のハンドラ */
   onTaskDrop: (taskId: string, startTime: string) => void;
   /** タスククリック時のハンドラ */
@@ -37,7 +35,6 @@ export const Timeline: React.FC<TimelineProps> = ({
   tasks,
   selectedTask,
   businessHours,
-  lunchBreak,
   onTaskDrop,
   onTaskClick,
   draggedTaskId = null,
@@ -47,8 +44,8 @@ export const Timeline: React.FC<TimelineProps> = ({
   /** ドラッグオーバー中のタイムスロット */
   const [dragOverSlot, setDragOverSlot] = useState<string | null>(null);
   
-  /** 営業時間と昼休みを考慮したタイムスロットを生成 */
-  const timeSlots = generateTimeSlots(businessHours, lunchBreak);
+  /** 営業時間に基づいたタイムスロットを生成 */
+  const timeSlots = generateTimeSlots(businessHours);
   /** タイムラインに配置済みのタスク一覧 */
   const placedTasks = tasks.filter(task => task.isPlaced && task.startTime);
   
@@ -120,14 +117,12 @@ export const Timeline: React.FC<TimelineProps> = ({
   const renderTimeSlot = (time: string) => {
     const task = placedTasks.find(t => t.startTime === time);
     const isOccupied = occupiedSlots.has(time);
-    const isLunchTime = time >= lunchBreak.start && time < lunchBreak.end;
 
     return (
       <TimeSlot
         key={time}
         time={time}
         task={task}
-        isLunchTime={isLunchTime}
         isOccupied={isOccupied}
         dragOverSlot={dragOverSlot}
         draggedTaskId={draggedTaskId}

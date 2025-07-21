@@ -35,7 +35,6 @@ describe("TimeSlot", () => {
 
   const defaultProps = {
     time: "09:00",
-    isLunchTime: false,
     isOccupied: false,
     dragOverSlot: null,
     draggedTaskId: null,
@@ -72,19 +71,6 @@ describe("TimeSlot", () => {
     render(<TimeSlot {...propsWithTask} />);
     
     expect(screen.getByText("テストタスク1")).toBeInTheDocument();
-  });
-
-  it("昼休み時間のスタイルを適用する", () => {
-    const lunchProps = {
-      ...defaultProps,
-      time: "12:00",
-      isLunchTime: true,
-    };
-    
-    const { container } = render(<TimeSlot {...lunchProps} />);
-    
-    const timeSlot = container.querySelector('.timeline__slot');
-    expect(timeSlot).toHaveClass("timeline__slot--lunch");
   });
 
   it("占有済みスロットのスタイルを適用する", () => {
@@ -161,7 +147,6 @@ describe("TimeSlot", () => {
     const combinedProps = {
       ...defaultProps,
       time: "12:00",
-      isLunchTime: true,
       isOccupied: true,
       dragOverSlot: "12:00",
       draggedTaskId: "2",
@@ -171,7 +156,6 @@ describe("TimeSlot", () => {
     
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).toHaveClass("timeline__slot");
-    expect(timeSlot).toHaveClass("timeline__slot--lunch");
     expect(timeSlot).toHaveClass("timeline__slot--occupied");
     // ドラッグフィードバックのクラスも追加される（canPlaceTaskがtrueを返すため）
     expect(timeSlot).toHaveClass("timeline__slot--drag-over");
