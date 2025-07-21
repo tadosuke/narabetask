@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { Task, BusinessHours, LunchBreak } from '../types';
 import { generateTimeSlots, canPlaceTask, getTaskSlots, findOverlappingTasks } from '../utils/timeUtils';
-import { TaskCard } from './TaskCard';
+import { TimeSlot } from './TimeSlot';
 import './Timeline.css';
 
 /**
@@ -121,81 +121,29 @@ export const Timeline: React.FC<TimelineProps> = ({
     const task = placedTasks.find(t => t.startTime === time);
     const isOccupied = occupiedSlots.has(time);
     const isLunchTime = time >= lunchBreak.start && time < lunchBreak.end;
-    
-    // ドラッグ中の視覚的フィードバック用のクラス決定
-    const isDragOver = dragOverSlot === time;
-    let dragFeedbackClass = '';
-    
-    if (isDragOver && draggedTaskId) {
-      const draggedTask = tasks.find(t => t.id === draggedTaskId);
-      if (draggedTask) {
-        // For placed tasks being moved, exclude their current slots from collision detection
-        const occupiedSlotsForCheck = new Set(occupiedSlots);
-        if (draggedTask.isPlaced && draggedTask.startTime) {
-          const taskSlots = getTaskSlots(draggedTask.startTime, draggedTask.duration);
-          taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
-        }
-        
-        const canPlace = canPlaceTask(time, draggedTask.duration, occupiedSlotsForCheck, timeSlots);
-        dragFeedbackClass = canPlace ? 'timeline__slot--drag-over' : 'timeline__slot--drag-invalid';
-      }
-    }
-
-    // ドラッグ中のタスクが複数スロットにまたがる場合の視覚フィードバック
-    let dragSpanningClass = '';
-    if (dragOverSlot && draggedTaskId) {
-      const draggedTask = tasks.find(t => t.id === draggedTaskId);
-      if (draggedTask && dragOverSlot) {
-        const draggedTaskSlots = getTaskSlots(dragOverSlot, draggedTask.duration);
-        if (draggedTaskSlots.includes(time)) {
-          const slotIndex = draggedTaskSlots.indexOf(time);
-          const totalSlots = draggedTaskSlots.length;
-          
-          if (totalSlots === 1) {
-            dragSpanningClass = 'timeline__slot--drag-spanning-single';
-          } else if (slotIndex === 0) {
-            dragSpanningClass = 'timeline__slot--drag-spanning-first';
-          } else if (slotIndex === totalSlots - 1) {
-            dragSpanningClass = 'timeline__slot--drag-spanning-last';
-          } else {
-            dragSpanningClass = 'timeline__slot--drag-spanning-middle';
-          }
-          
-          // 基本の spanning クラスも追加
-          dragSpanningClass = `timeline__slot--drag-spanning ${dragSpanningClass}`;
-        }
-      }
-    }
 
     return (
-      <div
+      <TimeSlot
         key={time}
-        className={`timeline__slot ${isLunchTime ? 'timeline__slot--lunch' : ''} ${isOccupied ? 'timeline__slot--occupied' : ''} ${dragFeedbackClass} ${dragSpanningClass}`}
-        onDragOver={(e) => handleDragOver(e, time)}
-        onDragEnter={(e) => handleDragEnter(e, time)}
+        time={time}
+        task={task}
+        isLunchTime={isLunchTime}
+        isOccupied={isOccupied}
+        dragOverSlot={dragOverSlot}
+        draggedTaskId={draggedTaskId}
+        tasks={tasks}
+        timeSlots={timeSlots}
+        occupiedSlots={occupiedSlots}
+        selectedTask={selectedTask}
+        overlappingTaskIds={overlappingTaskIds}
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
-        onDrop={(e) => handleDrop(e, time)}
-        data-time={time}
-      >
-        <div className="timeline__time-label">{time}</div>
-        {task && (
-          <TaskCard
-            task={task}
-            isSelected={selectedTask?.id === task.id}
-            isOverlapping={overlappingTaskIds.has(task.id)}
-            onClick={() => onTaskClick(task)}
-            onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
-            onDragEnd={onDragEnd}
-            style={{
-              position: 'absolute',
-              left: '60px',
-              right: '8px',
-              top: '2px',
-              zIndex: 2
-            }}
-          />
-        )}
-      </div>
+        onDrop={handleDrop}
+        onTaskClick={onTaskClick}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+      />
     );
   };
 
