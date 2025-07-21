@@ -33,7 +33,6 @@ describe("TaskSidebar", () => {
     selectedTask: mockTask,
     onTaskUpdate: vi.fn(),
     onTaskRemove: vi.fn(),
-    onClose: vi.fn(),
   };
 
   beforeEach(() => {
@@ -242,15 +241,6 @@ describe("TaskSidebar", () => {
 
     expect(window.confirm).toHaveBeenCalledWith("このタスクを削除しますか？");
     expect(mockOnTaskRemove).not.toHaveBeenCalled();
-  });
-
-  it("閉じるボタンがクリックされたときにonCloseを呼び出す", () => {
-    const mockOnClose = vi.fn();
-    render(<TaskSidebar {...defaultProps} onClose={mockOnClose} />);
-
-    fireEvent.click(screen.getByLabelText("閉じる"));
-
-    expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
   it("スライダーで最小値と最大値を設定できる", async () => {

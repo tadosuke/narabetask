@@ -13,8 +13,6 @@ interface TaskSidebarProps {
   onTaskUpdate: (task: Task) => void;
   /** タスク削除時のハンドラ */
   onTaskRemove: (taskId: string) => void;
-  /** サイドバーを閉じる際のハンドラ */
-  onClose: () => void;
 }
 
 /** リソースタイプの選択肢一覧 */
@@ -39,7 +37,6 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
   selectedTask,
   onTaskUpdate,
   onTaskRemove,
-  onClose,
 }) => {
   const [name, setName] = useState("");
   const [duration, setDuration] = useState(30);
@@ -135,13 +132,6 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
     <div className="task-sidebar">
       <div className="task-sidebar__header">
         <h3>タスク設定</h3>
-        <button
-          className="task-sidebar__close"
-          onClick={onClose}
-          aria-label="閉じる"
-        >
-          ×
-        </button>
       </div>
 
       <div className="task-sidebar__content">
