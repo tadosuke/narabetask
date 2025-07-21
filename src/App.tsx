@@ -82,6 +82,11 @@ function App() {
         ? { ...task, startTime, isPlaced: true }
         : task
     ));
+    
+    // 配置されたタスクが現在選択されている場合、selectedTaskも更新
+    if (selectedTask?.id === taskId) {
+      setSelectedTask({ ...selectedTask, startTime, isPlaced: true });
+    }
   };
 
   /** タスクをタイムラインから一覧に戻す処理 */
