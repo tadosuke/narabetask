@@ -61,14 +61,18 @@ describe("TaskSidebar", () => {
     render(<TaskSidebar {...defaultProps} />);
 
     const nameInput = screen.getByDisplayValue("テストタスク");
-    const durationSelect = screen.getByDisplayValue("1時間");
+    const durationSlider = screen.getByRole('slider');
     
     // Check that the "自分" checkbox is checked
     const selfCheckbox = screen.getByRole('checkbox', { name: '自分' });
 
     expect(nameInput).toBeInTheDocument();
-    expect(durationSelect).toBeInTheDocument();
+    expect(durationSlider).toBeInTheDocument();
+    expect(durationSlider).toHaveValue("60"); // 1時間 = 60分
     expect(selfCheckbox).toBeChecked();
+    
+    // Check that duration display shows "1時間"
+    expect(screen.getByText("1時間")).toBeInTheDocument();
   });
 
   it("配置済みタスクの開始時間と終了時間を表示する", () => {
@@ -99,13 +103,14 @@ describe("TaskSidebar", () => {
   });
 
   it("変更されたときに所要時間を更新する", async () => {
-    const user = userEvent.setup();
     render(<TaskSidebar {...defaultProps} />);
 
-    const durationSelect = screen.getByLabelText("工数");
-    await user.selectOptions(durationSelect, "45");
+    const durationSlider = screen.getByRole('slider');
+    
+    // Change the slider value to 45 minutes
+    fireEvent.change(durationSlider, { target: { value: '45' } });
 
-    expect(durationSelect).toHaveValue("45");
+    expect(durationSlider).toHaveValue("45");
   });
 
   it("変更されたときにリソースタイプを更新する", async () => {
@@ -138,11 +143,12 @@ describe("TaskSidebar", () => {
 
   it("所要時間が変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
     const mockOnTaskUpdate = vi.fn();
-    const user = userEvent.setup();
     render(<TaskSidebar {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
 
-    const durationSelect = screen.getByLabelText("工数");
-    await user.selectOptions(durationSelect, "45");
+    const durationSlider = screen.getByRole('slider');
+    
+    // Change the slider value to 45 minutes
+    fireEvent.change(durationSlider, { target: { value: '45' } });
 
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
@@ -247,15 +253,56 @@ describe("TaskSidebar", () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it("所要時間オプションを正しくフォーマットする", () => {
+  it("スライダーで最小値と最大値を設定できる", async () => {
+    const mockOnTaskUpdate = vi.fn();
+    render(<TaskSidebar {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+
+    const durationSlider = screen.getByRole('slider');
+    
+    // Test minimum value (15 minutes)
+    fireEvent.change(durationSlider, { target: { value: '15' } });
+    
+    await waitFor(() => {
+      expect(mockOnTaskUpdate).toHaveBeenCalledWith({
+        ...mockTask,
+        duration: 15,
+      });
+    });
+    
+    // Test maximum value (480 minutes = 8 hours)
+    fireEvent.change(durationSlider, { target: { value: '480' } });
+    
+    await waitFor(() => {
+      expect(mockOnTaskUpdate).toHaveBeenCalledWith({
+        ...mockTask,
+        duration: 480,
+      });
+    });
+  });
+
+  it("スライダーの最小値と最大値を正しく設定する", () => {
     render(<TaskSidebar {...defaultProps} />);
 
-    // 一般的な所要時間オプションを確認
-    expect(screen.getByText("15分")).toBeInTheDocument();
-    expect(screen.getByText("30分")).toBeInTheDocument();
-    expect(screen.getByText("1時間")).toBeInTheDocument();
-    expect(screen.getByText("1時間30分")).toBeInTheDocument();
-    expect(screen.getByText("2時間")).toBeInTheDocument();
+    const durationSlider = screen.getByRole('slider');
+    
+    // Check slider attributes for the required range
+    expect(durationSlider).toHaveAttribute('min', '15'); // 最小値15分
+    expect(durationSlider).toHaveAttribute('max', '480'); // 最大値8時間
+    expect(durationSlider).toHaveAttribute('step', '15'); // 15分刻み
+  });
+
+  it("所要時間の表示とスライダーの範囲を正しく設定する", () => {
+    render(<TaskSidebar {...defaultProps} />);
+
+    const durationSlider = screen.getByRole('slider');
+    
+    // Check slider attributes
+    expect(durationSlider).toHaveAttribute('min', '15');
+    expect(durationSlider).toHaveAttribute('max', '480');
+    expect(durationSlider).toHaveAttribute('step', '15');
+    
+    // Check that duration displays are formatted correctly
+    expect(screen.getByText("1時間")).toBeInTheDocument(); // default 60 minutes
   });
 
   it("すべてのリソースタイプオプションを表示する", () => {
@@ -283,7 +330,11 @@ describe("TaskSidebar", () => {
     rerender(<TaskSidebar {...defaultProps} selectedTask={newTask} />);
 
     expect(screen.getByDisplayValue("新しいタスク")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("30分")).toBeInTheDocument();
+    
+    // Check that slider value is 30 and display shows "30分"
+    const durationSlider = screen.getByRole('slider');
+    expect(durationSlider).toHaveValue("30");
+    expect(screen.getByText("30分")).toBeInTheDocument();
     
     // Check that the machine checkbox is checked
     const machineCheckbox = screen.getByRole('checkbox', { name: 'マシンパワー' });

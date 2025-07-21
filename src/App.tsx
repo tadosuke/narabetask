@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Task, AppSettings } from './types';
 import { TaskStaging } from './components/TaskStaging';
 import { Timeline } from './components/Timeline';
@@ -59,12 +59,12 @@ function App() {
   };
 
   /** タスクを削除する */
-  const handleTaskRemove = (taskId: string) => {
+  const handleTaskRemove = useCallback((taskId: string) => {
     setTasks(prev => prev.filter(task => task.id !== taskId));
     if (selectedTask?.id === taskId) {
       setSelectedTask(null);
     }
-  };
+  }, [selectedTask]);
 
   /** タスクをタイムラインにドロップした際の処理 */
   const handleTaskDrop = (taskId: string, startTime: string) => {
@@ -115,6 +115,36 @@ function App() {
       setSelectedTask(null);
     }
   };
+
+  /** キーボードイベントの処理 - Deleteキーでタスクを削除 */
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // Deleteキーが押された時の処理
+    if (e.key === 'Delete' && selectedTask) {
+      // 入力フィールドにフォーカスがある場合は削除処理を行わない
+      const activeElement = document.activeElement;
+      const isInputFocused = activeElement?.tagName === 'INPUT' || 
+                            activeElement?.tagName === 'TEXTAREA' || 
+                            activeElement?.tagName === 'SELECT' ||
+                            activeElement?.getAttribute('contenteditable') === 'true';
+      
+      if (!isInputFocused) {
+        // 確認ダイアログを表示
+        if (window.confirm('このタスクを削除しますか？')) {
+          handleTaskRemove(selectedTask.id);
+        }
+      }
+    }
+  }, [selectedTask, handleTaskRemove]);
+
+  /** キーボードイベントリスナーの設定 */
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    
+    // クリーンアップ関数でイベントリスナーを削除
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   return (
     <div className="app">
