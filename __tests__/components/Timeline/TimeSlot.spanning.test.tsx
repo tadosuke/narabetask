@@ -1,11 +1,11 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
 import { render } from '@testing-library/react';
-import { TimeSlot } from '../../src/components/Timeline/TimeSlot';
-import type { Task } from '../../src/types';
+import { TimeSlot } from '../../../src/components/Timeline/TimeSlot';
+import type { Task } from '../../../src/types';
 
 // timeUtilsモジュールをモック
-vi.mock("../../src/utils/timeUtils", () => ({
+vi.mock("../../../src/utils/timeUtils", () => ({
   canPlaceTask: vi.fn(() => true),
   getTaskSlots: vi.fn((startTime: string, duration: number) => {
     // 30分タスクの場合は2スロット、60分タスクの場合は4スロット
@@ -17,7 +17,7 @@ vi.mock("../../src/utils/timeUtils", () => ({
   }),
 }));
 
-import { getTaskSlots } from "../../src/utils/timeUtils";
+import { getTaskSlots } from "../../../src/utils/timeUtils";
 
 describe('TimeSlot Drag Spanning', () => {
   const mockTask: Task = {

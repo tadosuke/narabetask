@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
-import { TaskCard } from "../../src/components/TaskCard/TaskCard";
-import type { Task } from "../../src/types";
+import { TaskCard } from "../../../src/components/TaskCard/TaskCard";
+import type { Task } from "../../../src/types";
 
 describe("タスクカード - 高さスケーリング", () => {
   const baseTask: Task = {

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { TaskFooter } from '../../src/components/TaskCard/TaskFooter';
-import { Task } from '../../src/types';
+import { TaskFooter } from '../../../src/components/TaskCard/TaskFooter';
+import { Task } from '../../../src/types';
 
 const baseMockTask: Task = {
   id: '1',

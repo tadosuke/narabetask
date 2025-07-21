@@ -1,16 +1,16 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
-import { TimeSlot } from "../../src/components/Timeline/TimeSlot";
-import type { Task } from "../../src/types";
+import { TimeSlot } from "../../../src/components/Timeline/TimeSlot";
+import type { Task } from "../../../src/types";
 
 // timeUtilsモジュールをモック
-vi.mock("../../src/utils/timeUtils", () => ({
+vi.mock("../../../src/utils/timeUtils", () => ({
   canPlaceTask: vi.fn(),
   getTaskSlots: vi.fn(),
 }));
 
-import { canPlaceTask, getTaskSlots } from "../../src/utils/timeUtils";
+import { canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
 
 describe("TimeSlot ドラッグフィードバック", () => {
   const mockTasks: Task[] = [
