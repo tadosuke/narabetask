@@ -22,20 +22,20 @@ describe("TaskCard Time Display", () => {
     expect(screen.queryByText("09:00")).not.toBeInTheDocument();
   });
 
-  it("30分以上のタスクでは時刻を表示する", () => {
+  it("30分のタスクでも時刻を表示しない", () => {
     const task30min = { ...baseTask, duration: 30 };
     render(<TaskCard task={task30min} />);
 
-    // 時刻が表示されていることを確認
-    expect(screen.getByText("09:00")).toBeInTheDocument();
+    // 時刻が表示されていないことを確認（時刻表示機能が削除されたため）
+    expect(screen.queryByText("09:00")).not.toBeInTheDocument();
   });
 
-  it("60分のタスクでは時刻を表示する", () => {
+  it("60分のタスクでも時刻を表示しない", () => {
     const task60min = { ...baseTask, duration: 60 };
     render(<TaskCard task={task60min} />);
 
-    // 時刻が表示されていることを確認
-    expect(screen.getByText("09:00")).toBeInTheDocument();
+    // 時刻が表示されていないことを確認（時刻表示機能が削除されたため）
+    expect(screen.queryByText("09:00")).not.toBeInTheDocument();
   });
 
   it("配置されていないタスクでは時刻を表示しない", () => {

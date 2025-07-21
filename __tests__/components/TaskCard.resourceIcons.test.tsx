@@ -95,7 +95,7 @@ describe('TaskCard Resource Icons', () => {
     expect(resourceIcon).toBeInTheDocument();
     expect(resourceIcon).toHaveTextContent('■');
     
-    // 開始時刻も表示されることを確認
-    expect(screen.getByText('09:00')).toBeInTheDocument();
+    // 時刻表示機能が削除されたため、開始時刻は表示されない
+    expect(screen.queryByText('09:00')).not.toBeInTheDocument();
   });
 });
