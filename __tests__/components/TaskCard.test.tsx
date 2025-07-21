@@ -18,7 +18,8 @@ describe("TaskCard", () => {
 
     expect(screen.getByText("テストタスク")).toBeInTheDocument();
     expect(screen.getByText("1h 0m")).toBeInTheDocument();
-    expect(screen.getByText("自分")).toBeInTheDocument();
+    // Resource name should be in tooltip, not as visible text
+    expect(screen.getByTitle("自分")).toBeInTheDocument();
   });
 
   it("should show duration in minutes when less than 60 minutes", () => {

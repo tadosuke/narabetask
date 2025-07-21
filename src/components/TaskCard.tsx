@@ -59,11 +59,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     ? `${Math.floor(task.duration / 60)}h ${task.duration % 60}m`
     : `${task.duration}m`;
 
-  /** リソースタイプのラベルを結合 */
-  const resourceLabels = task.resourceTypes && task.resourceTypes.length > 0
-    ? task.resourceTypes.map(type => resourceTypeLabels[type]).join('・')
-    : 'リソース未設定';
-
   return (
     <div
       className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'}`}
@@ -95,9 +90,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         </div>
       </div>
       <div className="task-card__footer">
-        <span className="task-card__resource">
-          {resourceLabels}
-        </span>
         {task.startTime && (
           <span className="task-card__time">{task.startTime}</span>
         )}
