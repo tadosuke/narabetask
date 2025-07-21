@@ -1,10 +1,10 @@
 import "@testing-library/jest-dom";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { TaskStagingContents } from "../../src/components/TaskStaging/TaskStagingContents";
-import type { Task } from "../../src/types";
+import { TaskStaging } from "../../../src/components/TaskStaging/TaskStaging";
+import type { Task } from "../../../src/types";
 
-describe("TaskStagingContents", () => {
+describe("TaskStaging", () => {
   const mockTasks: Task[] = [
     {
       id: "1",
@@ -32,16 +32,23 @@ describe("TaskStagingContents", () => {
 
   const defaultProps = {
     tasks: mockTasks,
-    selectedTask: null,
     onTaskClick: vi.fn(),
+    onAddTask: vi.fn(),
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
+  it("タイトルと追加ボタンを含むヘッダーを表示する", () => {
+    render(<TaskStaging {...defaultProps} />);
+
+    expect(screen.getByText("タスク一覧")).toBeInTheDocument();
+    expect(screen.getByText("+ 新しいタスク")).toBeInTheDocument();
+  });
+
   it("配置されていないタスクのみを表示する", () => {
-    render(<TaskStagingContents {...defaultProps} />);
+    render(<TaskStaging {...defaultProps} />);
 
     // 配置されていないタスクが表示される
     expect(screen.getByText("タスク1")).toBeInTheDocument();
@@ -51,11 +58,21 @@ describe("TaskStagingContents", () => {
     expect(screen.queryByText("タスク2")).not.toBeInTheDocument();
   });
 
+  it("追加ボタンをクリックするとonAddTaskが呼ばれる", () => {
+    const mockOnAddTask = vi.fn();
+    render(<TaskStaging {...defaultProps} onAddTask={mockOnAddTask} />);
+
+    fireEvent.click(screen.getByText("+ 新しいタスク"));
+
+    expect(mockOnAddTask).toHaveBeenCalledTimes(1);
+  });
+
   it("タスクをクリックするとonTaskClickが呼ばれる", () => {
     const mockOnTaskClick = vi.fn();
-    render(<TaskStagingContents {...defaultProps} onTaskClick={mockOnTaskClick} />);
+    render(<TaskStaging {...defaultProps} onTaskClick={mockOnTaskClick} />);
 
     fireEvent.click(screen.getByText("タスク1"));
+
     expect(mockOnTaskClick).toHaveBeenCalledWith(mockTasks[0]);
   });
 
@@ -65,13 +82,13 @@ describe("TaskStagingContents", () => {
         id: "1",
         name: "タスク1",
         duration: 30,
-        resourceTypes: ["self"],
+        resourceType: "self",
         isPlaced: true,
         startTime: "09:00",
       },
     ];
 
-    render(<TaskStagingContents {...defaultProps} tasks={tasksAllPlaced} />);
+    render(<TaskStaging {...defaultProps} tasks={tasksAllPlaced} />);
 
     expect(
       screen.getByText("タスクがありません。", { exact: false })
@@ -87,7 +104,7 @@ describe("TaskStagingContents", () => {
   });
 
   it("タスク配列が空の場合は空の状態を表示する", () => {
-    render(<TaskStagingContents {...defaultProps} tasks={[]} />);
+    render(<TaskStaging {...defaultProps} tasks={[]} />);
 
     expect(
       screen.getByText("タスクがありません。", { exact: false })
@@ -99,11 +116,35 @@ describe("TaskStagingContents", () => {
     ).toBeInTheDocument();
   });
 
-  it("正しいCSSクラスを持つ", () => {
-    render(<TaskStagingContents {...defaultProps} />);
+  it("説明セクションを表示する", () => {
+    render(<TaskStaging {...defaultProps} />);
 
-    const content = screen.getByText("タスク1").closest(".task-staging__content");
-    expect(content).toBeInTheDocument();
+    expect(screen.getByText("使い方:")).toBeInTheDocument();
+    expect(
+      screen.getByText("タスクをクリックして設定を編集")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("タスクをドラッグしてタイムラインに配置")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("配置したタスクをドラッグしてここに戻すことも可能")
+    ).toBeInTheDocument();
+  });
+
+  it("正しいCSSクラスを持つ", () => {
+    render(<TaskStaging {...defaultProps} />);
+
+    const stagingContainer = screen
+      .getByText("タスク一覧")
+      .closest(".task-staging");
+    expect(stagingContainer).toBeInTheDocument();
+
+    const addButton = screen.getByText("+ 新しいタスク");
+    expect(addButton).toHaveClass("task-staging__add-button");
+  });
+
+  it("配置されていないタスクが存在する場合はタスクリストを表示する", () => {
+    render(<TaskStaging {...defaultProps} />);
 
     const taskList = screen.getByText("タスク1").closest(".task-staging__list");
     expect(taskList).toBeInTheDocument();

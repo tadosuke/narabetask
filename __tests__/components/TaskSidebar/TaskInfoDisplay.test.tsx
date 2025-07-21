@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { TaskInfoDisplay } from "../../src/components/TaskSidebar/TaskInfoDisplay";
-import type { Task } from "../../src/types";
+import { TaskInfoDisplay } from "../../../src/components/TaskSidebar/TaskInfoDisplay";
+import type { Task } from "../../../src/types";
 
 describe("TaskInfoDisplay", () => {
   const placedTask: Task = {

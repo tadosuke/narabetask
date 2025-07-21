@@ -1,11 +1,11 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
-import { Timeline } from "../../src/components/Timeline/Timeline";
-import type { Task, BusinessHours, LunchBreak } from "../../src/types";
+import { Timeline } from "../../../src/components/Timeline/Timeline";
+import type { Task, BusinessHours, LunchBreak } from "../../../src/types";
 
 // timeUtilsモジュールをモック
-vi.mock("../../src/utils/timeUtils", () => ({
+vi.mock("../../../src/utils/timeUtils", () => ({
   generateTimeSlots: vi.fn(() => [
     "09:00",
     "09:15", 
@@ -21,7 +21,7 @@ vi.mock("../../src/utils/timeUtils", () => ({
   doTasksShareResources: vi.fn(() => false),
 }));
 
-import { canPlaceTask, getTaskSlots } from "../../src/utils/timeUtils";
+import { canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
 
 describe("Timeline ドラッグコーディネーション", () => {
   const mockBusinessHours: BusinessHours = {

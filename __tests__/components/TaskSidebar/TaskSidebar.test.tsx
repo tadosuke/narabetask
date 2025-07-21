@@ -2,8 +2,8 @@ import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { TaskSidebar } from "../../src/components/TaskSidebar/TaskSidebar";
-import type { Task } from "../../src/types";
+import { TaskSidebar } from "../../../src/components/TaskSidebar/TaskSidebar";
+import type { Task } from "../../../src/types";
 
 // window.confirmをモック
 Object.defineProperty(window, "confirm", {

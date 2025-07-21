@@ -1,11 +1,11 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
-import { Timeline } from "../../src/components/Timeline/Timeline";
-import type { Task, BusinessHours, LunchBreak } from "../../src/types";
+import { Timeline } from "../../../src/components/Timeline/Timeline";
+import type { Task, BusinessHours, LunchBreak } from "../../../src/types";
 
 // Real timeUtils functions without mocking
-import { generateTimeSlots, canPlaceTask, getTaskSlots } from "../../src/utils/timeUtils";
+import { generateTimeSlots, canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
 
 describe("Timeline セルフ衝突コーディネーション", () => {
   const mockBusinessHours: BusinessHours = {

@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { TaskCard } from "../../src/components/TaskCard/TaskCard";
-import type { Task } from "../../src/types";
+import { TaskCard } from "../../../src/components/TaskCard/TaskCard";
+import type { Task } from "../../../src/types";
 
 describe("TaskCard", () => {
   const mockTask: Task = {

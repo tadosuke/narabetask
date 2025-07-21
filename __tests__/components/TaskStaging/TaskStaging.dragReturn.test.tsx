@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
-import { TaskStaging } from "../../src/components/TaskStaging/TaskStaging";
-import type { Task } from "../../src/types";
+import { TaskStaging } from "../../../src/components/TaskStaging/TaskStaging";
+import type { Task } from "../../../src/types";
 
 describe("タスクステージング - ドラッグ戻り機能", () => {
   const unplacedTask: Task = {
