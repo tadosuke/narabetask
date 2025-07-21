@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { Task, ResourceType } from '../types';
+import type { Task, ResourceType } from '../../types';
 import { TaskNameField } from './TaskNameField';
 import { TaskDurationField } from './TaskDurationField';
 import { ResourceTypeField } from './ResourceTypeField';

@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from '@testing-library/react';
-import { TaskSidebar } from '../../src/components/TaskSidebar';
-import { TaskCard } from '../../src/components/TaskCard';
+import { TaskSidebar } from '../../src/components/TaskSidebar/TaskSidebar';
+import { TaskCard } from '../../src/components/TaskCard/TaskCard';
 import { Task } from '../../src/types';
 
 const baseMockTask: Task = {

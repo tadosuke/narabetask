@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Task } from '../types';
-import { TaskCard } from './TaskCard';
+import type { Task } from '../../types';
+import { TaskCard } from '../TaskCard';
 import './TaskStagingContents.css';
 
 /**

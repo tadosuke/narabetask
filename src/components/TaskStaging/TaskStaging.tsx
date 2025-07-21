@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Task } from '../types';
+import type { Task } from '../../types';
 import { TaskStagingHeader } from './TaskStagingHeader';
 import { TaskStagingContents } from './TaskStagingContents';
 import { TaskStagingInstructions } from './TaskStagingInstructions';

@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { TaskActions } from "../../src/components/TaskActions";
+import { TaskActions } from "../../src/components/TaskSidebar/TaskActions";
 
 // window.confirmをモック
 Object.defineProperty(window, "confirm", {
