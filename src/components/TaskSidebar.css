@@ -6,7 +6,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .task-sidebar--empty {
@@ -58,6 +59,7 @@
 .task-sidebar__content {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .task-sidebar__field {
@@ -216,5 +218,6 @@
     border-left: none;
     border-top: 1px solid #ddd;
     overflow-y: auto;
+    overflow-x: hidden;
   }
 }
