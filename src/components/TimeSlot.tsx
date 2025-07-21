@@ -44,6 +44,8 @@ interface TimeSlotProps {
   onDragStart?: (taskId: string) => void;
   /** ドラッグ終了時のハンドラ */
   onDragEnd?: () => void;
+  /** ロック状態を切り替えるハンドラ */
+  onLockToggle?: (taskId: string) => void;
 }
 
 /**
@@ -68,7 +70,8 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   onDrop,
   onTaskClick,
   onDragStart,
-  onDragEnd
+  onDragEnd,
+  onLockToggle
 }) => {
   // ドラッグ中の視覚的フィードバック用のクラス決定
   const isDragOver = dragOverSlot === time;
@@ -133,6 +136,7 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
           onClick={() => onTaskClick(task)}
           onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
           onDragEnd={onDragEnd}
+          onLockToggle={onLockToggle}
           style={{
             position: 'absolute',
             left: '60px',

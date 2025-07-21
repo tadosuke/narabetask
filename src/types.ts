@@ -23,6 +23,8 @@ export interface Task {
   startTime?: string; // HH:mm format when placed on timeline
   /** タイムラインに配置されているかどうか */
   isPlaced: boolean;
+  /** タスクがロック状態かどうか */
+  isLocked?: boolean;
 }
 
 /**

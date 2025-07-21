@@ -39,7 +39,7 @@ describe('TaskFooter', () => {
     expect(resourceContainer?.children).toHaveLength(3);
   });
 
-  it('リソースが選択されていない場合は何も表示しない', () => {
+  it('リソースが選択されていない場合でも、ロックボタンは表示される', () => {
     const taskWithNoResources = {
       ...baseMockTask,
       resourceTypes: []
@@ -47,11 +47,19 @@ describe('TaskFooter', () => {
     
     const { container } = render(<TaskFooter task={taskWithNoResources} />);
     
-    // 何も表示されないことを確認
-    expect(container.firstChild).toBeNull();
+    // フッターは表示されることを確認（ロックボタンがあるため）
+    expect(container.firstChild).not.toBeNull();
+    
+    // ロックボタンが表示されることを確認
+    const lockButton = screen.getByRole('button');
+    expect(lockButton).toBeInTheDocument();
+    expect(lockButton).toBeDisabled(); // 非配置タスクなので無効
+    
+    // リソースアイコンはない
+    expect(container.querySelector('.task-card__resource-square')).toBeNull();
   });
 
-  it('リソースタイプがundefinedの場合は何も表示しない', () => {
+  it('リソースタイプがundefinedの場合でも、ロックボタンは表示される', () => {
     const taskWithUndefinedResources = {
       ...baseMockTask,
       resourceTypes: undefined as any
@@ -59,8 +67,16 @@ describe('TaskFooter', () => {
     
     const { container } = render(<TaskFooter task={taskWithUndefinedResources} />);
     
-    // 何も表示されないことを確認
-    expect(container.firstChild).toBeNull();
+    // フッターは表示されることを確認（ロックボタンがあるため）
+    expect(container.firstChild).not.toBeNull();
+    
+    // ロックボタンが表示されることを確認
+    const lockButton = screen.getByRole('button');
+    expect(lockButton).toBeInTheDocument();
+    expect(lockButton).toBeDisabled(); // 非配置タスクなので無効
+    
+    // リソースアイコンはない
+    expect(container.querySelector('.task-card__resource-square')).toBeNull();
   });
 
   it('各リソースタイプが正しい色とラベルを持つ', () => {

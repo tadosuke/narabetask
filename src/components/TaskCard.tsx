@@ -16,6 +16,8 @@ interface TaskCardProps {
   onDragStart?: (e: React.DragEvent) => void;
   /** ドラッグ終了時のハンドラ */
   onDragEnd?: (e: React.DragEvent) => void;
+  /** ロック状態を切り替えるハンドラ */
+  onLockToggle?: (taskId: string) => void;
   /** 追加のスタイル */
   style?: React.CSSProperties;
   /** 選択中かどうか */
@@ -34,12 +36,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onClick,
   onDragStart,
   onDragEnd,
+  onLockToggle,
   style,
   isSelected = false,
   isOverlapping = false
 }) => {
   /** ドラッグ開始時の処理 */
   const handleDragStart = (e: React.DragEvent) => {
+    // ロックされているタスクはドラッグできない
+    if (task.isLocked) {
+      e.preventDefault();
+      return;
+    }
+    
     e.dataTransfer.setData('text/plain', task.id);
     if (onDragStart) {
       onDragStart(e);
@@ -57,9 +66,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <div
-      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''} ${isOverlapping ? 'task-card--overlapping' : ''}`}
+      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''} ${isOverlapping ? 'task-card--overlapping' : ''} ${task.isLocked ? 'task-card--locked' : ''}`}
       onClick={onClick}
-      draggable
+      draggable={!task.isLocked}
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
       style={{
@@ -70,7 +79,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       }}
     >
       <TaskHeader task={task} />
-      <TaskFooter task={task} />
+      <TaskFooter task={task} onLockToggle={onLockToggle} />
     </div>
   );
 };
