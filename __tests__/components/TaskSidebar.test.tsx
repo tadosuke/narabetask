@@ -60,16 +60,16 @@ describe("TaskSidebar", () => {
     render(<TaskSidebar {...defaultProps} />);
 
     const nameInput = screen.getByDisplayValue("テストタスク");
-    const durationSlider = screen.getByRole('slider');
-    
+    const durationSlider = screen.getByRole("slider");
+
     // Check that the "自分" checkbox is checked
-    const selfCheckbox = screen.getByRole('checkbox', { name: '自分' });
+    const selfCheckbox = screen.getByRole("checkbox", { name: "自分" });
 
     expect(nameInput).toBeInTheDocument();
     expect(durationSlider).toBeInTheDocument();
     expect(durationSlider).toHaveValue("60"); // 1時間 = 60分
     expect(selfCheckbox).toBeChecked();
-    
+
     // Check that duration display shows "1時間"
     expect(screen.getByText("1時間")).toBeInTheDocument();
   });
@@ -104,10 +104,10 @@ describe("TaskSidebar", () => {
   it("変更されたときに所要時間を更新する", async () => {
     render(<TaskSidebar {...defaultProps} />);
 
-    const durationSlider = screen.getByRole('slider');
-    
+    const durationSlider = screen.getByRole("slider");
+
     // Change the slider value to 45 minutes
-    fireEvent.change(durationSlider, { target: { value: '45' } });
+    fireEvent.change(durationSlider, { target: { value: "45" } });
 
     expect(durationSlider).toHaveValue("45");
   });
@@ -117,7 +117,7 @@ describe("TaskSidebar", () => {
     render(<TaskSidebar {...defaultProps} />);
 
     // Find the "他人" checkbox by its label text
-    const othersCheckbox = screen.getByRole('checkbox', { name: '他人' });
+    const othersCheckbox = screen.getByRole("checkbox", { name: "他人" });
     await user.click(othersCheckbox);
 
     expect(othersCheckbox).toBeChecked();
@@ -144,10 +144,10 @@ describe("TaskSidebar", () => {
     const mockOnTaskUpdate = vi.fn();
     render(<TaskSidebar {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
 
-    const durationSlider = screen.getByRole('slider');
-    
+    const durationSlider = screen.getByRole("slider");
+
     // Change the slider value to 45 minutes
-    fireEvent.change(durationSlider, { target: { value: '45' } });
+    fireEvent.change(durationSlider, { target: { value: "45" } });
 
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
@@ -163,13 +163,13 @@ describe("TaskSidebar", () => {
     render(<TaskSidebar {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
 
     // Find the "他人" checkbox by its label text
-    const othersCheckbox = screen.getByRole('checkbox', { name: '他人' });
+    const othersCheckbox = screen.getByRole("checkbox", { name: "他人" });
     await user.click(othersCheckbox);
 
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
-        resourceTypes: ['self', 'others'],
+        resourceTypes: ["self", "others"],
       });
     });
   });
@@ -189,10 +189,16 @@ describe("TaskSidebar", () => {
   it("リソースタイプが選択されていない場合でも有効なタスク名があれば自動保存を行う", async () => {
     const mockOnTaskUpdate = vi.fn();
     const user = userEvent.setup();
-    
+
     // リソースタイプが空のタスクを使用
     const taskWithNoResources = { ...mockTask, resourceTypes: [] };
-    render(<TaskSidebar {...defaultProps} selectedTask={taskWithNoResources} onTaskUpdate={mockOnTaskUpdate} />);
+    render(
+      <TaskSidebar
+        {...defaultProps}
+        selectedTask={taskWithNoResources}
+        onTaskUpdate={mockOnTaskUpdate}
+      />
+    );
 
     const nameInput = screen.getByLabelText("タスク名");
     await user.clear(nameInput);
@@ -247,25 +253,24 @@ describe("TaskSidebar", () => {
     const mockOnTaskUpdate = vi.fn();
     render(<TaskSidebar {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
 
-    const durationSlider = screen.getByRole('slider');
-    
+    const durationSlider = screen.getByRole("slider");
+
     // Test minimum value (15 minutes)
-    fireEvent.change(durationSlider, { target: { value: '15' } });
-    
+    fireEvent.change(durationSlider, { target: { value: "15" } });
+
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
         duration: 15,
       });
     });
-    
-    // Test maximum value (480 minutes = 8 hours)
-    fireEvent.change(durationSlider, { target: { value: '480' } });
-    
+
+    fireEvent.change(durationSlider, { target: { value: "240" } });
+
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
-        duration: 480,
+        duration: 240,
       });
     });
   });
@@ -273,24 +278,24 @@ describe("TaskSidebar", () => {
   it("スライダーの最小値と最大値を正しく設定する", () => {
     render(<TaskSidebar {...defaultProps} />);
 
-    const durationSlider = screen.getByRole('slider');
-    
+    const durationSlider = screen.getByRole("slider");
+
     // Check slider attributes for the required range
-    expect(durationSlider).toHaveAttribute('min', '15'); // 最小値15分
-    expect(durationSlider).toHaveAttribute('max', '480'); // 最大値8時間
-    expect(durationSlider).toHaveAttribute('step', '15'); // 15分刻み
+    expect(durationSlider).toHaveAttribute("min", "15"); // 最小値15分
+    expect(durationSlider).toHaveAttribute("max", "240"); // 最大値4時間
+    expect(durationSlider).toHaveAttribute("step", "15"); // 15分刻み
   });
 
   it("所要時間の表示とスライダーの範囲を正しく設定する", () => {
     render(<TaskSidebar {...defaultProps} />);
 
-    const durationSlider = screen.getByRole('slider');
-    
+    const durationSlider = screen.getByRole("slider");
+
     // Check slider attributes
-    expect(durationSlider).toHaveAttribute('min', '15');
-    expect(durationSlider).toHaveAttribute('max', '480');
-    expect(durationSlider).toHaveAttribute('step', '15');
-    
+    expect(durationSlider).toHaveAttribute("min", "15");
+    expect(durationSlider).toHaveAttribute("max", "240");
+    expect(durationSlider).toHaveAttribute("step", "15");
+
     // Check that duration displays are formatted correctly
     expect(screen.getByText("1時間")).toBeInTheDocument(); // default 60 minutes
   });
@@ -320,14 +325,16 @@ describe("TaskSidebar", () => {
     rerender(<TaskSidebar {...defaultProps} selectedTask={newTask} />);
 
     expect(screen.getByDisplayValue("新しいタスク")).toBeInTheDocument();
-    
+
     // Check that slider value is 30 and display shows "30分"
-    const durationSlider = screen.getByRole('slider');
+    const durationSlider = screen.getByRole("slider");
     expect(durationSlider).toHaveValue("30");
     expect(screen.getByText("30分")).toBeInTheDocument();
-    
+
     // Check that the machine checkbox is checked
-    const machineCheckbox = screen.getByRole('checkbox', { name: 'マシンパワー' });
+    const machineCheckbox = screen.getByRole("checkbox", {
+      name: "マシンパワー",
+    });
     expect(machineCheckbox).toBeChecked();
   });
 
@@ -336,10 +343,10 @@ describe("TaskSidebar", () => {
     render(<TaskSidebar {...defaultProps} />);
 
     const nameInput = screen.getByLabelText("タスク名") as HTMLInputElement;
-    
+
     // Focus the input field
     await user.click(nameInput);
-    
+
     // Check that all text is selected
     expect(nameInput.selectionStart).toBe(0);
     expect(nameInput.selectionEnd).toBe(nameInput.value.length);
