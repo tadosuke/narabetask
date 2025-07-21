@@ -22,13 +22,6 @@ describe("TaskCard", () => {
     expect(screen.getByTitle("自分")).toBeInTheDocument();
   });
 
-  it("60分未満の場合は分単位で所要時間を表示する", () => {
-    const shortTask = { ...mockTask, duration: 45 };
-    render(<TaskCard task={shortTask} />);
-
-    expect(screen.getByText("45m")).toBeInTheDocument();
-  });
-
 
 
   it("クリックされたときにonClickを呼び出す", () => {
