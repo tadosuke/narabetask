@@ -200,8 +200,8 @@ describe("Timeline Self Drop Test - 自分自身と重なっているところ�
     const taskCard = container.querySelector('.task-card--placed');
     expect(taskCard).not.toBeNull();
 
-    // ドラッグ中のタスクのpointer-eventsがnoneに設定されていることを確認
-    expect(taskCard).toHaveStyle('pointer-events: none');
+    // ドラッグ中のタスクにtask-card--draggingクラスが設定されていることを確認
+    expect(taskCard).toHaveClass('task-card--dragging');
   });
 
   it("ドラッグされていないタスクのpointer-eventsがautoのまま", () => {
@@ -242,15 +242,15 @@ describe("Timeline Self Drop Test - 自分自身と重なっているところ�
     const taskCard1 = slot900?.querySelector('.task-card--placed');
     expect(taskCard1).not.toBeNull();
 
-    // pointer-eventsがautoのまま（デフォルト値）
-    expect(taskCard1).toHaveStyle('pointer-events: auto');
+    // pointer-eventsがautoのまま（デフォルト値）、つまりdraggingクラスがない
+    expect(taskCard1).not.toHaveClass('task-card--dragging');
 
     // 09:30のタスク（ドラッグ中）を見つける
     const slot930 = container.querySelector('[data-time="09:30"]');
     const taskCard2 = slot930?.querySelector('.task-card--placed');
     expect(taskCard2).not.toBeNull();
 
-    // ドラッグ中のタスクのpointer-eventsがnoneに設定されている
-    expect(taskCard2).toHaveStyle('pointer-events: none');
+    // ドラッグ中のタスクにtask-card--draggingクラスが設定されている
+    expect(taskCard2).toHaveClass('task-card--dragging');
   });
 });

@@ -101,6 +101,7 @@
 .task-card--dragging {
   opacity: 0.5;
   transform: rotate(5deg);
+  pointer-events: none;
 }
 /* Selected state - brighter appearance */
 .task-card--selected {

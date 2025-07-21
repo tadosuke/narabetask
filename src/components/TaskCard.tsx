@@ -76,7 +76,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <div
-      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''}`}
+      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''} ${isDragging ? 'task-card--dragging' : ''}`}
       onClick={onClick}
       draggable
       onDragStart={handleDragStart}
@@ -85,9 +85,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         ...style,
         width: task.isPlaced ? '120px' : '200px',
         height: `${taskHeight}px`,
-        minHeight: `${taskHeight}px`,
-        // ドラッグ中は pointer-events を none にして、下層への event 透過を可能にする
-        pointerEvents: isDragging ? 'none' : 'auto'
+        minHeight: `${taskHeight}px`
       }}
     >
       <div className="task-card__header">
