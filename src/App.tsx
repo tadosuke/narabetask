@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { Task, AppSettings } from './types';
+import type { AppSettings } from './types';
+import { TaskProvider } from './contexts/TaskContext';
+import { useTaskContext } from './contexts/useTaskContext';
 import { TaskStaging } from './components/TaskStaging';
 import { Timeline } from './components/Timeline';
 import { TaskSidebar } from './components/TaskSidebar';
@@ -14,113 +16,26 @@ const defaultSettings: AppSettings = {
 };
 
 /**
- * 一意のIDを生成します
- * @returns {string} タイムスタンプとランダム文字列を組み合わせた一意ID
+ * メインアプリケーション内部コンポーネント
+ * TaskContextを使用してタスク管理とタイムライン配置の機能を提供します
  */
-function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
+function AppContent() {
+  const {
+    tasks,
+    selectedTask,
+    draggedTaskId,
+    addTask,
+    updateTask,
+    removeTask,
+    dropTask,
+    returnTask,
+    toggleLock,
+    selectTask,
+    startDrag,
+    endDrag,
+  } = useTaskContext();
 
-/**
- * メインアプリケーションコンポーネント
- * タスク管理とタイムライン配置の機能を提供します
- */
-
-function App() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [settings] = useState<AppSettings>(defaultSettings);
-  const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
-
-  /** 新しいタスクを追加する */
-  const handleAddTask = () => {
-    const newTask: Task = {
-      id: generateId(),
-      name: '新しいタスク',
-      duration: 30,
-      resourceTypes: ['self'],
-      isPlaced: false
-    };
-    
-    setTasks(prev => [...prev, newTask]);
-    setSelectedTask(newTask);
-  };
-
-  /** タスクの情報を更新する */
-  const handleTaskUpdate = (updatedTask: Task) => {
-    setTasks(prev => prev.map(task => {
-      if (task.id === updatedTask.id) {
-        // If the original task was placed but the update doesn't include placement info,
-        // preserve the placement state to prevent tasks from returning to staging
-        if (task.isPlaced && task.startTime && 
-            (updatedTask.isPlaced === undefined || updatedTask.startTime === undefined)) {
-          return {
-            ...updatedTask,
-            isPlaced: task.isPlaced,
-            startTime: task.startTime
-          };
-        }
-        return updatedTask;
-      }
-      return task;
-    }));
-    setSelectedTask(updatedTask);
-  };
-
-  /** タスクを削除する */
-  const handleTaskRemove = useCallback((taskId: string) => {
-    setTasks(prev => prev.filter(task => task.id !== taskId));
-    if (selectedTask?.id === taskId) {
-      setSelectedTask(null);
-    }
-  }, [selectedTask]);
-
-  /** タスクをタイムラインにドロップした際の処理 */
-  const handleTaskDrop = (taskId: string, startTime: string) => {
-    setTasks(prev => prev.map(task => 
-      task.id === taskId
-        ? { ...task, startTime, isPlaced: true }
-        : task
-    ));
-  };
-
-  /** タスクをタイムラインから一覧に戻す処理 */
-  const handleTaskReturn = (taskId: string) => {
-    setTasks(prev => prev.map(task => 
-      task.id === taskId
-        ? { ...task, startTime: undefined, isPlaced: false, isLocked: false } // ロックも解除
-        : task
-    ));
-  };
-
-  /** ロック状態を切り替える処理 */
-  const handleLockToggle = (taskId: string) => {
-    setTasks(prev => prev.map(task => 
-      task.id === taskId
-        ? { ...task, isLocked: !task.isLocked }
-        : task
-    ));
-  };
-
-  /** タスクをクリックした際の処理 */
-  const handleTaskClick = (task: Task) => {
-    setSelectedTask(task);
-  };
-
-  /** ドラッグ開始時の処理 */
-  const handleDragStart = (taskId: string) => {
-    setDraggedTaskId(taskId);
-    // ドラッグ中のタスクを選択状態にする
-    const task = tasks.find(t => t.id === taskId);
-    if (task) {
-      setSelectedTask(task);
-    }
-  };
-
-  /** ドラッグ終了時の処理 */
-  const handleDragEnd = () => {
-    setDraggedTaskId(null);
-  };
 
   /** メインエリアクリック時の処理 - カード以外をクリックした場合は選択解除 */
   const handleMainClick = (e: React.MouseEvent) => {
@@ -131,7 +46,7 @@ function App() {
     const isAddButton = target.closest('.task-staging__add-button');
     
     if (!isTaskCard && !isSidebar && !isAddButton && selectedTask) {
-      setSelectedTask(null);
+      selectTask(null);
     }
   };
 
@@ -149,11 +64,11 @@ function App() {
       if (!isInputFocused) {
         // 確認ダイアログを表示
         if (window.confirm('このタスクを削除しますか？')) {
-          handleTaskRemove(selectedTask.id);
+          removeTask(selectedTask.id);
         }
       }
     }
-  }, [selectedTask, handleTaskRemove]);
+  }, [selectedTask, removeTask]);
 
   /** キーボードイベントリスナーの設定 */
   useEffect(() => {
@@ -176,32 +91,44 @@ function App() {
         <TaskStaging
           tasks={tasks}
           selectedTask={selectedTask}
-          onTaskClick={handleTaskClick}
-          onAddTask={handleAddTask}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-          onTaskReturn={handleTaskReturn}
+          onTaskClick={selectTask}
+          onAddTask={addTask}
+          onDragStart={startDrag}
+          onDragEnd={endDrag}
+          onTaskReturn={returnTask}
         />
         
         <Timeline
           tasks={tasks}
           selectedTask={selectedTask}
           businessHours={settings.businessHours}
-          onTaskDrop={handleTaskDrop}
-          onTaskClick={handleTaskClick}
+          onTaskDrop={dropTask}
+          onTaskClick={selectTask}
           draggedTaskId={draggedTaskId}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-          onLockToggle={handleLockToggle}
+          onDragStart={startDrag}
+          onDragEnd={endDrag}
+          onLockToggle={toggleLock}
         />
         
         <TaskSidebar
           selectedTask={selectedTask}
-          onTaskUpdate={handleTaskUpdate}
-          onTaskRemove={handleTaskRemove}
+          onTaskUpdate={updateTask}
+          onTaskRemove={removeTask}
         />
       </main>
     </div>
+  );
+}
+
+/**
+ * メインアプリケーションコンポーネント
+ * TaskProviderでラップしてタスク管理の状態を提供します
+ */
+function App() {
+  return (
+    <TaskProvider>
+      <AppContent />
+    </TaskProvider>
   );
 }
 
