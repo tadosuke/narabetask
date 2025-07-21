@@ -1,6 +1,7 @@
-import { createContext, useState, useCallback } from 'react';
+import { createContext, useState, useCallback, useEffect } from 'react';
 import type { Task } from '../types';
 import { generateId } from '../utils/idGenerator';
+import { saveToStorage, loadFromStorage } from '../utils/storage';
 
 /**
  * TaskContextの型定義
@@ -52,6 +53,32 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
+
+  // Load saved state on component mount
+  useEffect(() => {
+    const savedState = loadFromStorage();
+    if (savedState) {
+      setTasks(savedState.tasks);
+      
+      // Restore selected task if it exists in the loaded tasks
+      if (savedState.selectedTaskId) {
+        const task = savedState.tasks.find(t => t.id === savedState.selectedTaskId);
+        if (task) {
+          setSelectedTask(task);
+        }
+      }
+    }
+  }, []);
+
+  // Save state whenever tasks or selectedTask change
+  useEffect(() => {
+    // Don't save immediately on mount when state might be initializing
+    const timeoutId = setTimeout(() => {
+      saveToStorage(tasks, selectedTask);
+    }, 100);
+    
+    return () => clearTimeout(timeoutId);
+  }, [tasks, selectedTask]);
 
   /** 新しいタスクを追加する */
   const addTask = useCallback(() => {
