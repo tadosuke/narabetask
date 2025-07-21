@@ -17,8 +17,8 @@ export interface Task {
   name: string;
   /** タスクの所要時間（分単位、15分刻み） */
   duration: number; // in minutes, 15-minute increments
-  /** タスクで使用するリソースの種類 */
-  resourceType: ResourceType;
+  /** タスクで使用するリソースの種類（複数選択可能） */
+  resourceTypes: ResourceType[];
   /** タイムラインに配置された際の開始時刻（HH:mm形式） */
   startTime?: string; // HH:mm format when placed on timeline
   /** タイムラインに配置されているかどうか */

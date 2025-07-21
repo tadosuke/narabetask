@@ -16,7 +16,7 @@ describe("TaskSidebar", () => {
     id: "1",
     name: "テストタスク",
     duration: 60,
-    resourceType: "self",
+    resourceTypes: ["self"],
     isPlaced: false,
   };
 
@@ -24,7 +24,7 @@ describe("TaskSidebar", () => {
     id: "2",
     name: "配置済みタスク",
     duration: 30,
-    resourceType: "others",
+    resourceTypes: ["others"],
     isPlaced: true,
     startTime: "09:00",
   };
@@ -54,7 +54,7 @@ describe("TaskSidebar", () => {
     expect(screen.getByText("タスク設定")).toBeInTheDocument();
     expect(screen.getByLabelText("タスク名")).toBeInTheDocument();
     expect(screen.getByLabelText("工数")).toBeInTheDocument();
-    expect(screen.getByLabelText("リソースタイプ")).toBeInTheDocument();
+    expect(screen.getByText("リソースタイプ")).toBeInTheDocument();
   });
 
   it("should populate form fields with selected task data", () => {
@@ -62,11 +62,13 @@ describe("TaskSidebar", () => {
 
     const nameInput = screen.getByDisplayValue("テストタスク");
     const durationSelect = screen.getByDisplayValue("1時間");
-    const resourceSelect = screen.getByDisplayValue("自分");
+    
+    // Check that the "自分" checkbox is checked
+    const selfCheckbox = screen.getByRole('checkbox', { name: '自分' });
 
     expect(nameInput).toBeInTheDocument();
     expect(durationSelect).toBeInTheDocument();
-    expect(resourceSelect).toBeInTheDocument();
+    expect(selfCheckbox).toBeChecked();
   });
 
   it("should show start time for placed tasks", () => {
@@ -103,14 +105,15 @@ describe("TaskSidebar", () => {
     expect(durationSelect).toHaveValue("45");
   });
 
-  it("should update resource type when changed", async () => {
+  it("should update resource types when checkboxes are changed", async () => {
     const user = userEvent.setup();
     render(<TaskSidebar {...defaultProps} />);
 
-    const resourceSelect = screen.getByLabelText("リソースタイプ");
-    await user.selectOptions(resourceSelect, "machine");
+    // Find the "他人" checkbox by its label text
+    const othersCheckbox = screen.getByRole('checkbox', { name: '他人' });
+    await user.click(othersCheckbox);
 
-    expect(resourceSelect).toHaveValue("machine");
+    expect(othersCheckbox).toBeChecked();
   });
 
   it("should call onTaskUpdate when save button is clicked", async () => {
@@ -211,7 +214,7 @@ describe("TaskSidebar", () => {
       id: "2",
       name: "新しいタスク",
       duration: 30,
-      resourceType: "machine",
+      resourceTypes: ["machine"],
       isPlaced: false,
     };
 
@@ -219,6 +222,9 @@ describe("TaskSidebar", () => {
 
     expect(screen.getByDisplayValue("新しいタスク")).toBeInTheDocument();
     expect(screen.getByDisplayValue("30分")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("マシンパワー")).toBeInTheDocument();
+    
+    // Check that the machine checkbox is checked
+    const machineCheckbox = screen.getByRole('checkbox', { name: 'マシンパワー' });
+    expect(machineCheckbox).toBeChecked();
   });
 });

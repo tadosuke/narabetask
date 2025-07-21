@@ -9,7 +9,7 @@ describe("TaskCard", () => {
     id: "1",
     name: "テストタスク",
     duration: 60,
-    resourceType: "self",
+    resourceTypes: ["self"],
     isPlaced: false,
   };
 

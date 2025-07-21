@@ -41,7 +41,7 @@ function App() {
       id: generateId(),
       name: '新しいタスク',
       duration: 30,
-      resourceType: 'self',
+      resourceTypes: ['self'],
       isPlaced: false
     };
     
