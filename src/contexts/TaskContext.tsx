@@ -130,7 +130,12 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         ? { ...task, startTime, isPlaced: true }
         : task
     ));
-  }, []);
+    
+    // 選択中のタスクが移動された場合は、selectedTaskも更新する
+    if (selectedTask?.id === taskId) {
+      setSelectedTask(prev => prev ? { ...prev, startTime, isPlaced: true } : null);
+    }
+  }, [selectedTask]);
 
   /** タスクをタイムラインから一覧に戻す処理 */
   const returnTask = useCallback((taskId: string) => {
