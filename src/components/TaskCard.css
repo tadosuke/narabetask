@@ -50,7 +50,7 @@
 .task-card__resource-squares {
   display: flex;
   gap: 2px;
-  align-items: center;
+  align-items: flex-start;
   margin-top: 4px;
   margin-bottom: 4px;
 }

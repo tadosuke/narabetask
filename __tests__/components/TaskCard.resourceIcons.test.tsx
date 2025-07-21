@@ -65,7 +65,7 @@ describe('TaskCard Resource Icons', () => {
   it('リソースタイプがundefinedの場合はリソースアイコンを表示しない', () => {
     const taskWithUndefinedResources = {
       ...baseMockTask,
-      resourceTypes: undefined as any
+      resourceTypes: undefined as undefined
     } as Task;
     
     render(<TaskCard task={taskWithUndefinedResources} />);
