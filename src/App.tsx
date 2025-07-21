@@ -114,6 +114,7 @@ function App() {
       <main className="app__main">
         <TaskStaging
           tasks={tasks}
+          selectedTask={selectedTask}
           onTaskClick={handleTaskClick}
           onAddTask={handleAddTask}
           onDragStart={handleDragStart}
@@ -123,6 +124,7 @@ function App() {
         
         <Timeline
           tasks={tasks}
+          selectedTask={selectedTask}
           businessHours={settings.businessHours}
           lunchBreak={settings.lunchBreak}
           onTaskDrop={handleTaskDrop}

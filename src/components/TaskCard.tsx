@@ -16,6 +16,8 @@ interface TaskCardProps {
   onDragEnd?: (e: React.DragEvent) => void;
   /** 追加のスタイル */
   style?: React.CSSProperties;
+  /** 選択中かどうか */
+  isSelected?: boolean;
 }
 
 /** リソースタイプごとの色設定 */
@@ -44,7 +46,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onClick,
   onDragStart,
   onDragEnd,
-  style
+  style,
+  isSelected = false
 }) => {
   /** ドラッグ開始時の処理 */
   const handleDragStart = (e: React.DragEvent) => {
@@ -61,7 +64,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <div
-      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'}`}
+      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''}`}
       onClick={onClick}
       draggable
       onDragStart={handleDragStart}
