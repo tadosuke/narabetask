@@ -109,7 +109,7 @@
 .task-sidebar__field input:focus,
 .task-sidebar__field select:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #4caf50;
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
 }
 
@@ -138,6 +138,7 @@
   transition: all 0.2s ease;
   background-color: #f44336;
   color: white;
+  width: 90%;
 }
 
 .task-sidebar__remove:hover {
