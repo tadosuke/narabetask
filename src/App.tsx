@@ -34,6 +34,7 @@ function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [settings] = useState<AppSettings>(defaultSettings);
+  const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
 
   /** 新しいタスクを追加する */
   const handleAddTask = () => {
@@ -84,6 +85,16 @@ function App() {
     setSelectedTask(null);
   };
 
+  /** ドラッグ開始時の処理 */
+  const handleDragStart = (taskId: string) => {
+    setDraggedTaskId(taskId);
+  };
+
+  /** ドラッグ終了時の処理 */
+  const handleDragEnd = () => {
+    setDraggedTaskId(null);
+  };
+
   return (
     <div className="app">
       <header className="app__header">
@@ -96,6 +107,8 @@ function App() {
           tasks={tasks}
           onTaskClick={handleTaskClick}
           onAddTask={handleAddTask}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
         />
         
         <Timeline
@@ -104,6 +117,9 @@ function App() {
           lunchBreak={settings.lunchBreak}
           onTaskDrop={handleTaskDrop}
           onTaskClick={handleTaskClick}
+          draggedTaskId={draggedTaskId}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
         />
         
         <TaskSidebar
