@@ -127,7 +127,7 @@ describe("TaskStaging", () => {
       screen.getByText("タスクをドラッグしてタイムラインに配置")
     ).toBeInTheDocument();
     expect(
-      screen.getByText("配置したタスクは重複できません")
+      screen.getByText("配置したタスクをドラッグしてここに戻すことも可能")
     ).toBeInTheDocument();
   });
 
