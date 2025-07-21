@@ -60,4 +60,18 @@ describe("TaskCard", () => {
     expect(taskCard).toHaveClass("task-card--placed");
     expect(taskCard).not.toHaveClass("task-card--staging");
   });
+
+  it("選択中の場合は選択済みスタイルを持つ", () => {
+    render(<TaskCard task={mockTask} isSelected={true} />);
+    const taskCard = screen.getByText("テストタスク").closest(".task-card");
+
+    expect(taskCard).toHaveClass("task-card--selected");
+  });
+
+  it("選択されていない場合は選択済みスタイルを持たない", () => {
+    render(<TaskCard task={mockTask} isSelected={false} />);
+    const taskCard = screen.getByText("テストタスク").closest(".task-card");
+
+    expect(taskCard).not.toHaveClass("task-card--selected");
+  });
 });

@@ -9,6 +9,8 @@ import './TaskStaging.css';
 interface TaskStagingProps {
   /** タスクの配列 */
   tasks: Task[];
+  /** 選択中のタスク */
+  selectedTask: Task | null;
   /** タスククリック時のハンドラ */
   onTaskClick: (task: Task) => void;
   /** 新しいタスク追加時のハンドラ */
@@ -27,6 +29,7 @@ interface TaskStagingProps {
  */
 export const TaskStaging: React.FC<TaskStagingProps> = ({
   tasks,
+  selectedTask,
   onTaskClick,
   onAddTask,
   onDragStart,
@@ -111,6 +114,7 @@ export const TaskStaging: React.FC<TaskStagingProps> = ({
               <TaskCard
                 key={task.id}
                 task={task}
+                isSelected={selectedTask?.id === task.id}
                 onClick={() => onTaskClick(task)}
                 onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
                 onDragEnd={onDragEnd}
