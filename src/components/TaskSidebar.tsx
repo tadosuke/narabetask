@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Task, ResourceType } from '../types';
+import { calculateEndTime } from '../utils/timeUtils';
 import './TaskSidebar.css';
 
 /**
@@ -178,7 +179,8 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
 
         {selectedTask.isPlaced && selectedTask.startTime && (
           <div className="task-sidebar__info">
-            <strong>配置時間:</strong> {selectedTask.startTime}
+            <div><strong>開始時間:</strong> {selectedTask.startTime}</div>
+            <div><strong>終了時間:</strong> {calculateEndTime(selectedTask.startTime, selectedTask.duration)}</div>
           </div>
         )}
       </div>

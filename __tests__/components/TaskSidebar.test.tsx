@@ -71,17 +71,20 @@ describe("TaskSidebar", () => {
     expect(selfCheckbox).toBeChecked();
   });
 
-  it("配置済みタスクの開始時刻を表示する", () => {
+  it("配置済みタスクの開始時間と終了時間を表示する", () => {
     render(<TaskSidebar {...defaultProps} selectedTask={mockPlacedTask} />);
 
-    expect(screen.getByText("配置時間:")).toBeInTheDocument();
+    expect(screen.getByText("開始時間:")).toBeInTheDocument();
+    expect(screen.getByText("終了時間:")).toBeInTheDocument();
     expect(screen.getByText("09:00")).toBeInTheDocument();
+    expect(screen.getByText("09:30")).toBeInTheDocument();
   });
 
-  it("配置されていないタスクの開始時刻は表示しない", () => {
+  it("配置されていないタスクの時間情報は表示しない", () => {
     render(<TaskSidebar {...defaultProps} />);
 
-    expect(screen.queryByText("配置時間:")).not.toBeInTheDocument();
+    expect(screen.queryByText("開始時間:")).not.toBeInTheDocument();
+    expect(screen.queryByText("終了時間:")).not.toBeInTheDocument();
   });
 
   it("変更されたときに名前入力を更新する", async () => {
