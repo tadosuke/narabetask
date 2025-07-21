@@ -18,6 +18,8 @@ interface TaskCardProps {
   style?: React.CSSProperties;
   /** 選択中かどうか */
   isSelected?: boolean;
+  /** 重複しているかどうか */
+  isOverlapping?: boolean;
 }
 
 /** リソースタイプごとの色設定 */
@@ -47,7 +49,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onDragStart,
   onDragEnd,
   style,
-  isSelected = false
+  isSelected = false,
+  isOverlapping = false
 }) => {
   /** ドラッグ開始時の処理 */
   const handleDragStart = (e: React.DragEvent) => {
@@ -73,7 +76,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <div
-      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''}`}
+      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''} ${isOverlapping ? 'task-card--overlapping' : ''}`}
       onClick={onClick}
       draggable
       onDragStart={handleDragStart}

@@ -113,3 +113,22 @@
   background-color: #ddeeff;
   box-shadow: 0 6px 16px rgba(33, 150, 243, 0.25);
 }
+
+/* Overlapping state - red background to indicate conflict */
+.task-card--overlapping {
+  background-color: #ffebee;
+  border-color: #f44336;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+}
+
+.task-card--overlapping:hover {
+  background-color: #ffcdd2;
+  box-shadow: 0 6px 16px rgba(244, 67, 54, 0.25);
+}
+
+/* When task is both selected and overlapping, prioritize overlap styling */
+.task-card--selected.task-card--overlapping {
+  background-color: #ffcdd2;
+  border-color: #f44336;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
