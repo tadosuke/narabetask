@@ -12,8 +12,8 @@ afterEach(() => {
   window.confirm = originalConfirm;
 });
 
-describe("App Delete Key Functionality", () => {
-  it("should delete a task when Delete key is pressed with a selected task", async () => {
+describe("アプリ - Delete キー機能", () => {
+  it("選択されたタスクでDeleteキーが押された時にタスクを削除する", async () => {
     // window.confirm をモックして true を返すようにする
     vi.mocked(window.confirm).mockReturnValue(true);
 
@@ -50,7 +50,7 @@ describe("App Delete Key Functionality", () => {
     });
   });
 
-  it("should not delete a task when Delete key is pressed but user cancels", async () => {
+  it("Deleteキーが押されたがユーザーがキャンセルした場合はタスクを削除しない", async () => {
     // window.confirm をモックして false を返すようにする
     vi.mocked(window.confirm).mockReturnValue(false);
 
@@ -80,7 +80,7 @@ describe("App Delete Key Functionality", () => {
     expect(screen.getByText("新しいタスク")).toBeInTheDocument();
   });
 
-  it("should not delete a task when Delete key is pressed while input field is focused", async () => {
+  it("入力フィールドがフォーカスされている状態でDeleteキーが押された場合はタスクを削除しない", async () => {
     // Mock document.activeElement to simulate input field focus
     const originalActiveElement = document.activeElement;
     const mockInput = document.createElement("input");

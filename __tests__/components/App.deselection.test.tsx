@@ -3,12 +3,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import App from "../../src/App";
 
-describe("App - Task Deselection", () => {
+describe("アプリ - タスクの選択解除", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should deselect task when clicking outside task cards and sidebar", async () => {
+  it("タスクカードとサイドバーの外側をクリックした時にタスクの選択を解除する", async () => {
     render(<App />);
     
     // First, create a task
@@ -28,7 +28,7 @@ describe("App - Task Deselection", () => {
     expect(screen.getByText("タスクを選択してください")).toBeInTheDocument();
   });
 
-  it("should not deselect task when clicking on task card", async () => {
+  it("タスクカードをクリックした時はタスクの選択を解除しない", async () => {
     render(<App />);
     
     // Create a task
@@ -48,7 +48,7 @@ describe("App - Task Deselection", () => {
     expect(screen.getByDisplayValue("新しいタスク")).toBeInTheDocument();
   });
 
-  it("should not deselect task when clicking inside sidebar", async () => {
+  it("サイドバー内をクリックした時はタスクの選択を解除しない", async () => {
     render(<App />);
     
     // Create a task
@@ -67,7 +67,7 @@ describe("App - Task Deselection", () => {
     expect(screen.getByDisplayValue("新しいタスク")).toBeInTheDocument();
   });
 
-  it("should not trigger deselection when no task is selected", async () => {
+  it("タスクが選択されていない時に選択解除をトリガーしない", async () => {
     render(<App />);
     
     // Initially no task is selected

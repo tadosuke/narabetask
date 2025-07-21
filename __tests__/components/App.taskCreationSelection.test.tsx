@@ -3,12 +3,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import App from "../../src/App";
 
-describe("App - Task Creation Selection", () => {
+describe("アプリ - タスク作成時の選択", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should automatically select newly created task regardless of current selection state", async () => {
+  it("現在の選択状態に関係なく新しく作成されたタスクを自動的に選択する", async () => {
     render(<App />);
     
     // Initially no task is selected
@@ -24,7 +24,7 @@ describe("App - Task Creation Selection", () => {
     expect(screen.getByDisplayValue("新しいタスク")).toBeInTheDocument();
   });
 
-  it("should select newly created task even when another task is already selected in timeline", async () => {
+  it("タイムラインで他のタスクが既に選択されている場合でも新しく作成されたタスクを選択する", async () => {
     render(<App />);
     
     // Create first task
@@ -51,7 +51,7 @@ describe("App - Task Creation Selection", () => {
     expect(taskCards.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("should maintain task selection after clicking add task button", async () => {
+  it("タスク追加ボタンをクリックした後にタスクの選択を維持する", async () => {
     render(<App />);
     
     // Create a task
