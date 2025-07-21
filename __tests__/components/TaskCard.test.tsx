@@ -9,7 +9,7 @@ describe("TaskCard", () => {
     id: "1",
     name: "テストタスク",
     duration: 60,
-    resourceType: "self",
+    resourceTypes: ["self"],
     isPlaced: false,
   };
 
@@ -18,7 +18,8 @@ describe("TaskCard", () => {
 
     expect(screen.getByText("テストタスク")).toBeInTheDocument();
     expect(screen.getByText("1h 0m")).toBeInTheDocument();
-    expect(screen.getByText("自分")).toBeInTheDocument();
+    // Resource name should be in tooltip, not as visible text
+    expect(screen.getByTitle("自分")).toBeInTheDocument();
   });
 
   it("60分未満の場合は分単位で所要時間を表示する", () => {

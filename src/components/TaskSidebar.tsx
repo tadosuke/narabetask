@@ -17,7 +17,7 @@ interface TaskSidebarProps {
 }
 
 /** リソースタイプの選択肢一覧 */
-const resourceTypes: Array<{ value: ResourceType; label: string }> = [
+const resourceTypeOptions: Array<{ value: ResourceType; label: string }> = [
   { value: 'self', label: '自分' },
   { value: 'others', label: '他人' },
   { value: 'machine', label: 'マシンパワー' },
@@ -40,28 +40,37 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
 }) => {
   const [name, setName] = useState('');
   const [duration, setDuration] = useState(30);
-  const [resourceType, setResourceType] = useState<ResourceType>('self');
+  const [resourceTypes, setResourceTypes] = useState<ResourceType[]>([]);
 
   useEffect(() => {
     if (selectedTask) {
       setName(selectedTask.name);
       setDuration(selectedTask.duration);
-      setResourceType(selectedTask.resourceType);
+      setResourceTypes(selectedTask.resourceTypes || ['self']);
     } else {
       setName('');
       setDuration(30);
-      setResourceType('self');
+      setResourceTypes(['self']);
     }
   }, [selectedTask]);
 
+  /** リソースタイプの選択状態を切り替え */
+  const handleResourceTypeChange = (resourceType: ResourceType, checked: boolean) => {
+    if (checked) {
+      setResourceTypes(prev => [...prev, resourceType]);
+    } else {
+      setResourceTypes(prev => prev.filter(type => type !== resourceType));
+    }
+  };
+
   /** タスクの変更を保存 */
   const handleSave = () => {
-    if (selectedTask && name.trim()) {
+    if (selectedTask && name.trim() && resourceTypes.length > 0) {
       const updatedTask: Task = {
         ...selectedTask,
         name: name.trim(),
         duration,
-        resourceType
+        resourceTypes
       };
       onTaskUpdate(updatedTask);
     }
@@ -136,18 +145,20 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
         </div>
 
         <div className="task-sidebar__field">
-          <label htmlFor="task-resource">リソースタイプ</label>
-          <select
-            id="task-resource"
-            value={resourceType}
-            onChange={(e) => setResourceType(e.target.value as ResourceType)}
-          >
-            {resourceTypes.map(type => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
+          <label>リソースタイプ</label>
+          <div className="task-sidebar__checkbox-group">
+            {resourceTypeOptions.map(type => (
+              <label key={type.value} className="task-sidebar__checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={resourceTypes.includes(type.value)}
+                  onChange={(e) => handleResourceTypeChange(type.value, e.target.checked)}
+                  className="task-sidebar__checkbox"
+                />
+                <span className="task-sidebar__checkbox-text">{type.label}</span>
+              </label>
             ))}
-          </select>
+          </div>
         </div>
 
         {selectedTask.isPlaced && selectedTask.startTime && (
@@ -161,7 +172,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
         <button
           className="task-sidebar__save"
           onClick={handleSave}
-          disabled={!name.trim()}
+          disabled={!name.trim() || resourceTypes.length === 0}
         >
           保存
         </button>

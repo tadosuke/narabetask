@@ -36,7 +36,7 @@ describe("Timeline", () => {
       id: "1",
       name: "テストタスク1",
       duration: 30,
-      resourceType: "self",
+      resourceTypes: ["self"],
       isPlaced: true,
       startTime: "09:00",
     },
@@ -44,7 +44,7 @@ describe("Timeline", () => {
       id: "2",
       name: "テストタスク2",
       duration: 60,
-      resourceType: "others",
+      resourceTypes: ["others"],
       isPlaced: false,
     },
   ];
