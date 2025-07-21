@@ -89,11 +89,6 @@ function App() {
     setSelectedTask(task);
   };
 
-  /** サイドバーを閉じる */
-  const handleSidebarClose = () => {
-    setSelectedTask(null);
-  };
-
   /** ドラッグ開始時の処理 */
   const handleDragStart = (taskId: string) => {
     setDraggedTaskId(taskId);
@@ -181,7 +176,6 @@ function App() {
           selectedTask={selectedTask}
           onTaskUpdate={handleTaskUpdate}
           onTaskRemove={handleTaskRemove}
-          onClose={handleSidebarClose}
         />
       </main>
     </div>
