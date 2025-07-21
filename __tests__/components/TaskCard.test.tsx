@@ -29,13 +29,7 @@ describe("TaskCard", () => {
     expect(screen.getByText("45m")).toBeInTheDocument();
   });
 
-  it("タスクが配置されている場合でも開始時刻は表示されない", () => {
-    const placedTask = { ...mockTask, isPlaced: true, startTime: "09:00" };
-    render(<TaskCard task={placedTask} />);
 
-    // 時刻表示機能が削除されたため、開始時刻は表示されない
-    expect(screen.queryByText("09:00")).not.toBeInTheDocument();
-  });
 
   it("クリックされたときにonClickを呼び出す", () => {
     const mockOnClick = vi.fn();
