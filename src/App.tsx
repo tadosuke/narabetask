@@ -105,6 +105,11 @@ function App() {
   /** ドラッグ開始時の処理 */
   const handleDragStart = (taskId: string) => {
     setDraggedTaskId(taskId);
+    // ドラッグ中のタスクを選択状態にする
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+      setSelectedTask(task);
+    }
   };
 
   /** ドラッグ終了時の処理 */
