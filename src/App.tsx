@@ -91,6 +91,11 @@ function App() {
         ? { ...task, startTime: undefined, isPlaced: false }
         : task
     ));
+    
+    // 戻されたタスクが現在選択されている場合、selectedTaskも更新
+    if (selectedTask?.id === taskId) {
+      setSelectedTask({ ...selectedTask, startTime: undefined, isPlaced: false });
+    }
   };
 
   /** タスクをクリックした際の処理 */
