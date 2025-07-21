@@ -88,7 +88,16 @@ function App() {
   const handleTaskReturn = (taskId: string) => {
     setTasks(prev => prev.map(task => 
       task.id === taskId
-        ? { ...task, startTime: undefined, isPlaced: false }
+        ? { ...task, startTime: undefined, isPlaced: false, isLocked: false } // ロックも解除
+        : task
+    ));
+  };
+
+  /** ロック状態を切り替える処理 */
+  const handleLockToggle = (taskId: string) => {
+    setTasks(prev => prev.map(task => 
+      task.id === taskId
+        ? { ...task, isLocked: !task.isLocked }
         : task
     ));
   };
@@ -183,6 +192,7 @@ function App() {
           draggedTaskId={draggedTaskId}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          onLockToggle={handleLockToggle}
         />
         
         <TaskSidebar

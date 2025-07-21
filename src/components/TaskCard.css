@@ -76,3 +76,14 @@
   border-color: #f44336;
   box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
 }
+
+/* Locked state - subtle visual indication */
+.task-card--locked {
+  cursor: default;
+  opacity: 0.9;
+}
+
+.task-card--locked:hover {
+  transform: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

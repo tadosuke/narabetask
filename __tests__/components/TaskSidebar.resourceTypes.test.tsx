@@ -42,7 +42,7 @@ describe('TaskSidebar Resource Type Updates', () => {
     });
   });
 
-  it('リソースタイプが空のタスクではTaskCardでアイコンが表示されない', () => {
+  it('リソースタイプが空のタスクではTaskCardでリソースアイコンは表示されないが、ロックボタンは表示される', () => {
     const taskWithNoResources: Task = {
       ...baseMockTask,
       resourceTypes: []
@@ -53,8 +53,16 @@ describe('TaskSidebar Resource Type Updates', () => {
     const taskCard = screen.getByText('テストタスク').closest('.task-card');
     expect(taskCard).toBeInTheDocument();
 
-    // リソースアイコンの容器が存在しないことを確認
+    // リソースアイコンの容器は存在するが、個別のリソースアイコンはないことを確認
     const resourceContainer = taskCard?.querySelector('.task-card__resource-squares');
-    expect(resourceContainer).not.toBeInTheDocument();
+    expect(resourceContainer).toBeInTheDocument();
+    
+    // 個別のリソースアイコンは表示されない
+    const resourceSquares = resourceContainer?.querySelectorAll('.task-card__resource-square');
+    expect(resourceSquares?.length).toBe(0);
+    
+    // ロックボタンは表示される（無効状態）
+    const lockButton = taskCard?.querySelector('.task-card__lock-button');
+    expect(lockButton).toBeInTheDocument();
   });
 });

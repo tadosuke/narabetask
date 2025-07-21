@@ -24,6 +24,8 @@ interface TimelineProps {
   onDragStart?: (taskId: string) => void;
   /** ドラッグ終了時のハンドラ */
   onDragEnd?: () => void;
+  /** ロック状態を切り替えるハンドラ */
+  onLockToggle?: (taskId: string) => void;
 }
 
 /**
@@ -39,7 +41,8 @@ export const Timeline: React.FC<TimelineProps> = ({
   onTaskClick,
   draggedTaskId = null,
   onDragStart,
-  onDragEnd
+  onDragEnd,
+  onLockToggle
 }) => {
   /** ドラッグオーバー中のタイムスロット */
   const [dragOverSlot, setDragOverSlot] = useState<string | null>(null);
@@ -138,6 +141,7 @@ export const Timeline: React.FC<TimelineProps> = ({
         onTaskClick={onTaskClick}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
+        onLockToggle={onLockToggle}
       />
     );
   };
