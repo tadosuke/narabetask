@@ -138,10 +138,36 @@ export const Timeline: React.FC<TimelineProps> = ({
       }
     }
 
+    // ドラッグ中のタスクが複数スロットにまたがる場合の視覚フィードバック
+    let dragSpanningClass = '';
+    if (dragOverSlot && draggedTaskId) {
+      const draggedTask = tasks.find(t => t.id === draggedTaskId);
+      if (draggedTask && dragOverSlot) {
+        const draggedTaskSlots = getTaskSlots(dragOverSlot, draggedTask.duration);
+        if (draggedTaskSlots.includes(time)) {
+          const slotIndex = draggedTaskSlots.indexOf(time);
+          const totalSlots = draggedTaskSlots.length;
+          
+          if (totalSlots === 1) {
+            dragSpanningClass = 'timeline__slot--drag-spanning-single';
+          } else if (slotIndex === 0) {
+            dragSpanningClass = 'timeline__slot--drag-spanning-first';
+          } else if (slotIndex === totalSlots - 1) {
+            dragSpanningClass = 'timeline__slot--drag-spanning-last';
+          } else {
+            dragSpanningClass = 'timeline__slot--drag-spanning-middle';
+          }
+          
+          // 基本の spanning クラスも追加
+          dragSpanningClass = `timeline__slot--drag-spanning ${dragSpanningClass}`;
+        }
+      }
+    }
+
     return (
       <div
         key={time}
-        className={`timeline__slot ${isLunchTime ? 'timeline__slot--lunch' : ''} ${isOccupied ? 'timeline__slot--occupied' : ''} ${dragFeedbackClass}`}
+        className={`timeline__slot ${isLunchTime ? 'timeline__slot--lunch' : ''} ${isOccupied ? 'timeline__slot--occupied' : ''} ${dragFeedbackClass} ${dragSpanningClass}`}
         onDragOver={(e) => handleDragOver(e, time)}
         onDragEnter={(e) => handleDragEnter(e, time)}
         onDragLeave={handleDragLeave}
@@ -156,6 +182,13 @@ export const Timeline: React.FC<TimelineProps> = ({
             onClick={() => onTaskClick(task)}
             onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
             onDragEnd={onDragEnd}
+            style={{
+              position: 'absolute',
+              left: '60px',
+              right: '8px',
+              top: '2px',
+              zIndex: 2
+            }}
           />
         )}
       </div>
