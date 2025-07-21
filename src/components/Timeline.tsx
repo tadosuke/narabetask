@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Task, BusinessHours, LunchBreak } from '../types';
-import { generateTimeSlots, canPlaceTask, getTaskSlots } from '../utils/timeUtils';
+import { generateTimeSlots, canPlaceTask, getTaskSlots, findOverlappingTasks } from '../utils/timeUtils';
 import { TaskCard } from './TaskCard';
 import './Timeline.css';
 
@@ -51,6 +51,9 @@ export const Timeline: React.FC<TimelineProps> = ({
   const timeSlots = generateTimeSlots(businessHours, lunchBreak);
   /** タイムラインに配置済みのタスク一覧 */
   const placedTasks = tasks.filter(task => task.isPlaced && task.startTime);
+  
+  /** 重複しているタスクのIDのセット */
+  const overlappingTaskIds = findOverlappingTasks(placedTasks);
   
   /** 占有されているタイムスロットのセットを作成 */
   const occupiedSlots = new Set<string>();
@@ -179,6 +182,7 @@ export const Timeline: React.FC<TimelineProps> = ({
           <TaskCard
             task={task}
             isSelected={selectedTask?.id === task.id}
+            isOverlapping={overlappingTaskIds.has(task.id)}
             onClick={() => onTaskClick(task)}
             onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
             onDragEnd={onDragEnd}

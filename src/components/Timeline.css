@@ -79,8 +79,7 @@
 
 /* Drag and drop feedback */
 .timeline__slot--drag-over {
-  background-color: #e8f5e8 !important;
-  border: 2px dashed #4CAF50;
+  /* Green visual feedback removed as per issue requirements */
 }
 
 .timeline__slot--drag-invalid {

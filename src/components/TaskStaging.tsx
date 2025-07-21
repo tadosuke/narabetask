@@ -115,6 +115,7 @@ export const TaskStaging: React.FC<TaskStagingProps> = ({
                 key={task.id}
                 task={task}
                 isSelected={selectedTask?.id === task.id}
+                isOverlapping={false} // Unplaced tasks cannot overlap
                 onClick={() => onTaskClick(task)}
                 onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
                 onDragEnd={onDragEnd}

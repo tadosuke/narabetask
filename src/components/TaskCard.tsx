@@ -20,6 +20,8 @@ interface TaskCardProps {
   style?: React.CSSProperties;
   /** 選択中かどうか */
   isSelected?: boolean;
+  /** 重複しているかどうか */
+  isOverlapping?: boolean;
 }
 
 /** リソースタイプごとの色設定 */
@@ -50,7 +52,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onDragEnd,
   isDragging = false,
   style,
-  isSelected = false
+  isSelected = false,
+  isOverlapping = false
 }) => {
   /** ドラッグ開始時の処理 */
   const handleDragStart = (e: React.DragEvent) => {
@@ -108,11 +111,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           ))}
         </div>
       )}
-      <div className="task-card__footer">
-        {task.startTime && (
-          <span className="task-card__time">{task.startTime}</span>
-        )}
-      </div>
+
     </div>
   );
 };

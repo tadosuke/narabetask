@@ -77,21 +77,7 @@
   opacity: 0.9;
 }
 
-.task-card__footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  font-size: 10px;
-  opacity: 0.8;
-}
 
-.task-card__resource {
-  font-weight: 500;
-}
-
-.task-card__time {
-  font-family: monospace;
-}
 
 /* Drag and drop states */
 .task-card:active {
@@ -113,4 +99,23 @@
 .task-card--selected:hover {
   background-color: #ddeeff;
   box-shadow: 0 6px 16px rgba(33, 150, 243, 0.25);
+}
+
+/* Overlapping state - red background to indicate conflict */
+.task-card--overlapping {
+  background-color: #ffebee;
+  border-color: #f44336;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+}
+
+.task-card--overlapping:hover {
+  background-color: #ffcdd2;
+  box-shadow: 0 6px 16px rgba(244, 67, 54, 0.25);
+}
+
+/* When task is both selected and overlapping, prioritize overlap styling */
+.task-card--selected.task-card--overlapping {
+  background-color: #ffcdd2;
+  border-color: #f44336;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
 }

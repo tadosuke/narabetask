@@ -142,6 +142,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
             type="text"
             value={name}
             onChange={(e) => handleNameChange(e.target.value)}
+            onFocus={(e) => e.target.select()}
             placeholder="タスク名を入力"
           />
         </div>
