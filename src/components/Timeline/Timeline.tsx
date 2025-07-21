@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import type { Task, BusinessHours } from '../types';
-import { generateTimeSlots, canPlaceTask, getTaskSlots, findOverlappingTasks } from '../utils/timeUtils';
+import type { Task, BusinessHours } from '../../types';
+import { generateTimeSlots, canPlaceTask, getTaskSlots, findOverlappingTasks } from '../../utils/timeUtils';
 import { TimeSlot } from './TimeSlot';
 import './Timeline.css';
 

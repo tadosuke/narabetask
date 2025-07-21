@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { TaskStaging } from "../../src/components/TaskStaging";
+import { TaskStaging } from "../../src/components/TaskStaging/TaskStaging";
 import type { Task } from "../../src/types";
 
 describe("TaskStaging", () => {

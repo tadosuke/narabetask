@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ResourceType } from '../types';
+import type { ResourceType } from '../../types';
 
 /**
  * ResourceTypeFieldコンポーネントのプロパティ

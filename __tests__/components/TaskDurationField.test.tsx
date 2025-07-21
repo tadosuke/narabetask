@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { TaskDurationField } from "../../src/components/TaskDurationField";
+import { TaskDurationField } from "../../src/components/TaskSidebar/TaskDurationField";
 
 describe("TaskDurationField", () => {
   const defaultProps = {

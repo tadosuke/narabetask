@@ -1,7 +1,7 @@
 import React from 'react';
-import type { Task } from '../types';
-import { canPlaceTask, getTaskSlots } from '../utils/timeUtils';
-import { TaskCard } from './TaskCard';
+import type { Task } from '../../types';
+import { canPlaceTask, getTaskSlots } from '../../utils/timeUtils';
+import { TaskCard } from '../TaskCard';
 import './TimeSlot.css';
 
 /**

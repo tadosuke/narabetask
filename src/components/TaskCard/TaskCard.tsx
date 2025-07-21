@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Task } from '../types';
+import type { Task } from '../../types';
 import { TaskHeader } from './TaskHeader';
 import { TaskFooter } from './TaskFooter';
 import './TaskCard.css';

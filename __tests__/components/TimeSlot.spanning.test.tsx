@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
 import { render } from '@testing-library/react';
-import { TimeSlot } from '../../src/components/TimeSlot';
+import { TimeSlot } from '../../src/components/Timeline/TimeSlot';
 import type { Task } from '../../src/types';
 
 // timeUtilsモジュールをモック
