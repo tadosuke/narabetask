@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { TaskSidebar } from "../../src/components/TaskSidebar";
 import type { Task } from "../../src/types";
 
-// Mock window.confirm
+// window.confirmをモック
 Object.defineProperty(window, "confirm", {
   writable: true,
   value: vi.fn(),
@@ -41,14 +41,14 @@ describe("TaskSidebar", () => {
     (window.confirm as unknown as ReturnType<typeof vi.fn>).mockReset();
   });
 
-  it("should render empty state when no task is selected", () => {
+  it("タスクが選択されていない場合は空の状態を表示する", () => {
     render(<TaskSidebar {...defaultProps} selectedTask={null} />);
 
     expect(screen.getByText("タスクを選択してください")).toBeInTheDocument();
     expect(screen.queryByText("タスク設定")).not.toBeInTheDocument();
   });
 
-  it("should render task settings form when task is selected", () => {
+  it("タスクが選択されている場合はタスク設定フォームを表示する", () => {
     render(<TaskSidebar {...defaultProps} />);
 
     expect(screen.getByText("タスク設定")).toBeInTheDocument();
@@ -57,7 +57,7 @@ describe("TaskSidebar", () => {
     expect(screen.getByText("リソースタイプ")).toBeInTheDocument();
   });
 
-  it("should populate form fields with selected task data", () => {
+  it("フォームフィールドに選択されたタスクのデータを入力する", () => {
     render(<TaskSidebar {...defaultProps} />);
 
     const nameInput = screen.getByDisplayValue("テストタスク");
@@ -71,20 +71,20 @@ describe("TaskSidebar", () => {
     expect(selfCheckbox).toBeChecked();
   });
 
-  it("should show start time for placed tasks", () => {
+  it("配置済みタスクの開始時刻を表示する", () => {
     render(<TaskSidebar {...defaultProps} selectedTask={mockPlacedTask} />);
 
     expect(screen.getByText("配置時間:")).toBeInTheDocument();
     expect(screen.getByText("09:00")).toBeInTheDocument();
   });
 
-  it("should not show start time for unplaced tasks", () => {
+  it("配置されていないタスクの開始時刻は表示しない", () => {
     render(<TaskSidebar {...defaultProps} />);
 
     expect(screen.queryByText("配置時間:")).not.toBeInTheDocument();
   });
 
-  it("should update name input when changed", async () => {
+  it("変更されたときに名前入力を更新する", async () => {
     const user = userEvent.setup();
     render(<TaskSidebar {...defaultProps} />);
 
@@ -95,7 +95,7 @@ describe("TaskSidebar", () => {
     expect(nameInput.value).toBe("新しいタスク名");
   });
 
-  it("should update duration when changed", async () => {
+  it("変更されたときに所要時間を更新する", async () => {
     const user = userEvent.setup();
     render(<TaskSidebar {...defaultProps} />);
 
@@ -105,7 +105,7 @@ describe("TaskSidebar", () => {
     expect(durationSelect).toHaveValue("45");
   });
 
-  it("should update resource types when checkboxes are changed", async () => {
+  it("変更されたときにリソースタイプを更新する", async () => {
     const user = userEvent.setup();
     render(<TaskSidebar {...defaultProps} />);
 
@@ -116,7 +116,7 @@ describe("TaskSidebar", () => {
     expect(othersCheckbox).toBeChecked();
   });
 
-  it("should call onTaskUpdate when save button is clicked", async () => {
+  it("保存ボタンがクリックされたときにonTaskUpdateを呼び出す", async () => {
     const mockOnTaskUpdate = vi.fn();
     const user = userEvent.setup();
     render(<TaskSidebar {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
@@ -136,7 +136,7 @@ describe("TaskSidebar", () => {
     });
   });
 
-  it("should disable save button when name is empty", async () => {
+  it("名前が空の場合は保存ボタンを無効にする", async () => {
     const user = userEvent.setup();
     render(<TaskSidebar {...defaultProps} />);
 
@@ -148,7 +148,7 @@ describe("TaskSidebar", () => {
     expect(saveButton).toBeDisabled();
   });
 
-  it("should call onTaskRemove when remove button is clicked and confirmed", () => {
+  it("削除ボタンがクリックされ確認されたときにonTaskRemoveを呼び出す", () => {
     const mockOnTaskRemove = vi.fn();
     (window.confirm as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
       true
@@ -162,7 +162,7 @@ describe("TaskSidebar", () => {
     expect(mockOnTaskRemove).toHaveBeenCalledWith("1");
   });
 
-  it("should not call onTaskRemove when remove button is clicked but not confirmed", () => {
+  it("削除ボタンがクリックされたが確認されなかった場合はonTaskRemoveを呼び出さない", () => {
     const mockOnTaskRemove = vi.fn();
     (window.confirm as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
       false
@@ -176,7 +176,7 @@ describe("TaskSidebar", () => {
     expect(mockOnTaskRemove).not.toHaveBeenCalled();
   });
 
-  it("should call onClose when close button is clicked", () => {
+  it("閉じるボタンがクリックされたときにonCloseを呼び出す", () => {
     const mockOnClose = vi.fn();
     render(<TaskSidebar {...defaultProps} onClose={mockOnClose} />);
 
@@ -185,10 +185,10 @@ describe("TaskSidebar", () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it("should format duration options correctly", () => {
+  it("所要時間オプションを正しくフォーマットする", () => {
     render(<TaskSidebar {...defaultProps} />);
 
-    // Check some common duration options
+    // 一般的な所要時間オプションを確認
     expect(screen.getByText("15分")).toBeInTheDocument();
     expect(screen.getByText("30分")).toBeInTheDocument();
     expect(screen.getByText("1時間")).toBeInTheDocument();
@@ -196,7 +196,7 @@ describe("TaskSidebar", () => {
     expect(screen.getByText("2時間")).toBeInTheDocument();
   });
 
-  it("should render all resource type options", () => {
+  it("すべてのリソースタイプオプションを表示する", () => {
     render(<TaskSidebar {...defaultProps} />);
 
     expect(screen.getByText("自分")).toBeInTheDocument();
@@ -205,7 +205,7 @@ describe("TaskSidebar", () => {
     expect(screen.getByText("ネットワーク")).toBeInTheDocument();
   });
 
-  it("should reset form when task changes", () => {
+  it("タスクが変更されたときにフォームをリセットする", () => {
     const { rerender } = render(<TaskSidebar {...defaultProps} />);
 
     expect(screen.getByDisplayValue("テストタスク")).toBeInTheDocument();
