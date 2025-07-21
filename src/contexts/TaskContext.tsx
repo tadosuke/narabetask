@@ -144,7 +144,12 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         ? { ...task, startTime: undefined, isPlaced: false, isLocked: false } // ロックも解除
         : task
     ));
-  }, []);
+    
+    // 選択中のタスクが戻された場合は、selectedTaskも更新する
+    if (selectedTask?.id === taskId) {
+      setSelectedTask(prev => prev ? { ...prev, startTime: undefined, isPlaced: false, isLocked: false } : null);
+    }
+  }, [selectedTask]);
 
   /** ロック状態を切り替える処理 */
   const toggleLock = useCallback((taskId: string) => {

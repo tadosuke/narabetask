@@ -3,16 +3,16 @@ import { describe, it, expect } from 'vitest';
 import { TaskProvider } from '../../src/contexts/TaskContext';
 import { useTaskContext } from '../../src/contexts/useTaskContext';
 
-// Helper wrapper for TaskProvider
+// TaskProvider用のヘルパーラッパー
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
   <TaskProvider>{children}</TaskProvider>
 );
 
-describe('TaskContext - selectedTask updates on dropTask', () => {
-  it('should update selectedTask when the selected task is moved via dropTask', () => {
+describe('TaskContext - dropTaskとreturnTaskでのselectedTask更新', () => {
+  it('選択されたタスクがdropTaskで移動された時にselectedTaskが更新されること', () => {
     const { result } = renderHook(() => useTaskContext(), { wrapper: Wrapper });
 
-    // Add a task first
+    // 最初にタスクを追加
     act(() => {
       result.current.addTask();
     });
@@ -20,38 +20,38 @@ describe('TaskContext - selectedTask updates on dropTask', () => {
     const taskId = result.current.tasks[0].id;
     const originalTask = result.current.tasks[0];
     
-    // Verify the task is selected initially
+    // タスクが最初に選択されていることを確認
     expect(result.current.selectedTask).toEqual(originalTask);
     expect(result.current.selectedTask?.startTime).toBeUndefined();
 
-    // Move the selected task to timeline
+    // 選択されたタスクをタイムラインに移動
     const startTime = '09:00';
     act(() => {
       result.current.dropTask(taskId, startTime);
     });
 
-    // The task in tasks array should be updated
+    // tasks配列のタスクが更新されること
     expect(result.current.tasks[0]).toMatchObject({
       id: taskId,
       startTime: '09:00',
       isPlaced: true,
     });
 
-    // The selectedTask should also be updated to reflect the new startTime
+    // selectedTaskも新しいstartTimeを反映して更新されること
     expect(result.current.selectedTask).toMatchObject({
       id: taskId,
       startTime: '09:00',
       isPlaced: true,
     });
     
-    // Ensure it's not just referentially the same object but has the updated data
+    // 単に参照が同じオブジェクトではなく、更新されたデータが含まれていることを確認
     expect(result.current.selectedTask?.startTime).toBe('09:00');
   });
 
-  it('should not update selectedTask when a different task is moved via dropTask', () => {
+  it('異なるタスクがdropTaskで移動された時にselectedTaskは更新されないこと', () => {
     const { result } = renderHook(() => useTaskContext(), { wrapper: Wrapper });
 
-    // Add two tasks
+    // 2つのタスクを追加
     act(() => {
       result.current.addTask();
     });
@@ -62,63 +62,199 @@ describe('TaskContext - selectedTask updates on dropTask', () => {
     const firstTaskId = result.current.tasks[0].id;
     const secondTaskId = result.current.tasks[1].id;
     
-    // Select the first task
+    // 最初のタスクを選択
     act(() => {
       result.current.selectTask(result.current.tasks[0]);
     });
 
     expect(result.current.selectedTask?.id).toBe(firstTaskId);
 
-    // Move the second task (not the selected one)
+    // 2番目のタスク（選択されていない）を移動
     const startTime = '09:00';
     act(() => {
       result.current.dropTask(secondTaskId, startTime);
     });
 
-    // The second task should be updated in tasks array
+    // 2番目のタスクはtasks配列で更新されること
     expect(result.current.tasks[1]).toMatchObject({
       id: secondTaskId,
       startTime: '09:00',
       isPlaced: true,
     });
 
-    // The selectedTask should remain the first task and unchanged
+    // selectedTaskは最初のタスクのまま変更されないこと
     expect(result.current.selectedTask?.id).toBe(firstTaskId);
     expect(result.current.selectedTask?.startTime).toBeUndefined();
     expect(result.current.selectedTask?.isPlaced).toBe(false);
   });
 
-  it('should handle dropTask when no task is selected', () => {
+  it('タスクが選択されていない時のdropTaskを正しく処理すること', () => {
     const { result } = renderHook(() => useTaskContext(), { wrapper: Wrapper });
 
-    // Add a task first
+    // 最初にタスクを追加
     act(() => {
       result.current.addTask();
     });
 
     const taskId = result.current.tasks[0].id;
     
-    // Deselect all tasks
+    // 全てのタスクの選択を解除
     act(() => {
       result.current.selectTask(null);
     });
 
     expect(result.current.selectedTask).toBeNull();
 
-    // Move the task
+    // タスクを移動
     const startTime = '09:00';
     act(() => {
       result.current.dropTask(taskId, startTime);
     });
 
-    // The task should be updated in tasks array
+    // タスクがtasks配列で更新されること
     expect(result.current.tasks[0]).toMatchObject({
       id: taskId,
       startTime: '09:00',
       isPlaced: true,
     });
 
-    // selectedTask should remain null
+    // selectedTaskはnullのままであること
+    expect(result.current.selectedTask).toBeNull();
+  });
+
+  it('選択されたタスクがreturnTaskで戻された時にselectedTaskが更新されること', () => {
+    const { result } = renderHook(() => useTaskContext(), { wrapper: Wrapper });
+
+    // タスクを追加してタイムラインに配置
+    act(() => {
+      result.current.addTask();
+    });
+
+    const taskId = result.current.tasks[0].id;
+    
+    // タスクをタイムラインに移動
+    act(() => {
+      result.current.dropTask(taskId, '09:00');
+    });
+
+    // タスクが配置されていることを確認
+    expect(result.current.selectedTask).toMatchObject({
+      id: taskId,
+      startTime: '09:00',
+      isPlaced: true,
+    });
+
+    // タスクをタスク一覧に戻す
+    act(() => {
+      result.current.returnTask(taskId);
+    });
+
+    // tasks配列のタスクが更新されること
+    expect(result.current.tasks[0]).toMatchObject({
+      id: taskId,
+      startTime: undefined,
+      isPlaced: false,
+      isLocked: false,
+    });
+
+    // selectedTaskも更新されて、startTimeがundefined、isPlacedがfalseになること
+    expect(result.current.selectedTask).toMatchObject({
+      id: taskId,
+      startTime: undefined,
+      isPlaced: false,
+      isLocked: false,
+    });
+    
+    // 確実にstartTimeがundefinedになっていることを確認
+    expect(result.current.selectedTask?.startTime).toBeUndefined();
+    expect(result.current.selectedTask?.isPlaced).toBe(false);
+  });
+
+  it('異なるタスクがreturnTaskで戻された時にselectedTaskは更新されないこと', () => {
+    const { result } = renderHook(() => useTaskContext(), { wrapper: Wrapper });
+
+    // 2つのタスクを追加
+    act(() => {
+      result.current.addTask();
+    });
+    act(() => {
+      result.current.addTask();
+    });
+
+    const firstTaskId = result.current.tasks[0].id;
+    const secondTaskId = result.current.tasks[1].id;
+    
+    // 両方のタスクをタイムラインに配置
+    act(() => {
+      result.current.dropTask(firstTaskId, '09:00');
+    });
+    act(() => {
+      result.current.dropTask(secondTaskId, '10:00');
+    });
+
+    // 最初のタスクを選択
+    act(() => {
+      result.current.selectTask(result.current.tasks[0]);
+    });
+
+    expect(result.current.selectedTask?.id).toBe(firstTaskId);
+    expect(result.current.selectedTask?.startTime).toBe('09:00');
+
+    // 2番目のタスク（選択されていない）を戻す
+    act(() => {
+      result.current.returnTask(secondTaskId);
+    });
+
+    // 2番目のタスクはtasks配列で更新されること
+    expect(result.current.tasks[1]).toMatchObject({
+      id: secondTaskId,
+      startTime: undefined,
+      isPlaced: false,
+      isLocked: false,
+    });
+
+    // selectedTaskは最初のタスクのまま変更されないこと
+    expect(result.current.selectedTask?.id).toBe(firstTaskId);
+    expect(result.current.selectedTask?.startTime).toBe('09:00');
+    expect(result.current.selectedTask?.isPlaced).toBe(true);
+  });
+
+  it('タスクが選択されていない時のreturnTaskを正しく処理すること', () => {
+    const { result } = renderHook(() => useTaskContext(), { wrapper: Wrapper });
+
+    // タスクを追加してタイムラインに配置
+    act(() => {
+      result.current.addTask();
+    });
+
+    const taskId = result.current.tasks[0].id;
+    
+    // タスクをタイムラインに移動
+    act(() => {
+      result.current.dropTask(taskId, '09:00');
+    });
+
+    // 全てのタスクの選択を解除
+    act(() => {
+      result.current.selectTask(null);
+    });
+
+    expect(result.current.selectedTask).toBeNull();
+
+    // タスクを戻す
+    act(() => {
+      result.current.returnTask(taskId);
+    });
+
+    // タスクがtasks配列で更新されること
+    expect(result.current.tasks[0]).toMatchObject({
+      id: taskId,
+      startTime: undefined,
+      isPlaced: false,
+      isLocked: false,
+    });
+
+    // selectedTaskはnullのままであること
     expect(result.current.selectedTask).toBeNull();
   });
 });
