@@ -55,7 +55,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   };
 
   /** 所要時間を読みやすい形式でフォーマット */
-
   const durationText = task.duration >= 60 
     ? `${Math.floor(task.duration / 60)}h ${task.duration % 60}m`
     : `${task.duration}m`;
@@ -69,18 +68,28 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       onDragEnd={onDragEnd}
       style={{
         ...style,
-        backgroundColor: resourceTypeColors[task.resourceType],
         width: task.isPlaced ? `${(task.duration / 15) * 60}px` : '200px'
       }}
     >
       <div className="task-card__header">
         <span className="task-card__name">{task.name}</span>
-        <span className="task-card__duration">{durationText}</span>
+        <div className="task-card__header-right">
+          <div className="task-card__resource-squares">
+            {task.resourceTypes && task.resourceTypes.map(resourceType => (
+              <span
+                key={resourceType}
+                className="task-card__resource-square"
+                style={{ backgroundColor: resourceTypeColors[resourceType] }}
+                title={resourceTypeLabels[resourceType]}
+              >
+                ■
+              </span>
+            ))}
+          </div>
+          <span className="task-card__duration">{durationText}</span>
+        </div>
       </div>
       <div className="task-card__footer">
-        <span className="task-card__resource">
-          {resourceTypeLabels[task.resourceType]}
-        </span>
         {task.startTime && (
           <span className="task-card__time">{task.startTime}</span>
         )}
