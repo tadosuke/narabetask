@@ -80,6 +80,103 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     return () => clearTimeout(timeoutId);
   }, [tasks, selectedTask]);
 
+  /**
+   * 元のタスクのプレースメント状態を更新されたタスクに保持する
+   * @param originalTask 元のタスク
+   * @param updatedTask 更新されたタスク
+   * @returns プレースメント状態が保持された更新タスク
+   */
+  const preservePlacementState = (originalTask: Task, updatedTask: Task): Task => {
+    // 元のタスクが配置されていて、更新タスクに配置情報が含まれていない場合
+    if (originalTask.isPlaced && originalTask.startTime && 
+        (updatedTask.isPlaced === undefined || updatedTask.startTime === undefined)) {
+      return {
+        ...updatedTask,
+        isPlaced: originalTask.isPlaced,
+        startTime: originalTask.startTime
+      };
+    }
+    return updatedTask;
+  };
+
+  /**
+   * タスクリストの中で指定されたタスクを配置状態に更新する
+   * @param tasks 現在のタスクリスト
+   * @param taskId 更新対象のタスクID
+   * @param startTime 開始時刻
+   * @returns 更新されたタスクリスト
+   */
+  const updateTaskPlacement = (tasks: Task[], taskId: string, startTime: string): Task[] => {
+    return tasks.map(task => 
+      task.id === taskId
+        ? { ...task, startTime, isPlaced: true }
+        : task
+    );
+  };
+
+  /**
+   * タスクリストの中で指定されたタスクをステージング状態にリセットする
+   * @param tasks 現在のタスクリスト
+   * @param taskId リセット対象のタスクID
+   * @returns 更新されたタスクリスト
+   */
+  const resetTaskToStaging = (tasks: Task[], taskId: string): Task[] => {
+    return tasks.map(task => 
+      task.id === taskId
+        ? { ...task, startTime: undefined, isPlaced: false, isLocked: false }
+        : task
+    );
+  };
+
+  /**
+   * 選択されているタスクが指定されたタスクIDの場合、提供された更新内容で同期する
+   * @param selectedTask 現在選択されているタスク
+   * @param taskId 対象のタスクID  
+   * @param updates 適用する更新内容
+   * @param setSelectedTask selectedTask更新用のsetter関数
+   */
+  const syncSelectedTaskWithUpdate = (
+    selectedTask: Task | null,
+    taskId: string,
+    updates: Partial<Task>,
+    setSelectedTask: React.Dispatch<React.SetStateAction<Task | null>>
+  ): void => {
+    if (selectedTask?.id === taskId) {
+      setSelectedTask(prev => prev ? { ...prev, ...updates } : null);
+    }
+  };
+
+  /**
+   * 指定されたタスクIDのタスクを検索して選択状態にする
+   * @param tasks 現在のタスクリスト
+   * @param taskId 選択対象のタスクID
+   * @param setSelectedTask selectedTask更新用のsetter関数
+   */
+  const findAndSelectTask = (
+    tasks: Task[],
+    taskId: string,
+    setSelectedTask: React.Dispatch<React.SetStateAction<Task | null>>
+  ): void => {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+      setSelectedTask(task);
+    }
+  };
+
+  /**
+   * タスクリストの中で指定されたタスクのロック状態を切り替える
+   * @param tasks 現在のタスクリスト
+   * @param taskId ロック状態を切り替えるタスクID
+   * @returns ロック状態が切り替えられたタスクリスト
+   */
+  const toggleTaskLock = (tasks: Task[], taskId: string): Task[] => {
+    return tasks.map(task => 
+      task.id === taskId
+        ? { ...task, isLocked: !task.isLocked }
+        : task
+    );
+  };
+
   /** 新しいタスクを追加する */
   const addTask = useCallback(() => {
     const newTask: Task = {
@@ -98,17 +195,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const updateTask = useCallback((updatedTask: Task) => {
     setTasks(prev => prev.map(task => {
       if (task.id === updatedTask.id) {
-        // If the original task was placed but the update doesn't include placement info,
-        // preserve the placement state to prevent tasks from returning to staging
-        if (task.isPlaced && task.startTime && 
-            (updatedTask.isPlaced === undefined || updatedTask.startTime === undefined)) {
-          return {
-            ...updatedTask,
-            isPlaced: task.isPlaced,
-            startTime: task.startTime
-          };
-        }
-        return updatedTask;
+        return preservePlacementState(task, updatedTask);
       }
       return task;
     }));
@@ -125,39 +212,23 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
   /** タスクをタイムラインにドロップした際の処理 */
   const dropTask = useCallback((taskId: string, startTime: string) => {
-    setTasks(prev => prev.map(task => 
-      task.id === taskId
-        ? { ...task, startTime, isPlaced: true }
-        : task
-    ));
+    setTasks(prev => updateTaskPlacement(prev, taskId, startTime));
     
     // 選択中のタスクが移動された場合は、selectedTaskも更新する
-    if (selectedTask?.id === taskId) {
-      setSelectedTask(prev => prev ? { ...prev, startTime, isPlaced: true } : null);
-    }
+    syncSelectedTaskWithUpdate(selectedTask, taskId, { startTime, isPlaced: true }, setSelectedTask);
   }, [selectedTask]);
 
   /** タスクをタイムラインから一覧に戻す処理 */
   const returnTask = useCallback((taskId: string) => {
-    setTasks(prev => prev.map(task => 
-      task.id === taskId
-        ? { ...task, startTime: undefined, isPlaced: false, isLocked: false } // ロックも解除
-        : task
-    ));
+    setTasks(prev => resetTaskToStaging(prev, taskId));
     
     // 選択中のタスクが戻された場合は、selectedTaskも更新する
-    if (selectedTask?.id === taskId) {
-      setSelectedTask(prev => prev ? { ...prev, startTime: undefined, isPlaced: false, isLocked: false } : null);
-    }
+    syncSelectedTaskWithUpdate(selectedTask, taskId, { startTime: undefined, isPlaced: false, isLocked: false }, setSelectedTask);
   }, [selectedTask]);
 
   /** ロック状態を切り替える処理 */
   const toggleLock = useCallback((taskId: string) => {
-    setTasks(prev => prev.map(task => 
-      task.id === taskId
-        ? { ...task, isLocked: !task.isLocked }
-        : task
-    ));
+    setTasks(prev => toggleTaskLock(prev, taskId));
   }, []);
 
   /** タスクをクリックした際の処理 */
@@ -170,10 +241,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setDraggedTaskId(taskId);
     // ドラッグ中のタスクを選択状態にする
     setTasks(prev => {
-      const task = prev.find(t => t.id === taskId);
-      if (task) {
-        setSelectedTask(task);
-      }
+      findAndSelectTask(prev, taskId, setSelectedTask);
       return prev;
     });
   }, []);
