@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Task } from '../types';
+import './TaskFooter.css';
 
 /**
  * TaskFooterコンポーネントのプロパティ

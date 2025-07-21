@@ -1,0 +1,16 @@
+.task-card__resource-squares {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.task-card__resource-square {
+  font-size: 8px;
+  line-height: 1;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  border-radius: 1px;
+}
