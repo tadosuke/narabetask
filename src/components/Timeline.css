@@ -89,6 +89,20 @@
   cursor: not-allowed;
 }
 
+.timeline__slot--drag-spanning {
+  background-color: #e3f2fd !important;
+  border-left: 2px dashed #2196F3;
+  border-right: 2px dashed #2196F3;
+}
+
+.timeline__slot--drag-spanning:first-child {
+  border-top: 2px dashed #2196F3;
+}
+
+.timeline__slot--drag-spanning:last-child {
+  border-bottom: 2px dashed #2196F3;
+}
+
 .timeline__slot--drag-invalid * {
   cursor: not-allowed;
 }

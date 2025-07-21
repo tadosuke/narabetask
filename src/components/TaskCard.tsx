@@ -59,6 +59,15 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     ? `${Math.floor(task.duration / 60)}h ${task.duration % 60}m`
     : `${task.duration}m`;
 
+  /** タスクの高さを計算（15分 = 40px の基本高さ） */
+  const calculateHeight = (duration: number): number => {
+    const baseSlotHeight = 40; // timeline__slotの最小高さに合わせる
+    const slotsNeeded = Math.ceil(duration / 15);
+    return slotsNeeded * baseSlotHeight;
+  };
+
+  const taskHeight = task.isPlaced ? calculateHeight(task.duration) : 60; // デフォルトの高さは60px
+
   return (
     <div
       className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'}`}
@@ -68,7 +77,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       onDragEnd={onDragEnd}
       style={{
         ...style,
-        width: task.isPlaced ? `${(task.duration / 15) * 60}px` : '200px'
+        width: task.isPlaced ? `${(task.duration / 15) * 60}px` : '200px',
+        height: `${taskHeight}px`,
+        minHeight: `${taskHeight}px`
       }}
     >
       <div className="task-card__header">

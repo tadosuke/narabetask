@@ -135,10 +135,19 @@ export const Timeline: React.FC<TimelineProps> = ({
       }
     }
 
+    // ドラッグ中のタスクが複数スロットにまたがる場合の視覚フィードバック
+    const isDraggedTaskSpanning = dragOverSlot && draggedTaskId && (() => {
+      const draggedTask = tasks.find(t => t.id === draggedTaskId);
+      if (!draggedTask || !dragOverSlot) return false;
+      
+      const draggedTaskSlots = getTaskSlots(dragOverSlot, draggedTask.duration);
+      return draggedTaskSlots.includes(time);
+    })();
+
     return (
       <div
         key={time}
-        className={`timeline__slot ${isLunchTime ? 'timeline__slot--lunch' : ''} ${isOccupied ? 'timeline__slot--occupied' : ''} ${dragFeedbackClass}`}
+        className={`timeline__slot ${isLunchTime ? 'timeline__slot--lunch' : ''} ${isOccupied ? 'timeline__slot--occupied' : ''} ${dragFeedbackClass} ${isDraggedTaskSpanning ? 'timeline__slot--drag-spanning' : ''}`}
         onDragOver={(e) => handleDragOver(e, time)}
         onDragEnter={(e) => handleDragEnter(e, time)}
         onDragLeave={handleDragLeave}
@@ -152,6 +161,13 @@ export const Timeline: React.FC<TimelineProps> = ({
             onClick={() => onTaskClick(task)}
             onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
             onDragEnd={onDragEnd}
+            style={{
+              position: 'absolute',
+              left: '8px',
+              right: '8px',
+              top: '4px',
+              zIndex: 2
+            }}
           />
         )}
       </div>
