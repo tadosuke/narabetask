@@ -171,7 +171,7 @@ describe("Timeline Self Drop Test - 自分自身と重なっているところ�
     expect(timeSlot).toHaveClass("timeline__slot--drag-invalid");
   });
 
-  it("ドラッグ中のタスクのpointer-eventsがnoneに設定される", () => {
+  it("ドラッグ中のタスクカードがドラッグイベントハンドラーを持つ", () => {
     // 30分タスクを09:00に配置
     const mockTasks: Task[] = [
       {
@@ -200,11 +200,11 @@ describe("Timeline Self Drop Test - 自分自身と重なっているところ�
     const taskCard = container.querySelector('.task-card--placed');
     expect(taskCard).not.toBeNull();
 
-    // pointer-eventsがnoneに設定されていることを確認
-    expect(taskCard).toHaveStyle('pointer-events: none');
+    // ドラッグ中のタスクは通常のpointer-eventsのまま（イベント転送により自己ドロップを実現）
+    expect(taskCard).toHaveStyle('pointer-events: auto');
   });
 
-  it("ドラッグされていないタスクのpointer-eventsがautoのまま", () => {
+  it("ドラッグされていないタスクは通常通りのイベントハンドリング", () => {
     // 複数のタスクを配置
     const mockTasks: Task[] = [
       {
@@ -250,7 +250,7 @@ describe("Timeline Self Drop Test - 自分自身と重なっているところ�
     const taskCard2 = slot930?.querySelector('.task-card--placed');
     expect(taskCard2).not.toBeNull();
 
-    // pointer-eventsがnoneに設定されている
-    expect(taskCard2).toHaveStyle('pointer-events: none');
+    // ドラッグ中のタスクも通常のpointer-eventsのまま（イベント転送により自己ドロップを実現）
+    expect(taskCard2).toHaveStyle('pointer-events: auto');
   });
 });

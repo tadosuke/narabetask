@@ -182,15 +182,15 @@ export const Timeline: React.FC<TimelineProps> = ({
             onClick={() => onTaskClick(task)}
             onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
             onDragEnd={onDragEnd}
+            onDragOver={draggedTaskId === task.id ? (e) => handleDragOver(e, time) : undefined}
+            onDragEnter={draggedTaskId === task.id ? (e) => handleDragEnter(e, time) : undefined}
+            onDrop={draggedTaskId === task.id ? (e) => handleDrop(e, time) : undefined}
             style={{
               position: 'absolute',
               left: '60px',
               right: '8px',
               top: '2px',
-              zIndex: 2,
-              // ドラッグ中のタスクの場合、マウスイベントを通さないようにして
-              // 下層のタイムスロットにドラッグイベントが到達できるようにする
-              pointerEvents: draggedTaskId === task.id ? 'none' : 'auto'
+              zIndex: 2
             }}
           />
         )}
