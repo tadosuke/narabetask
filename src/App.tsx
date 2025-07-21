@@ -52,9 +52,22 @@ function App() {
 
   /** タスクの情報を更新する */
   const handleTaskUpdate = (updatedTask: Task) => {
-    setTasks(prev => prev.map(task => 
-      task.id === updatedTask.id ? updatedTask : task
-    ));
+    setTasks(prev => prev.map(task => {
+      if (task.id === updatedTask.id) {
+        // If the original task was placed but the update doesn't include placement info,
+        // preserve the placement state to prevent tasks from returning to staging
+        if (task.isPlaced && task.startTime && 
+            (updatedTask.isPlaced === undefined || updatedTask.startTime === undefined)) {
+          return {
+            ...updatedTask,
+            isPlaced: task.isPlaced,
+            startTime: task.startTime
+          };
+        }
+        return updatedTask;
+      }
+      return task;
+    }));
     setSelectedTask(updatedTask);
   };
 
