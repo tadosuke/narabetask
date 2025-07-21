@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import { Timeline } from "../../src/components/Timeline";
 import type { Task, BusinessHours, LunchBreak } from "../../src/types";
 

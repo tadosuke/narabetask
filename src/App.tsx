@@ -75,6 +75,15 @@ function App() {
     ));
   };
 
+  /** タスクをタイムラインから一覧に戻す処理 */
+  const handleTaskReturn = (taskId: string) => {
+    setTasks(prev => prev.map(task => 
+      task.id === taskId
+        ? { ...task, startTime: undefined, isPlaced: false }
+        : task
+    ));
+  };
+
   /** タスクをクリックした際の処理 */
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
@@ -109,6 +118,7 @@ function App() {
           onAddTask={handleAddTask}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          onTaskReturn={handleTaskReturn}
         />
         
         <Timeline
