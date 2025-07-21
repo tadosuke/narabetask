@@ -4,7 +4,8 @@ import {
   timeToMinutes, 
   minutesToTime, 
   canPlaceTask, 
-  getTaskSlots 
+  getTaskSlots,
+  calculateEndTime
 } from '../../src/utils/timeUtils';
 import type { BusinessHours, LunchBreak } from '../../src/types';
 
@@ -97,6 +98,28 @@ describe('timeUtils', () => {
     it('60分タスクの正しいスロットを返す', () => {
       const slots = getTaskSlots('10:00', 60);
       expect(slots).toEqual(['10:00', '10:15', '10:30', '10:45']);
+    });
+  });
+
+  describe('calculateEndTime', () => {
+    it('30分タスクの終了時間を正しく計算する', () => {
+      expect(calculateEndTime('09:00', 30)).toBe('09:30');
+      expect(calculateEndTime('14:15', 30)).toBe('14:45');
+    });
+
+    it('60分タスクの終了時間を正しく計算する', () => {
+      expect(calculateEndTime('09:00', 60)).toBe('10:00');
+      expect(calculateEndTime('13:30', 60)).toBe('14:30');
+    });
+
+    it('時を跨ぐ時間の計算を正しく行う', () => {
+      expect(calculateEndTime('09:45', 30)).toBe('10:15');
+      expect(calculateEndTime('11:30', 90)).toBe('13:00');
+    });
+
+    it('境界値での計算を正しく行う', () => {
+      expect(calculateEndTime('17:45', 30)).toBe('18:15');
+      expect(calculateEndTime('00:00', 15)).toBe('00:15');
     });
   });
 

@@ -119,3 +119,15 @@ export function getTaskSlots(startTime: string, duration: number): string[] {
 
   return slots;
 }
+
+/**
+ * タスクの開始時刻と所要時間から終了時刻を計算します。
+ * @param {string} startTime - タスク開始時刻（HH:mm形式）
+ * @param {number} duration - タスクの所要時間（分）
+ * @returns {string} タスク終了時刻（HH:mm形式）
+ */
+export function calculateEndTime(startTime: string, duration: number): string {
+  const startMinutes = timeToMinutes(startTime);
+  const endMinutes = startMinutes + duration;
+  return minutesToTime(endMinutes);
+}
