@@ -51,6 +51,8 @@
   display: flex;
   gap: 2px;
   align-items: center;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 .task-card__resource-square {
