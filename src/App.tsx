@@ -10,10 +10,6 @@ const defaultSettings: AppSettings = {
   businessHours: {
     start: '09:00',
     end: '18:00'
-  },
-  lunchBreak: {
-    start: '12:00',
-    end: '13:00'
   }
 };
 
@@ -177,7 +173,6 @@ function App() {
           tasks={tasks}
           selectedTask={selectedTask}
           businessHours={settings.businessHours}
-          lunchBreak={settings.lunchBreak}
           onTaskDrop={handleTaskDrop}
           onTaskClick={handleTaskClick}
           draggedTaskId={draggedTaskId}

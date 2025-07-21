@@ -14,10 +14,6 @@
   background-color: #f8f8f8;
 }
 
-.timeline__slot--lunch {
-  background-color: #fff3e0 !important;
-}
-
 .timeline__slot--occupied {
   background-color: #f0f0f0;
 }

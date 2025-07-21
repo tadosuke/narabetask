@@ -48,21 +48,9 @@ export interface BusinessHours {
 }
 
 /**
- * 昼休み時間を表すインターフェース
- */
-export interface LunchBreak {
-  /** 昼休み開始時刻（HH:mm形式） */
-  start: string; // HH:mm format  
-  /** 昼休み終了時刻（HH:mm形式） */
-  end: string; // HH:mm format
-}
-
-/**
  * アプリケーションの設定情報を表すインターフェース
  */
 export interface AppSettings {
   /** 営業時間設定 */
   businessHours: BusinessHours;
-  /** 昼休み時間設定 */
-  lunchBreak: LunchBreak;
 }

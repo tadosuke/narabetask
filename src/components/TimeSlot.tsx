@@ -12,8 +12,6 @@ interface TimeSlotProps {
   time: string;
   /** このスロットに配置されたタスク */
   task?: Task;
-  /** 昼休み時間かどうか */
-  isLunchTime: boolean;
   /** 占有されているかどうか */
   isOccupied: boolean;
   /** ドラッグオーバー中のタイムスロット */
@@ -53,7 +51,6 @@ interface TimeSlotProps {
 export const TimeSlot: React.FC<TimeSlotProps> = ({
   time,
   task,
-  isLunchTime,
   isOccupied,
   dragOverSlot,
   draggedTaskId,
@@ -117,7 +114,7 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
 
   return (
     <div
-      className={`timeline__slot ${isLunchTime ? 'timeline__slot--lunch' : ''} ${isOccupied ? 'timeline__slot--occupied' : ''} ${dragFeedbackClass} ${dragSpanningClass}`}
+      className={`timeline__slot ${isOccupied ? 'timeline__slot--occupied' : ''} ${dragFeedbackClass} ${dragSpanningClass}`}
       onDragOver={(e) => onDragOver(e, time)}
       onDragEnter={(e) => onDragEnter(e, time)}
       onDragLeave={onDragLeave}

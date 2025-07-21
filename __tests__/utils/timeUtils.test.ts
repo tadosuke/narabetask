@@ -7,7 +7,7 @@ import {
   getTaskSlots,
   calculateEndTime
 } from '../../src/utils/timeUtils';
-import type { BusinessHours, LunchBreak } from '../../src/types';
+import type { BusinessHours } from '../../src/types';
 
 describe('timeUtils', () => {
   const businessHours: BusinessHours = {
@@ -15,22 +15,17 @@ describe('timeUtils', () => {
     end: '18:00'
   };
 
-  const lunchBreak: LunchBreak = {
-    start: '12:00',
-    end: '13:00'
-  };
-
   describe('generateTimeSlots', () => {
-    it('昼休みを除外してタイムスロットを生成できる', () => {
-      const slots = generateTimeSlots(businessHours, lunchBreak);
+    it('営業時間内のすべてのタイムスロットを生成できる', () => {
+      const slots = generateTimeSlots(businessHours);
       
-      // 午前のスロットが含まれている
+      // 営業開始のスロットが含まれている
       expect(slots).toContain('09:00');
       expect(slots).toContain('11:45');
       
-      // 昼休みのスロットは含まれていない
-      expect(slots).not.toContain('12:00');
-      expect(slots).not.toContain('12:30');
+      // 昼の時間も含まれている（昼休み機能廃止のため）
+      expect(slots).toContain('12:00');
+      expect(slots).toContain('12:30');
       
       // 午後のスロットが含まれている
       expect(slots).toContain('13:00');
@@ -41,11 +36,11 @@ describe('timeUtils', () => {
     });
 
     it('15分間隔でスロットを生成できる', () => {
-      const slots = generateTimeSlots(businessHours, lunchBreak);
+      const slots = generateTimeSlots(businessHours);
       
       // 連続するスロットが15分間隔であることを確認
-      const firstMorningSlots = slots.filter(slot => slot < '12:00').slice(0, 4);
-      expect(firstMorningSlots).toEqual(['09:00', '09:15', '09:30', '09:45']);
+      const firstSlots = slots.slice(0, 4);
+      expect(firstSlots).toEqual(['09:00', '09:15', '09:30', '09:45']);
     });
   });
 

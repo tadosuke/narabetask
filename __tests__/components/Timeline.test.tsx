@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Timeline } from "../../src/components/Timeline";
-import type { Task, BusinessHours, LunchBreak } from "../../src/types";
+import type { Task, BusinessHours } from "../../src/types";
 
 // timeUtilsモジュールをモック
 vi.mock("../../src/utils/timeUtils", () => ({
@@ -28,11 +28,6 @@ describe("Timeline", () => {
     end: "17:00",
   };
 
-  const mockLunchBreak: LunchBreak = {
-    start: "12:00",
-    end: "13:00",
-  };
-
   const mockTasks: Task[] = [
     {
       id: "1",
@@ -55,7 +50,6 @@ describe("Timeline", () => {
     tasks: mockTasks,
     selectedTask: null,
     businessHours: mockBusinessHours,
-    lunchBreak: mockLunchBreak,
     onTaskDrop: vi.fn(),
     onTaskClick: vi.fn(),
   };

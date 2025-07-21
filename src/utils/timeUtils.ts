@@ -1,25 +1,18 @@
-import type { BusinessHours, LunchBreak } from "../types";
+import type { BusinessHours } from "../types";
 
 /**
  * 15分間隔でタイムスロットを生成します。
  * @param {BusinessHours} businessHours - 営業開始・終了時刻
- * @param {LunchBreak} lunchBreak - 昼休みの開始・終了時刻
  * @returns {string[]} タイムスロットの配列（例: "09:00"）
  */
 export function generateTimeSlots(
-  businessHours: BusinessHours,
-  lunchBreak: LunchBreak
+  businessHours: BusinessHours
 ): string[] {
   const slots: string[] = [];
   const startHour = parseInt(businessHours.start.split(":")[0]);
   const startMinute = parseInt(businessHours.start.split(":")[1]);
   const endHour = parseInt(businessHours.end.split(":")[0]);
   const endMinute = parseInt(businessHours.end.split(":")[1]);
-
-  const lunchStartHour = parseInt(lunchBreak.start.split(":")[0]);
-  const lunchStartMinute = parseInt(lunchBreak.start.split(":")[1]);
-  const lunchEndHour = parseInt(lunchBreak.end.split(":")[0]);
-  const lunchEndMinute = parseInt(lunchBreak.end.split(":")[1]);
 
   let currentHour = startHour;
   let currentMinute = startMinute;
@@ -28,20 +21,10 @@ export function generateTimeSlots(
     currentHour < endHour ||
     (currentHour === endHour && currentMinute < endMinute)
   ) {
-    // 現在時刻が昼休み時間内かどうかを判定
-    const currentTotalMinutes = currentHour * 60 + currentMinute;
-    const lunchStartTotalMinutes = lunchStartHour * 60 + lunchStartMinute;
-    const lunchEndTotalMinutes = lunchEndHour * 60 + lunchEndMinute;
-
-    if (
-      currentTotalMinutes < lunchStartTotalMinutes ||
-      currentTotalMinutes >= lunchEndTotalMinutes
-    ) {
-      const timeString = `${currentHour
-        .toString()
-        .padStart(2, "0")}:${currentMinute.toString().padStart(2, "0")}`;
-      slots.push(timeString);
-    }
+    const timeString = `${currentHour
+      .toString()
+      .padStart(2, "0")}:${currentMinute.toString().padStart(2, "0")}`;
+    slots.push(timeString);
 
     // 15分進める
     currentMinute += 15;
