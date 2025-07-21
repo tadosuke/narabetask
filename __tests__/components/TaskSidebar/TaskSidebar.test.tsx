@@ -83,11 +83,12 @@ describe("TaskSidebar", () => {
     expect(screen.getByText("09:30")).toBeInTheDocument();
   });
 
-  it("配置されていないタスクの時間情報は表示しない", () => {
+  it("配置されていないタスクの時間情報は'-'を表示する", () => {
     render(<TaskSidebar {...defaultProps} />);
 
-    expect(screen.queryByText("開始時間:")).not.toBeInTheDocument();
-    expect(screen.queryByText("終了時間:")).not.toBeInTheDocument();
+    expect(screen.getByText("開始時間:")).toBeInTheDocument();
+    expect(screen.getByText("終了時間:")).toBeInTheDocument();
+    expect(screen.getAllByText("-")).toHaveLength(2);
   });
 
   it("変更されたときに名前入力を更新する", async () => {

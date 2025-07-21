@@ -39,20 +39,20 @@ describe("TaskInfoDisplay", () => {
     expect(screen.getByText("09:30")).toBeInTheDocument();
   });
 
-  it("配置されていないタスクでは何も表示しない", () => {
-    const { container } = render(<TaskInfoDisplay task={unplacedTask} />);
+  it("配置されていないタスクでは'-'を表示する", () => {
+    render(<TaskInfoDisplay task={unplacedTask} />);
 
-    expect(container.firstChild).toBeNull();
-    expect(screen.queryByText("開始時間:")).not.toBeInTheDocument();
-    expect(screen.queryByText("終了時間:")).not.toBeInTheDocument();
+    expect(screen.getByText("開始時間:")).toBeInTheDocument();
+    expect(screen.getByText("終了時間:")).toBeInTheDocument();
+    expect(screen.getAllByText("-")).toHaveLength(2);
   });
 
-  it("配置済みでも開始時間がないタスクでは何も表示しない", () => {
-    const { container } = render(<TaskInfoDisplay task={placedTaskWithoutStartTime} />);
+  it("配置済みでも開始時間がないタスクでは'-'を表示する", () => {
+    render(<TaskInfoDisplay task={placedTaskWithoutStartTime} />);
 
-    expect(container.firstChild).toBeNull();
-    expect(screen.queryByText("開始時間:")).not.toBeInTheDocument();
-    expect(screen.queryByText("終了時間:")).not.toBeInTheDocument();
+    expect(screen.getByText("開始時間:")).toBeInTheDocument();
+    expect(screen.getByText("終了時間:")).toBeInTheDocument();
+    expect(screen.getAllByText("-")).toHaveLength(2);
   });
 
   it("終了時間が正しく計算される（異なる所要時間）", () => {
