@@ -110,8 +110,9 @@ function App() {
     const target = e.target as HTMLElement;
     const isTaskCard = target.closest('.task-card');
     const isSidebar = target.closest('.task-sidebar');
+    const isAddButton = target.closest('.task-staging__add-button');
     
-    if (!isTaskCard && !isSidebar && selectedTask) {
+    if (!isTaskCard && !isSidebar && !isAddButton && selectedTask) {
       setSelectedTask(null);
     }
   };
