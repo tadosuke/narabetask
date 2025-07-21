@@ -116,17 +116,14 @@ describe("TaskSidebar", () => {
     expect(othersCheckbox).toBeChecked();
   });
 
-  it("保存ボタンがクリックされたときにonTaskUpdateを呼び出す", async () => {
+  it("タスク名が変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
     const mockOnTaskUpdate = vi.fn();
     const user = userEvent.setup();
     render(<TaskSidebar {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
 
     const nameInput = screen.getByLabelText("タスク名");
-    const saveButton = screen.getByText("保存");
-
     await user.clear(nameInput);
     await user.type(nameInput, "更新されたタスク");
-    fireEvent.click(saveButton);
 
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
@@ -136,16 +133,78 @@ describe("TaskSidebar", () => {
     });
   });
 
-  it("名前が空の場合は保存ボタンを無効にする", async () => {
+  it("所要時間が変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
+    const mockOnTaskUpdate = vi.fn();
     const user = userEvent.setup();
-    render(<TaskSidebar {...defaultProps} />);
+    render(<TaskSidebar {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+
+    const durationSelect = screen.getByLabelText("工数");
+    await user.selectOptions(durationSelect, "45");
+
+    await waitFor(() => {
+      expect(mockOnTaskUpdate).toHaveBeenCalledWith({
+        ...mockTask,
+        duration: 45,
+      });
+    });
+  });
+
+  it("リソースタイプが変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
+    const mockOnTaskUpdate = vi.fn();
+    const user = userEvent.setup();
+    render(<TaskSidebar {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+
+    // Find the "他人" checkbox by its label text
+    const othersCheckbox = screen.getByRole('checkbox', { name: '他人' });
+    await user.click(othersCheckbox);
+
+    await waitFor(() => {
+      expect(mockOnTaskUpdate).toHaveBeenCalledWith({
+        ...mockTask,
+        resourceTypes: ['self', 'others'],
+      });
+    });
+  });
+
+  it("タスク名が空の場合は自動保存を行わない", async () => {
+    const mockOnTaskUpdate = vi.fn();
+    const user = userEvent.setup();
+    render(<TaskSidebar {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
 
     const nameInput = screen.getByLabelText("タスク名");
-    const saveButton = screen.getByText("保存");
-
     await user.clear(nameInput);
 
-    expect(saveButton).toBeDisabled();
+    // 空の名前では自動保存されない
+    expect(mockOnTaskUpdate).not.toHaveBeenCalled();
+  });
+
+  it("リソースタイプが選択されていない場合は自動保存を行わない", async () => {
+    const mockOnTaskUpdate = vi.fn();
+    const user = userEvent.setup();
+    
+    // リソースタイプが空のタスクを使用
+    const taskWithNoResources = { ...mockTask, resourceTypes: [] };
+    render(<TaskSidebar {...defaultProps} selectedTask={taskWithNoResources} onTaskUpdate={mockOnTaskUpdate} />);
+
+    const nameInput = screen.getByLabelText("タスク名");
+    await user.clear(nameInput);
+    await user.type(nameInput, "新しい名前");
+
+    // リソースタイプが空では自動保存されない
+    expect(mockOnTaskUpdate).not.toHaveBeenCalled();
+  });
+
+  it("保存ボタンが表示されない", () => {
+    render(<TaskSidebar {...defaultProps} />);
+
+    expect(screen.queryByText("保存")).not.toBeInTheDocument();
+  });
+
+  it("削除ボタンのみが表示される", () => {
+    render(<TaskSidebar {...defaultProps} />);
+
+    expect(screen.getByText("削除")).toBeInTheDocument();
+    expect(screen.queryByText("保存")).not.toBeInTheDocument();
   });
 
   it("削除ボタンがクリックされ確認されたときにonTaskRemoveを呼び出す", () => {
