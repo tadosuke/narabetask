@@ -80,7 +80,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       onDragEnd={onDragEnd}
       style={{
         ...style,
-        width: task.isPlaced ? `${(task.duration / 15) * 60}px` : '200px',
+        width: task.isPlaced ? '120px' : '200px',
         height: `${taskHeight}px`,
         minHeight: `${taskHeight}px`
       }}
