@@ -52,6 +52,7 @@ function App() {
 
   /** タスクの情報を更新する */
   const handleTaskUpdate = (updatedTask: Task) => {
+    console.log('handleTaskUpdate called with:', updatedTask);
     setTasks(prev => prev.map(task => 
       task.id === updatedTask.id ? updatedTask : task
     ));

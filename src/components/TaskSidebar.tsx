@@ -67,6 +67,8 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
         duration: updatedDuration,
         resourceTypes: updatedResourceTypes,
       };
+      console.log('autoSaveTask - selectedTask:', selectedTask);
+      console.log('autoSaveTask - updatedTask:', updatedTask);
       onTaskUpdate(updatedTask);
     }
   };
