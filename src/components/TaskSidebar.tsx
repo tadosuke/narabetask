@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import type { Task, ResourceType } from '../types';
-import './TaskSidebar.css';
+import React, { useState, useEffect } from "react";
+import type { Task, ResourceType } from "../types";
+import "./TaskSidebar.css";
 
 /**
  * TaskSidebarコンポーネントのプロパティ
@@ -18,15 +18,15 @@ interface TaskSidebarProps {
 
 /** リソースタイプの選択肢一覧 */
 const resourceTypeOptions: Array<{ value: ResourceType; label: string }> = [
-  { value: 'self', label: '自分' },
-  { value: 'others', label: '他人' },
-  { value: 'machine', label: 'マシンパワー' },
-  { value: 'network', label: 'ネットワーク' }
+  { value: "self", label: "自分" },
+  { value: "others", label: "他人" },
+  { value: "machine", label: "マシンパワー" },
+  { value: "network", label: "ネットワーク" },
 ];
 
 /** 所要時間のスライダー設定 */
 const DURATION_MIN = 15; // 最小値: 15分
-const DURATION_MAX = 480; // 最大値: 8時間 = 480分
+const DURATION_MAX = 240; // 最大値: 4時間 = 240分
 const DURATION_STEP = 15; // 15分刻み
 
 /**
@@ -38,9 +38,9 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
   selectedTask,
   onTaskUpdate,
   onTaskRemove,
-  onClose
+  onClose,
 }) => {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [duration, setDuration] = useState(30);
   const [resourceTypes, setResourceTypes] = useState<ResourceType[]>([]);
 
@@ -48,22 +48,26 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
     if (selectedTask) {
       setName(selectedTask.name);
       setDuration(selectedTask.duration);
-      setResourceTypes(selectedTask.resourceTypes || ['self']);
+      setResourceTypes(selectedTask.resourceTypes || ["self"]);
     } else {
-      setName('');
+      setName("");
       setDuration(30);
-      setResourceTypes(['self']);
+      setResourceTypes(["self"]);
     }
   }, [selectedTask]);
 
   /** タスクの変更を自動保存 */
-  const autoSaveTask = (updatedName: string, updatedDuration: number, updatedResourceTypes: ResourceType[]) => {
+  const autoSaveTask = (
+    updatedName: string,
+    updatedDuration: number,
+    updatedResourceTypes: ResourceType[]
+  ) => {
     if (selectedTask && updatedName.trim() && updatedResourceTypes.length > 0) {
       const updatedTask: Task = {
         ...selectedTask,
         name: updatedName.trim(),
         duration: updatedDuration,
-        resourceTypes: updatedResourceTypes
+        resourceTypes: updatedResourceTypes,
       };
       onTaskUpdate(updatedTask);
     }
@@ -82,12 +86,15 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
   };
 
   /** リソースタイプの選択状態を切り替え */
-  const handleResourceTypeChange = (resourceType: ResourceType, checked: boolean) => {
+  const handleResourceTypeChange = (
+    resourceType: ResourceType,
+    checked: boolean
+  ) => {
     let newResourceTypes: ResourceType[];
     if (checked) {
       newResourceTypes = [...resourceTypes, resourceType];
     } else {
-      newResourceTypes = resourceTypes.filter(type => type !== resourceType);
+      newResourceTypes = resourceTypes.filter((type) => type !== resourceType);
     }
     setResourceTypes(newResourceTypes);
     autoSaveTask(name, duration, newResourceTypes);
@@ -95,7 +102,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
 
   /** タスクを削除 */
   const handleRemove = () => {
-    if (selectedTask && window.confirm('このタスクを削除しますか？')) {
+    if (selectedTask && window.confirm("このタスクを削除しますか？")) {
       onTaskRemove(selectedTask.id);
     }
   };
@@ -106,7 +113,9 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
     if (minutes >= 60) {
       const hours = Math.floor(minutes / 60);
       const remainingMinutes = minutes % 60;
-      return remainingMinutes > 0 ? `${hours}時間${remainingMinutes}分` : `${hours}時間`;
+      return remainingMinutes > 0
+        ? `${hours}時間${remainingMinutes}分`
+        : `${hours}時間`;
     }
     return `${minutes}分`;
   };
@@ -168,15 +177,19 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
         <div className="task-sidebar__field">
           <label>リソースタイプ</label>
           <div className="task-sidebar__checkbox-group">
-            {resourceTypeOptions.map(type => (
+            {resourceTypeOptions.map((type) => (
               <label key={type.value} className="task-sidebar__checkbox-label">
                 <input
                   type="checkbox"
                   checked={resourceTypes.includes(type.value)}
-                  onChange={(e) => handleResourceTypeChange(type.value, e.target.checked)}
+                  onChange={(e) =>
+                    handleResourceTypeChange(type.value, e.target.checked)
+                  }
                   className="task-sidebar__checkbox"
                 />
-                <span className="task-sidebar__checkbox-text">{type.label}</span>
+                <span className="task-sidebar__checkbox-text">
+                  {type.label}
+                </span>
               </label>
             ))}
           </div>
@@ -190,10 +203,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
       </div>
 
       <div className="task-sidebar__actions">
-        <button
-          className="task-sidebar__remove"
-          onClick={handleRemove}
-        >
+        <button className="task-sidebar__remove" onClick={handleRemove}>
           削除
         </button>
       </div>
