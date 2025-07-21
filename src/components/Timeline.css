@@ -86,6 +86,11 @@
 .timeline__slot--drag-invalid {
   background-color: #ffebee !important;
   border: 2px dashed #f44336;
+  cursor: not-allowed;
+}
+
+.timeline__slot--drag-invalid * {
+  cursor: not-allowed;
 }
 
 /* Responsive design */

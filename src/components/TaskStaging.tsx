@@ -13,6 +13,10 @@ interface TaskStagingProps {
   onTaskClick: (task: Task) => void;
   /** 新しいタスク追加時のハンドラ */
   onAddTask: () => void;
+  /** ドラッグ開始時のハンドラ */
+  onDragStart?: (taskId: string) => void;
+  /** ドラッグ終了時のハンドラ */
+  onDragEnd?: () => void;
 }
 
 /**
@@ -22,7 +26,9 @@ interface TaskStagingProps {
 export const TaskStaging: React.FC<TaskStagingProps> = ({
   tasks,
   onTaskClick,
-  onAddTask
+  onAddTask,
+  onDragStart,
+  onDragEnd
 }) => {
   /** まだタイムラインに配置されていないタスクを取得 */
   const unplacedTasks = tasks.filter(task => !task.isPlaced);
@@ -52,6 +58,8 @@ export const TaskStaging: React.FC<TaskStagingProps> = ({
                 key={task.id}
                 task={task}
                 onClick={() => onTaskClick(task)}
+                onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
+                onDragEnd={onDragEnd}
               />
             ))}
           </div>

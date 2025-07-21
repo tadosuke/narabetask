@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Task, BusinessHours, LunchBreak } from '../types';
 import { generateTimeSlots, canPlaceTask, getTaskSlots } from '../utils/timeUtils';
 import { TaskCard } from './TaskCard';
@@ -18,6 +18,12 @@ interface TimelineProps {
   onTaskDrop: (taskId: string, startTime: string) => void;
   /** タスククリック時のハンドラ */
   onTaskClick: (task: Task) => void;
+  /** 現在ドラッグ中のタスクのID（外部から渡される） */
+  draggedTaskId?: string | null;
+  /** ドラッグ開始時のハンドラ */
+  onDragStart?: (taskId: string) => void;
+  /** ドラッグ終了時のハンドラ */
+  onDragEnd?: () => void;
 }
 
 /**
@@ -30,8 +36,14 @@ export const Timeline: React.FC<TimelineProps> = ({
   businessHours,
   lunchBreak,
   onTaskDrop,
-  onTaskClick
+  onTaskClick,
+  draggedTaskId = null,
+  onDragStart,
+  onDragEnd
 }) => {
+  /** ドラッグオーバー中のタイムスロット */
+  const [dragOverSlot, setDragOverSlot] = useState<string | null>(null);
+  
   /** 営業時間と昼休みを考慮したタイムスロットを生成 */
   const timeSlots = generateTimeSlots(businessHours, lunchBreak);
   /** タイムラインに配置済みのタスク一覧 */
@@ -47,16 +59,41 @@ export const Timeline: React.FC<TimelineProps> = ({
   });
 
   /** ドラッグオーバー時の処理 */
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent, time: string) => {
     e.preventDefault();
+    setDragOverSlot(time);
+  };
+
+  /** ドラッグエンター時の処理 - スロットにドラッグが入った時 */
+  const handleDragEnter = (e: React.DragEvent, time: string) => {
+    e.preventDefault();
+    setDragOverSlot(time);
+  };
+
+  /** ドラッグリーブ時の処理 - スロットからドラッグが離れた時 */
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    // Only clear dragOverSlot if we're leaving the slot element itself
+    // Check if the related target is not a child of the current target
+    const currentTarget = e.currentTarget as HTMLElement;
+    const relatedTarget = e.relatedTarget as HTMLElement;
+    
+    if (!currentTarget.contains(relatedTarget)) {
+      setDragOverSlot(null);
+    }
   };
 
   /** ドロップ時の処理 - タスクを指定した時刻に配置 */
-
   const handleDrop = (e: React.DragEvent, dropTime: string) => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData('text/plain');
     const task = tasks.find(t => t.id === taskId);
+    
+    // Clear drag state
+    setDragOverSlot(null);
+    if (onDragEnd) {
+      onDragEnd();
+    }
     
     if (task) {
       // For placed tasks being moved, exclude their current slots from collision detection
@@ -78,12 +115,33 @@ export const Timeline: React.FC<TimelineProps> = ({
     const task = placedTasks.find(t => t.startTime === time);
     const isOccupied = occupiedSlots.has(time);
     const isLunchTime = time >= lunchBreak.start && time < lunchBreak.end;
+    
+    // ドラッグ中の視覚的フィードバック用のクラス決定
+    const isDragOver = dragOverSlot === time;
+    let dragFeedbackClass = '';
+    
+    if (isDragOver && draggedTaskId) {
+      const draggedTask = tasks.find(t => t.id === draggedTaskId);
+      if (draggedTask) {
+        // For placed tasks being moved, exclude their current slots from collision detection
+        const occupiedSlotsForCheck = new Set(occupiedSlots);
+        if (draggedTask.isPlaced && draggedTask.startTime) {
+          const taskSlots = getTaskSlots(draggedTask.startTime, draggedTask.duration);
+          taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
+        }
+        
+        const canPlace = canPlaceTask(time, draggedTask.duration, occupiedSlotsForCheck, timeSlots);
+        dragFeedbackClass = canPlace ? 'timeline__slot--drag-over' : 'timeline__slot--drag-invalid';
+      }
+    }
 
     return (
       <div
         key={time}
-        className={`timeline__slot ${isLunchTime ? 'timeline__slot--lunch' : ''} ${isOccupied ? 'timeline__slot--occupied' : ''}`}
-        onDragOver={handleDragOver}
+        className={`timeline__slot ${isLunchTime ? 'timeline__slot--lunch' : ''} ${isOccupied ? 'timeline__slot--occupied' : ''} ${dragFeedbackClass}`}
+        onDragOver={(e) => handleDragOver(e, time)}
+        onDragEnter={(e) => handleDragEnter(e, time)}
+        onDragLeave={handleDragLeave}
         onDrop={(e) => handleDrop(e, time)}
         data-time={time}
       >
@@ -92,6 +150,8 @@ export const Timeline: React.FC<TimelineProps> = ({
           <TaskCard
             task={task}
             onClick={() => onTaskClick(task)}
+            onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
+            onDragEnd={onDragEnd}
           />
         )}
       </div>
