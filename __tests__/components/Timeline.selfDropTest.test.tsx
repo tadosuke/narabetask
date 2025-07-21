@@ -170,4 +170,87 @@ describe("Timeline Self Drop Test - 自分自身と重なっているところ�
     // 無効なドロップフィードバックを表示することを確認
     expect(timeSlot).toHaveClass("timeline__slot--drag-invalid");
   });
+
+  it("ドラッグ中のタスクのpointer-eventsがnoneに設定される", () => {
+    // 30分タスクを09:00に配置
+    const mockTasks: Task[] = [
+      {
+        id: "1",
+        name: "ドラッグ中のタスク",
+        duration: 30,
+        resourceTypes: ["self"],
+        isPlaced: true,
+        startTime: "09:00",
+      }
+    ];
+
+    const { container } = render(
+      <Timeline
+        tasks={mockTasks}
+        selectedTask={null}
+        businessHours={mockBusinessHours}
+        lunchBreak={mockLunchBreak}
+        onTaskDrop={() => {}}
+        onTaskClick={() => {}}
+        draggedTaskId="1" // このタスクがドラッグされている
+      />
+    );
+
+    // ドラッグ中のタスクカードを見つける
+    const taskCard = container.querySelector('.task-card--placed');
+    expect(taskCard).not.toBeNull();
+
+    // pointer-eventsがnoneに設定されていることを確認
+    expect(taskCard).toHaveStyle('pointer-events: none');
+  });
+
+  it("ドラッグされていないタスクのpointer-eventsがautoのまま", () => {
+    // 複数のタスクを配置
+    const mockTasks: Task[] = [
+      {
+        id: "1",
+        name: "ドラッグされていないタスク",
+        duration: 30,
+        resourceTypes: ["self"],
+        isPlaced: true,
+        startTime: "09:00",
+      },
+      {
+        id: "2",
+        name: "ドラッグ中のタスク",
+        duration: 30,
+        resourceTypes: ["self"],
+        isPlaced: true,
+        startTime: "09:30",
+      }
+    ];
+
+    const { container } = render(
+      <Timeline
+        tasks={mockTasks}
+        selectedTask={null}
+        businessHours={mockBusinessHours}
+        lunchBreak={mockLunchBreak}
+        onTaskDrop={() => {}}
+        onTaskClick={() => {}}
+        draggedTaskId="2" // タスク2がドラッグされている
+      />
+    );
+
+    // 09:00のタスク（ドラッグされていない）を見つける
+    const slot900 = container.querySelector('[data-time="09:00"]');
+    const taskCard1 = slot900?.querySelector('.task-card--placed');
+    expect(taskCard1).not.toBeNull();
+
+    // pointer-eventsがautoのまま（デフォルト値）
+    expect(taskCard1).toHaveStyle('pointer-events: auto');
+
+    // 09:30のタスク（ドラッグ中）を見つける
+    const slot930 = container.querySelector('[data-time="09:30"]');
+    const taskCard2 = slot930?.querySelector('.task-card--placed');
+    expect(taskCard2).not.toBeNull();
+
+    // pointer-eventsがnoneに設定されている
+    expect(taskCard2).toHaveStyle('pointer-events: none');
+  });
 });

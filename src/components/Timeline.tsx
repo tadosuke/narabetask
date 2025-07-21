@@ -187,7 +187,10 @@ export const Timeline: React.FC<TimelineProps> = ({
               left: '60px',
               right: '8px',
               top: '2px',
-              zIndex: 2
+              zIndex: 2,
+              // ドラッグ中のタスクの場合、マウスイベントを通さないようにして
+              // 下層のタイムスロットにドラッグイベントが到達できるようにする
+              pointerEvents: draggedTaskId === task.id ? 'none' : 'auto'
             }}
           />
         )}
