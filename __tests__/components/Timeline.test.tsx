@@ -18,6 +18,8 @@ vi.mock("../../src/utils/timeUtils", () => ({
   ]),
   canPlaceTask: vi.fn(() => true),
   getTaskSlots: vi.fn(() => ["09:00", "09:15"]),
+  findOverlappingTasks: vi.fn(() => new Set()),
+  doTasksShareResources: vi.fn(() => false),
 }));
 
 describe("Timeline", () => {

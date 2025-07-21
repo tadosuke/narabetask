@@ -17,6 +17,8 @@ vi.mock("../../src/utils/timeUtils", () => ({
   ]),
   canPlaceTask: vi.fn(),
   getTaskSlots: vi.fn(),
+  findOverlappingTasks: vi.fn(() => new Set()),
+  doTasksShareResources: vi.fn(() => false),
 }));
 
 import { canPlaceTask, getTaskSlots } from "../../src/utils/timeUtils";
