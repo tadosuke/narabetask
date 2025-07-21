@@ -49,7 +49,7 @@ describe('timeUtils', () => {
     });
   });
 
-  describe('timeToMinutes and minutesToTime', () => {
+  describe('timeToMinutes と minutesToTime', () => {
     it('時刻文字列を分に正しく変換できる', () => {
       expect(timeToMinutes('09:00')).toBe(540);
       expect(timeToMinutes('12:30')).toBe(750);

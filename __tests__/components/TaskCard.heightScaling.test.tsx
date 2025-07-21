@@ -4,7 +4,7 @@ import { render } from "@testing-library/react";
 import { TaskCard } from "../../src/components/TaskCard";
 import type { Task } from "../../src/types";
 
-describe("TaskCard Height Scaling", () => {
+describe("タスクカード - 高さスケーリング", () => {
   const baseTask: Task = {
     id: "1",
     name: "テストタスク",
@@ -13,7 +13,7 @@ describe("TaskCard Height Scaling", () => {
     isPlaced: false,
   };
 
-  it("should have default height (60px) for staging tasks", () => {
+  it("ステージングタスクにはデフォルトの高さ（60px）を持つ", () => {
     const stagingTask = { ...baseTask, isPlaced: false };
     const { container } = render(<TaskCard task={stagingTask} />);
     
@@ -21,7 +21,7 @@ describe("TaskCard Height Scaling", () => {
     expect(taskCard).toHaveStyle({ height: '60px' });
   });
 
-  it("should scale height based on duration for placed tasks", () => {
+  it("配置されたタスクの場合、所要時間に基づいて高さをスケールする", () => {
     const placedTask15min = { ...baseTask, isPlaced: true, duration: 15, startTime: "09:00" };
     const { container: container15 } = render(<TaskCard task={placedTask15min} />);
     
@@ -35,7 +35,7 @@ describe("TaskCard Height Scaling", () => {
     expect(taskCard30).toHaveStyle({ height: '80px' }); // 2 slots * 40px
   });
 
-  it("should scale height for longer durations", () => {
+  it("より長い所要時間の場合に高さをスケールする", () => {
     const placedTask90min = { ...baseTask, isPlaced: true, duration: 90, startTime: "09:00" };
     const { container } = render(<TaskCard task={placedTask90min} />);
     
@@ -43,7 +43,7 @@ describe("TaskCard Height Scaling", () => {
     expect(taskCard).toHaveStyle({ height: '240px' }); // 6 slots * 40px (90min/15min = 6 slots)
   });
 
-  it("should use absolute positioning for placed tasks in timeline", () => {
+  it("タイムラインの配置されたタスクに絶対位置指定を使用する", () => {
     const placedTask = { ...baseTask, isPlaced: true, startTime: "09:00" };
     const style = {
       position: 'absolute' as const,
@@ -65,7 +65,7 @@ describe("TaskCard Height Scaling", () => {
     });
   });
 
-  it("should maintain minimum height property", () => {
+  it("最小高さプロパティを維持する", () => {
     const placedTask = { ...baseTask, isPlaced: true, duration: 60, startTime: "09:00" };
     const { container } = render(<TaskCard task={placedTask} />);
     

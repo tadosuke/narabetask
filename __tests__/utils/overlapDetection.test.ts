@@ -1,21 +1,21 @@
 import { describe, it, expect } from 'vitest';
 import { findOverlappingTasks, doTasksShareResources } from '../../src/utils/timeUtils';
 
-describe('overlap detection', () => {
+describe('重複検出', () => {
   describe('doTasksShareResources', () => {
-    it('should return true when tasks share at least one resource', () => {
+    it('タスクが少なくとも一つのリソースを共有する場合にtrueを返す', () => {
       const resources1 = ['self', 'machine'];
       const resources2 = ['machine', 'network'];
       expect(doTasksShareResources(resources1, resources2)).toBe(true);
     });
 
-    it('should return false when tasks share no resources', () => {
+    it('タスクがリソースを共有しない場合にfalseを返す', () => {
       const resources1 = ['self'];
       const resources2 = ['machine', 'network'];
       expect(doTasksShareResources(resources1, resources2)).toBe(false);
     });
 
-    it('should return true when all resources are the same', () => {
+    it('すべてのリソースが同じ場合にtrueを返す', () => {
       const resources1 = ['self', 'machine'];
       const resources2 = ['self', 'machine'];
       expect(doTasksShareResources(resources1, resources2)).toBe(true);
@@ -23,7 +23,7 @@ describe('overlap detection', () => {
   });
 
   describe('findOverlappingTasks', () => {
-    it('should detect overlap when tasks share time and resources', () => {
+    it('タスクが時間とリソースを共有する場合に重複を検出する', () => {
       const tasks = [
         {
           id: 'task1',
@@ -46,7 +46,7 @@ describe('overlap detection', () => {
       expect(overlapping.has('task2')).toBe(true);
     });
 
-    it('should not detect overlap when tasks share time but not resources', () => {
+    it('タスクが時間を共有するがリソースを共有しない場合は重複を検出しない', () => {
       const tasks = [
         {
           id: 'task1',
@@ -69,7 +69,7 @@ describe('overlap detection', () => {
       expect(overlapping.has('task2')).toBe(false);
     });
 
-    it('should not detect overlap when tasks share resources but not time', () => {
+    it('タスクがリソースを共有するが時間を共有しない場合は重複を検出しない', () => {
       const tasks = [
         {
           id: 'task1',
@@ -92,7 +92,7 @@ describe('overlap detection', () => {
       expect(overlapping.has('task2')).toBe(false);
     });
 
-    it('should ignore unplaced tasks', () => {
+    it('未配置のタスクを無視する', () => {
       const tasks = [
         {
           id: 'task1',
@@ -115,7 +115,7 @@ describe('overlap detection', () => {
       expect(overlapping.has('task2')).toBe(false);
     });
 
-    it('should ignore tasks without start time', () => {
+    it('開始時刻のないタスクを無視する', () => {
       const tasks = [
         {
           id: 'task1',

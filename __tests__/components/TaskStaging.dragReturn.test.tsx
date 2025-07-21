@@ -4,7 +4,7 @@ import { render, fireEvent } from "@testing-library/react";
 import { TaskStaging } from "../../src/components/TaskStaging";
 import type { Task } from "../../src/types";
 
-describe("TaskStaging - Drag Return Functionality", () => {
+describe("タスクステージング - ドラッグ戻り機能", () => {
   const unplacedTask: Task = {
     id: "1",
     name: "未配置タスク",
@@ -35,7 +35,7 @@ describe("TaskStaging - Drag Return Functionality", () => {
     vi.clearAllMocks();
   });
 
-  it("should handle drag over event on staging area", () => {
+  it("ステージングエリアでのドラッグオーバーイベントを処理する", () => {
     const { container } = render(<TaskStaging {...defaultProps} />);
     
     const stagingArea = container.querySelector('.task-staging');
@@ -47,7 +47,7 @@ describe("TaskStaging - Drag Return Functionality", () => {
     expect(dragOverEvent.preventDefault).toHaveBeenCalled();
   });
 
-  it("should add drag-over class when dragging over staging area", () => {
+  it("ステージングエリアの上でドラッグしている時にdrag-overクラスを追加する", () => {
     const { container } = render(<TaskStaging {...defaultProps} />);
     
     const stagingArea = container.querySelector('.task-staging');
@@ -60,7 +60,7 @@ describe("TaskStaging - Drag Return Functionality", () => {
     expect(stagingArea).toHaveClass('task-staging--drag-over');
   });
 
-  it("should remove drag-over class when drag leaves staging area", () => {
+  it("ドラッグがステージングエリアから離れた時にdrag-overクラスを削除する", () => {
     const { container } = render(<TaskStaging {...defaultProps} />);
     
     const stagingArea = container.querySelector('.task-staging');
@@ -83,7 +83,7 @@ describe("TaskStaging - Drag Return Functionality", () => {
     expect(stagingArea).not.toHaveClass('task-staging--drag-over');
   });
 
-  it("should call onTaskReturn when placed task is dropped on staging area", () => {
+  it("配置済みタスクがステージングエリアにドロップされた時にonTaskReturnを呼び出す", () => {
     const mockOnTaskReturn = vi.fn();
     const { container } = render(
       <TaskStaging {...defaultProps} onTaskReturn={mockOnTaskReturn} />
@@ -103,7 +103,7 @@ describe("TaskStaging - Drag Return Functionality", () => {
     expect(mockOnTaskReturn).toHaveBeenCalledWith("2");
   });
 
-  it("should not call onTaskReturn when unplaced task is dropped on staging area", () => {
+  it("未配置タスクがステージングエリアにドロップされた時はonTaskReturnを呼び出さない", () => {
     const mockOnTaskReturn = vi.fn();
     const { container } = render(
       <TaskStaging {...defaultProps} onTaskReturn={mockOnTaskReturn} />
@@ -123,7 +123,7 @@ describe("TaskStaging - Drag Return Functionality", () => {
     expect(mockOnTaskReturn).not.toHaveBeenCalled();
   });
 
-  it("should not call onTaskReturn when non-existent task is dropped", () => {
+  it("存在しないタスクがドロップされた時はonTaskReturnを呼び出さない", () => {
     const mockOnTaskReturn = vi.fn();
     const { container } = render(
       <TaskStaging {...defaultProps} onTaskReturn={mockOnTaskReturn} />
@@ -143,7 +143,7 @@ describe("TaskStaging - Drag Return Functionality", () => {
     expect(mockOnTaskReturn).not.toHaveBeenCalled();
   });
 
-  it("should call onDragEnd when drop occurs", () => {
+  it("ドロップが発生した時にonDragEndを呼び出す", () => {
     const mockOnDragEnd = vi.fn();
     const { container } = render(
       <TaskStaging {...defaultProps} onDragEnd={mockOnDragEnd} />
@@ -162,7 +162,7 @@ describe("TaskStaging - Drag Return Functionality", () => {
     expect(mockOnDragEnd).toHaveBeenCalled();
   });
 
-  it("should remove drag-over class when drop occurs", () => {
+  it("ドロップが発生した時にdrag-overクラスを削除する", () => {
     const { container } = render(<TaskStaging {...defaultProps} />);
     
     const stagingArea = container.querySelector('.task-staging');
