@@ -24,8 +24,10 @@ const resourceTypeOptions: Array<{ value: ResourceType; label: string }> = [
   { value: 'network', label: 'ネットワーク' }
 ];
 
-/** 所要時間の選択肢一覧（15分刻み） */
-const durationOptions = [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180];
+/** 所要時間のスライダー設定 */
+const DURATION_MIN = 15; // 最小値: 15分
+const DURATION_MAX = 480; // 最大値: 8時間 = 480分
+const DURATION_STEP = 15; // 15分刻み
 
 /**
  * タスクサイドバーコンポーネント
@@ -146,17 +148,21 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
 
         <div className="task-sidebar__field">
           <label htmlFor="task-duration">工数</label>
-          <select
-            id="task-duration"
-            value={duration}
-            onChange={(e) => handleDurationChange(Number(e.target.value))}
-          >
-            {durationOptions.map(option => (
-              <option key={option} value={option}>
-                {formatDuration(option)}
-              </option>
-            ))}
-          </select>
+          <div className="task-sidebar__slider-container">
+            <input
+              id="task-duration"
+              type="range"
+              min={DURATION_MIN}
+              max={DURATION_MAX}
+              step={DURATION_STEP}
+              value={duration}
+              onChange={(e) => handleDurationChange(Number(e.target.value))}
+              className="task-sidebar__slider"
+            />
+            <div className="task-sidebar__slider-display">
+              {formatDuration(duration)}
+            </div>
+          </div>
         </div>
 
         <div className="task-sidebar__field">
