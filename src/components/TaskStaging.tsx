@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import type { Task } from '../types';
-import { TaskCard } from './TaskCard';
+import { TaskStagingHeader } from './TaskStagingHeader';
+import { TaskStagingContents } from './TaskStagingContents';
+import { TaskStagingInstructions } from './TaskStagingInstructions';
 import './TaskStaging.css';
 
 /**
@@ -36,9 +38,6 @@ export const TaskStaging: React.FC<TaskStagingProps> = ({
   onDragEnd,
   onTaskReturn
 }) => {
-  /** まだタイムラインに配置されていないタスクを取得 */
-  const unplacedTasks = tasks.filter(task => !task.isPlaced);
-  
   /** ドラッグオーバー状態の管理 */
   const [isDragOver, setIsDragOver] = useState(false);
 
@@ -92,47 +91,17 @@ export const TaskStaging: React.FC<TaskStagingProps> = ({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="task-staging__header">
-        <h3>タスク一覧</h3>
-        <button 
-          className="task-staging__add-button"
-          onClick={onAddTask}
-        >
-          + 新しいタスク
-        </button>
-      </div>
+      <TaskStagingHeader onAddTask={onAddTask} />
       
-      <div className="task-staging__content">
-        {unplacedTasks.length === 0 ? (
-          <div className="task-staging__empty">
-            タスクがありません。<br />
-            「新しいタスク」ボタンでタスクを作成してください。
-          </div>
-        ) : (
-          <div className="task-staging__list">
-            {unplacedTasks.map(task => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                isSelected={selectedTask?.id === task.id}
-                isOverlapping={false} // Unplaced tasks cannot overlap
-                onClick={() => onTaskClick(task)}
-                onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
-                onDragEnd={onDragEnd}
-              />
-            ))}
-          </div>
-        )}
-        
-        <div className="task-staging__instructions">
-          <p><strong>使い方:</strong></p>
-          <ul>
-            <li>タスクをクリックして設定を編集</li>
-            <li>タスクをドラッグしてタイムラインに配置</li>
-            <li>配置したタスクをドラッグしてここに戻すことも可能</li>
-          </ul>
-        </div>
-      </div>
+      <TaskStagingContents
+        tasks={tasks}
+        selectedTask={selectedTask}
+        onTaskClick={onTaskClick}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+      />
+      
+      <TaskStagingInstructions />
     </div>
   );
 };

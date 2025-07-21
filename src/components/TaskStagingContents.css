@@ -1,0 +1,21 @@
+.task-staging__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.task-staging__empty {
+  color: #999;
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #ddd;
+  line-height: 1.6;
+}
+
+.task-staging__list {
+  flex: 1;
+  margin-bottom: 20px;
+}
