@@ -187,7 +187,7 @@ describe("TaskSidebar", () => {
     expect(mockOnTaskUpdate).not.toHaveBeenCalled();
   });
 
-  it("リソースタイプが選択されていない場合は自動保存を行わない", async () => {
+  it("リソースタイプが選択されていない場合でも有効なタスク名があれば自動保存を行う", async () => {
     const mockOnTaskUpdate = vi.fn();
     const user = userEvent.setup();
     
@@ -199,8 +199,8 @@ describe("TaskSidebar", () => {
     await user.clear(nameInput);
     await user.type(nameInput, "新しい名前");
 
-    // リソースタイプが空では自動保存されない
-    expect(mockOnTaskUpdate).not.toHaveBeenCalled();
+    // 有効なタスク名があればリソースタイプが空でも自動保存される
+    expect(mockOnTaskUpdate).toHaveBeenCalled();
   });
 
   it("保存ボタンが表示されない", () => {
