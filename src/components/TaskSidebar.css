@@ -40,26 +40,7 @@
   overflow-x: hidden;
 }
 
-.task-sidebar__field {
-  margin-bottom: 20px;
-}
 
-.task-sidebar__field label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #333;
-}
-
-.task-sidebar__field input,
-.task-sidebar__field select {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.2s ease;
-}
 
 .task-sidebar__slider-container {
   display: flex;
@@ -148,20 +129,8 @@
   color: #333;
 }
 
-.task-sidebar__field input:focus,
-.task-sidebar__field select:focus {
-  outline: none;
-  border-color: #4caf50;
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
-}
 
-.task-sidebar__info {
-  background-color: #f8f9fa;
-  padding: 12px;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  font-size: 14px;
-}
+
 
 .task-sidebar__actions {
   display: flex;
