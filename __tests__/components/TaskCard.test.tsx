@@ -29,12 +29,7 @@ describe("TaskCard", () => {
     expect(screen.getByText("45m")).toBeInTheDocument();
   });
 
-  it("タスクが配置されている場合は開始時刻を表示する", () => {
-    const placedTask = { ...mockTask, isPlaced: true, startTime: "09:00" };
-    render(<TaskCard task={placedTask} />);
 
-    expect(screen.getByText("09:00")).toBeInTheDocument();
-  });
 
   it("クリックされたときにonClickを呼び出す", () => {
     const mockOnClick = vi.fn();

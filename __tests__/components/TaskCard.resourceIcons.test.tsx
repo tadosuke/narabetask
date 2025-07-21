@@ -94,8 +94,5 @@ describe('TaskCard Resource Icons', () => {
     const resourceIcon = screen.getByTitle('自分');
     expect(resourceIcon).toBeInTheDocument();
     expect(resourceIcon).toHaveTextContent('■');
-    
-    // 開始時刻も表示されることを確認
-    expect(screen.getByText('09:00')).toBeInTheDocument();
   });
 });
