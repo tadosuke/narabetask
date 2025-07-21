@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Task } from '../types';
 import { calculateEndTime } from '../utils/timeUtils';
+import './TaskInfoDisplay.css';
 
 /**
  * TaskInfoDisplayコンポーネントのプロパティ
