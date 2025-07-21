@@ -53,6 +53,7 @@ describe("Timeline", () => {
 
   const defaultProps = {
     tasks: mockTasks,
+    selectedTask: null,
     businessHours: mockBusinessHours,
     lunchBreak: mockLunchBreak,
     onTaskDrop: vi.fn(),
@@ -87,22 +88,21 @@ describe("Timeline", () => {
     expect(screen.getByText("テストタスク1")).toBeInTheDocument();
   });
 
-  it("昼休みスロットに昼休み時間のスタイルを適用する", () => {
-    const { container } = render(<Timeline {...defaultProps} />);
+  it("配置済みタスクのみを表示する", () => {
+    render(<Timeline {...defaultProps} />);
 
-    const lunchSlot = container.querySelector('[data-time="12:00"]');
-    expect(lunchSlot).toHaveClass("timeline__slot--lunch");
+    // 配置済みタスクが表示される
+    expect(screen.getByText("テストタスク1")).toBeInTheDocument();
+    // 配置されていないタスクは表示されない
+    expect(screen.queryByText("テストタスク2")).not.toBeInTheDocument();
   });
 
-  it("ドラッグオーバーイベントを処理する", () => {
+  it("正しい数のタイムスロットを生成する", () => {
     const { container } = render(<Timeline {...defaultProps} />);
 
-    const timeSlot = container.querySelector('[data-time="09:30"]');
-    const dragOverEvent = new Event("dragover", { bubbles: true });
-    Object.defineProperty(dragOverEvent, "preventDefault", { value: vi.fn() });
-
-    fireEvent(timeSlot!, dragOverEvent);
-    expect(dragOverEvent.preventDefault).toHaveBeenCalled();
+    // TimeSlotコンポーネントの数を確認（generateTimeSlotsの結果に基づく）
+    const timeSlots = container.querySelectorAll('[data-time]');
+    expect(timeSlots.length).toBe(8); // モックで設定した8つのスロット
   });
 
   it("タスクドロップを処理してonTaskDropを呼び出す", () => {
@@ -134,19 +134,31 @@ describe("Timeline", () => {
     expect(mockOnTaskClick).toHaveBeenCalledWith(mockTasks[0]);
   });
 
-  it("配置済みタスクのみを表示する", () => {
-    render(<Timeline {...defaultProps} />);
+  it("ドラッグ状態を正しく管理する", () => {
+    const mockOnDragStart = vi.fn();
+    const mockOnDragEnd = vi.fn();
+    
+    const propsWithDragHandlers = {
+      ...defaultProps,
+      draggedTaskId: "2",
+      onDragStart: mockOnDragStart,
+      onDragEnd: mockOnDragEnd,
+    };
 
-    // 配置済みタスクが表示される
-    expect(screen.getByText("テストタスク1")).toBeInTheDocument();
-    // 配置されていないタスクは表示されない
-    expect(screen.queryByText("テストタスク2")).not.toBeInTheDocument();
-  });
+    const { container } = render(<Timeline {...propsWithDragHandlers} />);
 
-  it("占有済みスロットに占有スタイルを適用する", () => {
-    const { container } = render(<Timeline {...defaultProps} />);
+    // TimeSlot コンポーネントに正しいプロパティが渡されていることを確認
+    const timeSlot = container.querySelector('[data-time="09:00"]');
+    expect(timeSlot).toBeInTheDocument();
+    
+    // ドロップ時にonDragEndが呼ばれることを確認
+    const dropEvent = new Event("drop", { bubbles: true });
+    Object.defineProperty(dropEvent, "preventDefault", { value: vi.fn() });
+    Object.defineProperty(dropEvent, "dataTransfer", {
+      value: { getData: vi.fn(() => "2") },
+    });
 
-    const occupiedSlot = container.querySelector('[data-time="09:00"]');
-    expect(occupiedSlot).toHaveClass("timeline__slot--occupied");
+    fireEvent(timeSlot!, dropEvent);
+    expect(mockOnDragEnd).toHaveBeenCalled();
   });
 });

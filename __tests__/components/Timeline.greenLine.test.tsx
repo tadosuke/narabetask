@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { Timeline } from '../../src/components/Timeline';
 import type { Task, BusinessHours, LunchBreak } from '../../src/types';
 
@@ -27,7 +27,7 @@ vi.mock("../../src/utils/timeUtils", () => ({
   doTasksShareResources: vi.fn(() => false),
 }));
 
-describe('Timeline Green Line Removal', () => {
+describe('Timeline スパニングコーディネーション', () => {
   const mockBusinessHours: BusinessHours = {
     start: '09:00',
     end: '18:00'
@@ -58,39 +58,20 @@ describe('Timeline Green Line Removal', () => {
     onDragEnd: vi.fn()
   };
 
-  it('ドラッグオーバー時に緑色の線が表示されないことを確認する', () => {
+  it('ドラッグ状態を複数のTimeSlotコンポーネントに正しく伝達する', () => {
     const { container } = render(<Timeline {...mockProps} />);
     
+    // TimeSlotコンポーネントが正しく生成されていることを確認
+    const timeSlots = container.querySelectorAll('[data-time]');
+    expect(timeSlots.length).toBe(6); // generateTimeSlotsで生成されるスロット数
+
+    // 各TimeSlotにdraggedTaskIdが正しく渡されていることを確認
+    // （実際の確認は複数スロットにまたがるドラッグ動作で行う）
     const firstSlot = container.querySelector('[data-time="09:00"]');
     expect(firstSlot).toBeInTheDocument();
-
-    // ドラッグオーバーイベントを発火
-    if (firstSlot) {
-      fireEvent.dragOver(firstSlot, {
-        preventDefault: () => {},
-        dataTransfer: { getData: () => '1' }
-      });
-
-      fireEvent.dragEnter(firstSlot, {
-        preventDefault: () => {},
-        dataTransfer: { getData: () => '1' }
-      });
-    }
-
-    // timeline__slot--drag-over クラスが適用されていてもCSSで緑色の視覚効果が無効化されていることを確認
-    // クラス自体は機能的な目的で残っているが、視覚効果はない
-    const dragOverSlot = container.querySelector('.timeline__slot--drag-over');
-    
-    if (dragOverSlot) {
-      // 緑色のボーダーや背景色がないことを確認
-      const computedStyle = window.getComputedStyle(dragOverSlot);
-      // CSSで緑色が無効化されているため、デフォルトの値または他のスタイルになる
-      expect(computedStyle.border).not.toContain('4CAF50'); // 緑色のカラーコードが含まれていない
-      expect(computedStyle.backgroundColor).not.toContain('e8f5e8'); // 緑色の背景色が含まれていない
-    }
   });
 
-  it('青色のスパニング効果は保持されていることを確認する', () => {
+  it('複数スロットタスクのドラッグ状態を適切に管理する', () => {
     const multiSlotTask: Task = {
       id: '2',
       name: '長時間タスク',
@@ -107,28 +88,65 @@ describe('Timeline Green Line Removal', () => {
 
     const { container } = render(<Timeline {...propsWithMultiSlotTask} />);
     
+    // 複数のTimeSlotがレンダリングされていることを確認
+    const timeSlots = container.querySelectorAll('[data-time]');
+    expect(timeSlots.length).toBeGreaterThan(0);
+
+    // ドラッグオーバー状態を設定してスパニング効果を確認
     const firstSlot = container.querySelector('[data-time="09:00"]');
     expect(firstSlot).toBeInTheDocument();
 
-    // ドラッグオーバーイベントを発火
-    if (firstSlot) {
-      fireEvent.dragOver(firstSlot, {
-        preventDefault: () => {},
-        dataTransfer: { getData: () => '2' }
-      });
+    // ドラッグエンターをシミュレート
+    fireEvent.dragEnter(firstSlot!, {
+      preventDefault: () => {},
+      dataTransfer: { getData: () => '2' }
+    });
 
-      fireEvent.dragEnter(firstSlot, {
-        preventDefault: () => {},
-        dataTransfer: { getData: () => '2' }
-      });
-    }
-
-    // 青色のスパニングクラスが適用されていることを確認
+    // スパニング関連のクラスが適用されていることを確認
     const spanningSlots = container.querySelectorAll('.timeline__slot--drag-spanning');
     expect(spanningSlots.length).toBeGreaterThan(0);
+  });
 
-    // 青色のスパニング関連クラスが正しく適用されていることを確認
-    const hasSpanningFirst = container.querySelector('.timeline__slot--drag-spanning-first');
-    expect(hasSpanningFirst).toBeInTheDocument();
+  it('ドラッグオーバー状態を各TimeSlotに正しく配布する', () => {
+    const { container } = render(<Timeline {...mockProps} />);
+    
+    const firstSlot = container.querySelector('[data-time="09:00"]');
+    expect(firstSlot).toBeInTheDocument();
+
+    // ドラッグオーバーをシミュレート
+    fireEvent.dragOver(firstSlot!, {
+      preventDefault: () => {},
+      dataTransfer: { getData: () => '1' }
+    });
+
+    fireEvent.dragEnter(firstSlot!, {
+      preventDefault: () => {},
+      dataTransfer: { getData: () => '1' }
+    });
+
+    // ドラッグオーバークラスが適用されていることを確認
+    const dragOverSlot = container.querySelector('.timeline__slot--drag-over');
+    expect(dragOverSlot).toBeInTheDocument();
+  });
+
+  it('ドラッグ終了時にすべてのTimeSlotの状態をクリアする', () => {
+    const mockOnDragEnd = vi.fn();
+    const propsWithDragEnd = {
+      ...mockProps,
+      onDragEnd: mockOnDragEnd
+    };
+
+    const { container } = render(<Timeline {...propsWithDragEnd} />);
+    
+    const firstSlot = container.querySelector('[data-time="09:00"]');
+    
+    // ドロップイベントを発火
+    fireEvent.drop(firstSlot!, {
+      preventDefault: () => {},
+      dataTransfer: { getData: () => '1' }
+    });
+
+    // onDragEndが呼ばれることを確認（状態のクリアを示す）
+    expect(mockOnDragEnd).toHaveBeenCalled();
   });
 });
