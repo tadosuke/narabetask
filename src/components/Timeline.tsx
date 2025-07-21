@@ -112,7 +112,10 @@ export const Timeline: React.FC<TimelineProps> = ({
 
   /** 指定した時刻のタイムスロットをレンダリング */
   const renderTimeSlot = (time: string) => {
-    const task = placedTasks.find(t => t.startTime === time);
+    // Find task that starts at this time slot
+    const startingTask = placedTasks.find(t => t.startTime === time);
+    
+    // Check if this slot is occupied by any task (starting or continuing)
     const isOccupied = occupiedSlots.has(time);
     const isLunchTime = time >= lunchBreak.start && time < lunchBreak.end;
     
@@ -146,11 +149,11 @@ export const Timeline: React.FC<TimelineProps> = ({
         data-time={time}
       >
         <div className="timeline__time-label">{time}</div>
-        {task && (
+        {startingTask && (
           <TaskCard
-            task={task}
-            onClick={() => onTaskClick(task)}
-            onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
+            task={startingTask}
+            onClick={() => onTaskClick(startingTask)}
+            onDragStart={onDragStart ? () => onDragStart(startingTask.id) : undefined}
             onDragEnd={onDragEnd}
           />
         )}

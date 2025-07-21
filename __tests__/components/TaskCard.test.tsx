@@ -59,4 +59,28 @@ describe("TaskCard", () => {
     expect(taskCard).toHaveClass("task-card--placed");
     expect(taskCard).not.toHaveClass("task-card--staging");
   });
+
+  it("should have correct height for placed tasks based on duration", () => {
+    const placedTask = { ...mockTask, isPlaced: true, duration: 60 }; // 1 hour = 4 slots * 40px - 2px = 158px
+    render(<TaskCard task={placedTask} />);
+    const taskCard = screen.getByText("テストタスク").closest(".task-card") as HTMLElement;
+
+    expect(taskCard.style.height).toBe("158px");
+  });
+
+  it("should have default height for staging tasks", () => {
+    const stagingTask = { ...mockTask, isPlaced: false };
+    render(<TaskCard task={stagingTask} />);
+    const taskCard = screen.getByText("テストタスク").closest(".task-card") as HTMLElement;
+
+    expect(taskCard.style.height).toBe("60px");
+  });
+
+  it("should scale height correctly for different durations", () => {
+    const shortTask = { ...mockTask, isPlaced: true, duration: 30 }; // 30min = 2 slots * 40px - 2px = 78px
+    render(<TaskCard task={shortTask} />);
+    const taskCard = screen.getByText("テストタスク").closest(".task-card") as HTMLElement;
+
+    expect(taskCard.style.height).toBe("78px");
+  });
 });

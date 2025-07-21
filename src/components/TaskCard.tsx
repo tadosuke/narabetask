@@ -60,6 +60,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     ? `${Math.floor(task.duration / 60)}h ${task.duration % 60}m`
     : `${task.duration}m`;
 
+  /** タイムラインスロットの高さ（CSSのmin-heightと一致させる） */
+  const SLOT_HEIGHT = 40; // px
+
+  /** タスクの高さを計算（配置済みの場合は工数に基づいて計算） */
+  const taskHeight = task.isPlaced 
+    ? (task.duration / 15) * SLOT_HEIGHT - 2 // -2px for margin adjustments
+    : 60; // default height for staging area
+
   return (
     <div
       className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'}`}
@@ -70,7 +78,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       style={{
         ...style,
         backgroundColor: resourceTypeColors[task.resourceType],
-        width: task.isPlaced ? `${(task.duration / 15) * 60}px` : '200px'
+        width: task.isPlaced ? `${(task.duration / 15) * 60}px` : '200px',
+        height: `${taskHeight}px`
       }}
     >
       <div className="task-card__header">
