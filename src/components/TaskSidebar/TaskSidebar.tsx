@@ -2,7 +2,7 @@ import React from 'react';
 import type { Task } from '../../types';
 import { useTaskSidebarContext } from '../../contexts/useTaskSidebarContext';
 import { TaskNameField } from './TaskNameField';
-import { TaskDurationField } from './TaskDurationField';
+import { TaskDurationSlider } from './TaskDurationSlider';
 import { ResourceTypeField } from './ResourceTypeField';
 import { TaskInfoDisplay } from './TaskInfoDisplay';
 import { TaskActions } from './TaskActions';
@@ -57,7 +57,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           onNameChange={handleNameChange}
         />
 
-        <TaskDurationField
+        <TaskDurationSlider
           duration={duration}
           onDurationChange={handleDurationChange}
         />
