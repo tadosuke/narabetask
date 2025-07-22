@@ -24,14 +24,8 @@ const TaskSidebarWrapper: React.FC<TaskSidebarWrapperProps> = ({
   onTaskUpdate,
   onTaskRemove,
 }) => (
-  <TaskSidebarProvider 
-    selectedTask={selectedTask}
-    onTaskUpdate={onTaskUpdate}
-  >
-    <TaskSidebar
-      selectedTask={selectedTask}
-      onTaskRemove={onTaskRemove}
-    />
+  <TaskSidebarProvider selectedTask={selectedTask} onTaskUpdate={onTaskUpdate}>
+    <TaskSidebar selectedTask={selectedTask} onTaskRemove={onTaskRemove} />
   </TaskSidebarProvider>
 );
 
@@ -83,7 +77,6 @@ describe("TaskSidebar", () => {
     expect(screen.getByText("タスク設定")).toBeInTheDocument();
     expect(screen.getByLabelText("タスク名")).toBeInTheDocument();
     expect(screen.getByLabelText("工数")).toBeInTheDocument();
-    expect(screen.getByText("リソースタイプ")).toBeInTheDocument();
   });
 
   it("フォームフィールドに選択されたタスクのデータを入力する", () => {
@@ -92,20 +85,18 @@ describe("TaskSidebar", () => {
     const nameInput = screen.getByDisplayValue("テストタスク");
     const durationSlider = screen.getByRole("slider");
 
-    // Check that the "自分" checkbox is checked
-    const selfCheckbox = screen.getByRole("checkbox", { name: "自分" });
-
     expect(nameInput).toBeInTheDocument();
     expect(durationSlider).toBeInTheDocument();
     expect(durationSlider).toHaveValue("60"); // 1時間 = 60分
-    expect(selfCheckbox).toBeChecked();
 
     // Check that duration display shows "1時間"
     expect(screen.getByText("1時間")).toBeInTheDocument();
   });
 
   it("配置済みタスクの開始時間と終了時間を表示する", () => {
-    render(<TaskSidebarWrapper {...defaultProps} selectedTask={mockPlacedTask} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} selectedTask={mockPlacedTask} />
+    );
 
     expect(screen.getByText("開始時間:")).toBeInTheDocument();
     expect(screen.getByText("終了時間:")).toBeInTheDocument();
@@ -143,21 +134,12 @@ describe("TaskSidebar", () => {
     expect(durationSlider).toHaveValue("45");
   });
 
-  it("変更されたときにリソースタイプを更新する", async () => {
-    const user = userEvent.setup();
-    render(<TaskSidebarWrapper {...defaultProps} />);
-
-    // Find the "他人" checkbox by its label text
-    const othersCheckbox = screen.getByRole("checkbox", { name: "他人" });
-    await user.click(othersCheckbox);
-
-    expect(othersCheckbox).toBeChecked();
-  });
-
   it("タスク名が変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
     const mockOnTaskUpdate = vi.fn();
     const user = userEvent.setup();
-    render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />
+    );
 
     const nameInput = screen.getByLabelText("タスク名");
     await user.clear(nameInput);
@@ -173,7 +155,9 @@ describe("TaskSidebar", () => {
 
   it("所要時間が変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
     const mockOnTaskUpdate = vi.fn();
-    render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />
+    );
 
     const durationSlider = screen.getByRole("slider");
 
@@ -188,55 +172,18 @@ describe("TaskSidebar", () => {
     });
   });
 
-  it("リソースタイプが変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
-    const mockOnTaskUpdate = vi.fn();
-    const user = userEvent.setup();
-    render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
-
-    // Find the "他人" checkbox by its label text
-    const othersCheckbox = screen.getByRole("checkbox", { name: "他人" });
-    await user.click(othersCheckbox);
-
-    await waitFor(() => {
-      expect(mockOnTaskUpdate).toHaveBeenCalledWith({
-        ...mockTask,
-        resourceTypes: ["self", "others"],
-      });
-    });
-  });
-
   it("タスク名が空の場合は自動保存を行わない", async () => {
     const mockOnTaskUpdate = vi.fn();
     const user = userEvent.setup();
-    render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />
+    );
 
     const nameInput = screen.getByLabelText("タスク名");
     await user.clear(nameInput);
 
     // 空の名前では自動保存されない
     expect(mockOnTaskUpdate).not.toHaveBeenCalled();
-  });
-
-  it("リソースタイプが選択されていない場合でも有効なタスク名があれば自動保存を行う", async () => {
-    const mockOnTaskUpdate = vi.fn();
-    const user = userEvent.setup();
-
-    // リソースタイプが空のタスクを使用
-    const taskWithNoResources = { ...mockTask, resourceTypes: [] };
-    render(
-      <TaskSidebarWrapper
-        {...defaultProps}
-        selectedTask={taskWithNoResources}
-        onTaskUpdate={mockOnTaskUpdate}
-      />
-    );
-
-    const nameInput = screen.getByLabelText("タスク名");
-    await user.clear(nameInput);
-    await user.type(nameInput, "新しい名前");
-
-    // 有効なタスク名があればリソースタイプが空でも自動保存される
-    expect(mockOnTaskUpdate).toHaveBeenCalled();
   });
 
   it("保存ボタンが表示されない", () => {
@@ -258,7 +205,9 @@ describe("TaskSidebar", () => {
       true
     );
 
-    render(<TaskSidebarWrapper {...defaultProps} onTaskRemove={mockOnTaskRemove} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskRemove={mockOnTaskRemove} />
+    );
 
     fireEvent.click(screen.getByText("削除"));
 
@@ -272,7 +221,9 @@ describe("TaskSidebar", () => {
       false
     );
 
-    render(<TaskSidebarWrapper {...defaultProps} onTaskRemove={mockOnTaskRemove} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskRemove={mockOnTaskRemove} />
+    );
 
     fireEvent.click(screen.getByText("削除"));
 
@@ -282,7 +233,9 @@ describe("TaskSidebar", () => {
 
   it("スライダーで最小値と最大値を設定できる", async () => {
     const mockOnTaskUpdate = vi.fn();
-    render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />
+    );
 
     const durationSlider = screen.getByRole("slider");
 
@@ -331,15 +284,6 @@ describe("TaskSidebar", () => {
     expect(screen.getByText("1時間")).toBeInTheDocument(); // default 60 minutes
   });
 
-  it("すべてのリソースタイプオプションを表示する", () => {
-    render(<TaskSidebarWrapper {...defaultProps} />);
-
-    expect(screen.getByText("自分")).toBeInTheDocument();
-    expect(screen.getByText("他人")).toBeInTheDocument();
-    expect(screen.getByText("マシンパワー")).toBeInTheDocument();
-    expect(screen.getByText("ネットワーク")).toBeInTheDocument();
-  });
-
   it("タスクが変更されたときにフォームをリセットする", () => {
     const { rerender } = render(<TaskSidebarWrapper {...defaultProps} />);
 
@@ -349,7 +293,6 @@ describe("TaskSidebar", () => {
       id: "2",
       name: "新しいタスク",
       duration: 30,
-      resourceTypes: ["machine"],
       isPlaced: false,
     };
 
@@ -361,12 +304,6 @@ describe("TaskSidebar", () => {
     const durationSlider = screen.getByRole("slider");
     expect(durationSlider).toHaveValue("30");
     expect(screen.getByText("30分")).toBeInTheDocument();
-
-    // Check that the machine checkbox is checked
-    const machineCheckbox = screen.getByRole("checkbox", {
-      name: "マシンパワー",
-    });
-    expect(machineCheckbox).toBeChecked();
   });
 
   it("タスク名入力フィールドにフォーカスしたときにテキストが全選択される", async () => {
