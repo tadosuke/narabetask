@@ -2,20 +2,12 @@ import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent } from "@testing-library/react";
 import { renderTimelineWithProvider } from "./testUtils";
-import type { Task, BusinessHours, LunchBreak } from "../../../src/types";
-
-// Real timeUtils functions without mocking
-import { generateTimeSlots, canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
+import type { Task, BusinessHours } from "../../../src/types";
 
 describe("Timeline セルフ衝突コーディネーション", () => {
   const mockBusinessHours: BusinessHours = {
     start: "09:00",
     end: "17:00",
-  };
-
-  const mockLunchBreak: LunchBreak = {
-    start: "12:00",
-    end: "13:00",
   };
 
   beforeEach(() => {

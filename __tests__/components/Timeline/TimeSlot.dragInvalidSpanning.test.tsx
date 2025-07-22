@@ -25,17 +25,13 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
     },
   ];
 
-  const mockTimeSlots = ["09:00", "09:15", "09:30", "09:45", "10:00"];
-  const mockOccupiedSlots = new Set<string>();
-  const mockOverlappingTaskIds = new Set<string>();
-
   const defaultTimeSlotProps = {
     time: "09:30",
     isOccupied: false,
     dragOverSlot: "09:30",
     draggedTaskId: "1",
     selectedTask: null,
-    overlappingTaskIds: mockOverlappingTaskIds,
+    overlappingTaskIds: new Set<string>(),
     onDragOver: vi.fn(),
     onDragEnter: vi.fn(),
     onDragLeave: vi.fn(),

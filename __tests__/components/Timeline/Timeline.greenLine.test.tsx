@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
 import { fireEvent } from '@testing-library/react';
 import { renderTimelineWithProvider } from './testUtils';
-import type { Task, BusinessHours, LunchBreak } from '../../../src/types';
+import type { Task, BusinessHours } from '../../../src/types';
 
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({
@@ -31,11 +31,6 @@ describe('Timeline スパニングコーディネーション', () => {
   const mockBusinessHours: BusinessHours = {
     start: '09:00',
     end: '18:00'
-  };
-
-  const mockLunchBreak: LunchBreak = {
-    start: '12:00',
-    end: '13:00'
   };
 
   const mockTask: Task = {
