@@ -2,6 +2,7 @@ import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from '@testing-library/react';
 import { TaskSidebar } from '../../../src/components/TaskSidebar/TaskSidebar';
+import { TaskSidebarProvider } from '../../../src/contexts/TaskSidebarContext';
 import { TaskCard } from '../../../src/components/TaskCard/TaskCard';
 import { Task } from '../../../src/types';
 
@@ -13,18 +14,39 @@ const baseMockTask: Task = {
   isPlaced: false
 };
 
+// TaskSidebarをProviderでラップするヘルパーコンポーネント
+interface TaskSidebarWrapperProps {
+  selectedTask: Task | null;
+  onTaskUpdate: (task: Task) => void;
+  onTaskRemove: (taskId: string) => void;
+}
+
+const TaskSidebarWrapper: React.FC<TaskSidebarWrapperProps> = ({
+  selectedTask,
+  onTaskUpdate,
+  onTaskRemove,
+}) => (
+  <TaskSidebarProvider 
+    selectedTask={selectedTask}
+    onTaskUpdate={onTaskUpdate}
+  >
+    <TaskSidebar
+      selectedTask={selectedTask}
+      onTaskRemove={onTaskRemove}
+    />
+  </TaskSidebarProvider>
+);
+
 describe('TaskSidebar Resource Type Updates', () => {
   it('すべてのリソースタイプのチェックを外した場合でもタスクが更新される', () => {
     const onTaskUpdate = vi.fn();
     const onTaskRemove = vi.fn();
-    const onClose = vi.fn();
 
     render(
-      <TaskSidebar
+      <TaskSidebarWrapper
         selectedTask={baseMockTask}
         onTaskUpdate={onTaskUpdate}
         onTaskRemove={onTaskRemove}
-        onClose={onClose}
       />
     );
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { AppSettings } from './types';
 import { TaskProvider } from './contexts/TaskContext';
+import { TaskSidebarProvider } from './contexts/TaskSidebarContext';
 import { useTaskContext } from './contexts/useTaskContext';
 import { TaskStaging } from './components/TaskStaging';
 import { Timeline } from './components/Timeline';
@@ -110,11 +111,15 @@ function AppContent() {
           onLockToggle={toggleLock}
         />
         
-        <TaskSidebar
+        <TaskSidebarProvider 
           selectedTask={selectedTask}
           onTaskUpdate={updateTask}
-          onTaskRemove={removeTask}
-        />
+        >
+          <TaskSidebar
+            selectedTask={selectedTask}
+            onTaskRemove={removeTask}
+          />
+        </TaskSidebarProvider>
       </main>
     </div>
   );
