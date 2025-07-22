@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, fireEvent } from "@testing-library/react";
-import { Timeline } from "../../../src/components/Timeline/Timeline";
+import { fireEvent } from "@testing-library/react";
+import { renderTimelineWithProvider } from "./testUtils";
 import type { Task, BusinessHours, LunchBreak } from "../../../src/types";
 
 // Real timeUtils functions without mocking
@@ -37,17 +37,20 @@ describe("Timeline セルフ衝突コーディネーション", () => {
 
     const mockOnTaskDrop = vi.fn();
 
-    const { container } = render(
-      <Timeline
-        tasks={mockTasks}
-        selectedTask={null}
-        businessHours={mockBusinessHours}
-        lunchBreak={mockLunchBreak}
-        onTaskDrop={mockOnTaskDrop}
-        onTaskClick={() => {}}
-        draggedTaskId="1"
-      />
-    );
+    const { container } = renderTimelineWithProvider({
+      timelineProps: {
+        selectedTask: null,
+        businessHours: mockBusinessHours,
+        onTaskClick: () => {},
+        draggedTaskId: "1",
+      },
+      providerProps: {
+        tasks: mockTasks,
+        businessHours: mockBusinessHours,
+        onTaskDrop: mockOnTaskDrop,
+        draggedTaskId: "1",
+      }
+    });
 
     // 09:15のスロットにドロップしてみる（09:15-09:45になるので部分的にオーバーラップ）
     const timeSlot = container.querySelector('[data-time="09:15"]');
@@ -86,16 +89,18 @@ describe("Timeline セルフ衝突コーディネーション", () => {
       }
     ];
 
-    const { container } = render(
-      <Timeline
-        tasks={mockTasks}
-        selectedTask={null}
-        businessHours={mockBusinessHours}
-        lunchBreak={mockLunchBreak}
-        onTaskDrop={() => {}}
-        onTaskClick={() => {}}
-      />
-    );
+    const { container } = renderTimelineWithProvider({
+      timelineProps: {
+        selectedTask: null,
+        businessHours: mockBusinessHours,
+        onTaskClick: () => {},
+      },
+      providerProps: {
+        tasks: mockTasks,
+        businessHours: mockBusinessHours,
+        onTaskDrop: () => {},
+      }
+    });
 
     // タスク1が占有するスロット (09:00, 09:15)
     expect(container.querySelector('[data-time="09:00"]')).toHaveClass("timeline__slot--occupied");
@@ -129,17 +134,20 @@ describe("Timeline セルフ衝突コーディネーション", () => {
 
     const mockOnTaskDrop = vi.fn();
 
-    const { container } = render(
-      <Timeline
-        tasks={[placedTask, conflictTask]}
-        selectedTask={null}
-        businessHours={mockBusinessHours}
-        lunchBreak={mockLunchBreak}
-        onTaskDrop={mockOnTaskDrop}
-        onTaskClick={() => {}}
-        draggedTaskId="1"
-      />
-    );
+    const { container } = renderTimelineWithProvider({
+      timelineProps: {
+        selectedTask: null,
+        businessHours: mockBusinessHours,
+        onTaskClick: () => {},
+        draggedTaskId: "1",
+      },
+      providerProps: {
+        tasks: [placedTask, conflictTask],
+        businessHours: mockBusinessHours,
+        onTaskDrop: mockOnTaskDrop,
+        draggedTaskId: "1",
+      }
+    });
 
     // Task 1を09:30に移動しようとする（衝突しない位置）
     const timeSlot = container.querySelector('[data-time="09:30"]');
@@ -178,16 +186,18 @@ describe("Timeline セルフ衝突コーディネーション", () => {
       }
     ];
 
-    const { container } = render(
-      <Timeline
-        tasks={overlappingTasks}
-        selectedTask={null}
-        businessHours={mockBusinessHours}
-        lunchBreak={mockLunchBreak}
-        onTaskDrop={() => {}}
-        onTaskClick={() => {}}
-      />
-    );
+    const { container } = renderTimelineWithProvider({
+      timelineProps: {
+        selectedTask: null,
+        businessHours: mockBusinessHours,
+        onTaskClick: () => {},
+      },
+      providerProps: {
+        tasks: overlappingTasks,
+        businessHours: mockBusinessHours,
+        onTaskDrop: () => {},
+      }
+    });
 
     // 両方のタスクが表示されていることを確認
     expect(container.querySelector('[data-time="09:00"]')).toBeInTheDocument();
