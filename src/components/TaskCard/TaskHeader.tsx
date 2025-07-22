@@ -31,14 +31,14 @@ export const TaskHeader: React.FC<TaskHeaderProps> = ({ task }) => {
     : `${task.duration}m`;
 
   /** リソースタイプの表示名を作成 */
-  const resourceTypeLabels = task.resourceTypes.map(type => RESOURCE_TYPE_LABELS[type]).join(', ');
+  const resourceTypeLabels = (task.resourceTypes || []).map(type => RESOURCE_TYPE_LABELS[type]).join(', ');
 
   return (
     <div className="task-card__header">
       <span className="task-card__name">{task.name}</span>
       <div className="task-card__header-right">
         <span className="task-card__duration">{durationText}</span>
-        {task.resourceTypes.length > 0 && (
+        {(task.resourceTypes || []).length > 0 && (
           <div className="task-card__resources" title={resourceTypeLabels}>
             <span className="material-symbols-outlined">person</span>
           </div>

@@ -143,6 +143,12 @@ describe('Timeline スパニングコーディネーション', () => {
     const mockOnDragEnd = vi.fn();
 
     const { container } = renderTimelineWithProvider({
+      providerProps: {
+        tasks: [mockTask],
+        businessHours: mockBusinessHours,
+        onTaskDrop: vi.fn(),
+        onDragEnd: mockOnDragEnd,
+      },
       timelineProps: {
         ...mockProps,
         onDragEnd: mockOnDragEnd

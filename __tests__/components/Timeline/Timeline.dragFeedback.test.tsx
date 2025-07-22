@@ -101,6 +101,7 @@ describe("Timeline ドラッグコーディネーション", () => {
         tasks: mockTasks,
         businessHours: mockBusinessHours,
         onTaskDrop: vi.fn(),
+        onDragEnd: mockOnDragEnd,
       },
       timelineProps: defaultProps
     });
