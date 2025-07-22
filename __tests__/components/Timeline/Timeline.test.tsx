@@ -2,6 +2,7 @@ import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Timeline } from "../../../src/components/Timeline/Timeline";
+import { renderTimelineWithProvider, mockBusinessHours, mockTasks } from "./testUtils";
 import type { Task, BusinessHours } from "../../../src/types";
 
 // timeUtilsモジュールをモック
@@ -23,50 +24,19 @@ vi.mock("../../../src/utils/timeUtils", () => ({
 }));
 
 describe("Timeline", () => {
-  const mockBusinessHours: BusinessHours = {
-    start: "09:00",
-    end: "17:00",
-  };
-
-  const mockTasks: Task[] = [
-    {
-      id: "1",
-      name: "テストタスク1",
-      duration: 30,
-      resourceTypes: ["self"],
-      isPlaced: true,
-      startTime: "09:00",
-    },
-    {
-      id: "2",
-      name: "テストタスク2",
-      duration: 60,
-      resourceTypes: ["others"],
-      isPlaced: false,
-    },
-  ];
-
-  const defaultProps = {
-    tasks: mockTasks,
-    selectedTask: null,
-    businessHours: mockBusinessHours,
-    onTaskDrop: vi.fn(),
-    onTaskClick: vi.fn(),
-  };
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("タイムラインヘッダーを正しく表示する", () => {
-    render(<Timeline {...defaultProps} />);
+    renderTimelineWithProvider();
 
     expect(screen.getByText("タイムライン")).toBeInTheDocument();
     expect(screen.getByText("業務時間: 09:00 - 17:00")).toBeInTheDocument();
   });
 
   it("タイムスロットを表示する", () => {
-    render(<Timeline {...defaultProps} />);
+    renderTimelineWithProvider();
 
     // 時刻ラベルを具体的に確認
     const timeLabels = screen.getAllByText("09:00");
@@ -76,14 +46,14 @@ describe("Timeline", () => {
   });
 
   it("配置済みタスクをタイムスロット内に表示する", () => {
-    render(<Timeline {...defaultProps} />);
+    renderTimelineWithProvider();
 
     // 配置済みタスクがタイムライン内に表示される
     expect(screen.getByText("テストタスク1")).toBeInTheDocument();
   });
 
   it("配置済みタスクのみを表示する", () => {
-    render(<Timeline {...defaultProps} />);
+    renderTimelineWithProvider();
 
     // 配置済みタスクが表示される
     expect(screen.getByText("テストタスク1")).toBeInTheDocument();
@@ -92,7 +62,7 @@ describe("Timeline", () => {
   });
 
   it("正しい数のタイムスロットを生成する", () => {
-    const { container } = render(<Timeline {...defaultProps} />);
+    const { container } = renderTimelineWithProvider();
 
     // TimeSlotコンポーネントの数を確認（generateTimeSlotsの結果に基づく）
     const timeSlots = container.querySelectorAll('[data-time]');
@@ -101,9 +71,9 @@ describe("Timeline", () => {
 
   it("タスクドロップを処理してonTaskDropを呼び出す", () => {
     const mockOnTaskDrop = vi.fn();
-    const { container } = render(
-      <Timeline {...defaultProps} onTaskDrop={mockOnTaskDrop} />
-    );
+    const { container } = renderTimelineWithProvider({
+      providerProps: { onTaskDrop: mockOnTaskDrop }
+    });
 
     const timeSlot = container.querySelector('[data-time="09:30"]');
 
@@ -121,7 +91,9 @@ describe("Timeline", () => {
 
   it("配置済みタスクがクリックされたときにonTaskClickを呼び出す", () => {
     const mockOnTaskClick = vi.fn();
-    render(<Timeline {...defaultProps} onTaskClick={mockOnTaskClick} />);
+    renderTimelineWithProvider({
+      timelineProps: { onTaskClick: mockOnTaskClick }
+    });
 
     fireEvent.click(screen.getByText("テストタスク1"));
 
@@ -132,14 +104,16 @@ describe("Timeline", () => {
     const mockOnDragStart = vi.fn();
     const mockOnDragEnd = vi.fn();
     
-    const propsWithDragHandlers = {
-      ...defaultProps,
-      draggedTaskId: "2",
-      onDragStart: mockOnDragStart,
-      onDragEnd: mockOnDragEnd,
-    };
-
-    const { container } = render(<Timeline {...propsWithDragHandlers} />);
+    const { container } = renderTimelineWithProvider({
+      timelineProps: {
+        onDragStart: mockOnDragStart,
+        onDragEnd: mockOnDragEnd,
+      },
+      providerProps: {
+        draggedTaskId: "2",
+        onDragEnd: mockOnDragEnd,
+      }
+    });
 
     // TimeSlot コンポーネントに正しいプロパティが渡されていることを確認
     const timeSlot = container.querySelector('[data-time="09:00"]');

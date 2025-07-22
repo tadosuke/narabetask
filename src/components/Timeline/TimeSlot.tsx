@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Task } from '../../types';
 import { canPlaceTask, getTaskSlots } from '../../utils/timeUtils';
+import { useTimelineContext } from '../../contexts/useTimelineContext';
 import { TaskCard } from '../TaskCard';
 import './TimeSlot.css';
 
@@ -18,12 +19,6 @@ interface TimeSlotProps {
   dragOverSlot: string | null;
   /** 現在ドラッグ中のタスクのID */
   draggedTaskId?: string | null;
-  /** 全タスクの配列 */
-  tasks: Task[];
-  /** 利用可能なタイムスロットの配列 */
-  timeSlots: string[];
-  /** 占有されているタイムスロットのセット */
-  occupiedSlots: Set<string>;
   /** 選択中のタスク */
   selectedTask: Task | null;
   /** 重複しているタスクのIDのセット */
@@ -56,9 +51,6 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   isOccupied,
   dragOverSlot,
   draggedTaskId,
-  tasks,
-  timeSlots,
-  occupiedSlots,
   selectedTask,
   overlappingTaskIds,
   onDragOver,
@@ -70,6 +62,7 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   onDragEnd,
   onLockToggle
 }) => {
+  const { timeSlots, occupiedSlots, tasks } = useTimelineContext();
   // ドラッグ中の視覚的フィードバック用のクラス決定
   const isDragOver = dragOverSlot === time;
   let dragFeedbackClass = '';
