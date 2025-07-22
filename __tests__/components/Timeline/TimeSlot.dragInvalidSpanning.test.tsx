@@ -90,7 +90,7 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
     vi.mocked(canPlaceTask).mockReturnValue(false);
     vi.mocked(getTaskSlots).mockReturnValue(["09:45", "10:00"]);
     
-    // 最後のスロット(10:00)が drag target の場合 - 単一スロットとして扱われる
+    // 最後のスロット(10:00)の場合
     const propsForLastSlot = {
       ...defaultProps,
       dragOverSlot: "09:45", // 09:45がdrag target
@@ -100,28 +100,28 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
     const { container } = render(<TimeSlot {...propsForLastSlot} />);
 
     const timeSlot = container.querySelector('.timeline__slot');
-    // 09:45がtargetなので、10:00スロットにはinvalidクラスは付かない
-    expect(timeSlot).not.toHaveClass("timeline__slot--drag-invalid");
+    // spanning対象でdragが無効な場合、invalidクラスが付く
+    expect(timeSlot).toHaveClass("timeline__slot--drag-invalid");
     expect(timeSlot).toHaveClass("timeline__slot--drag-spanning");
     expect(timeSlot).toHaveClass("timeline__slot--drag-spanning-last");
   });
 
-  it("spanning対象でtarget slot以外にはinvalidクラスは付かない", () => {
+  it("spanning対象でtarget slot以外にもinvalidクラスが付く", () => {
     vi.mocked(canPlaceTask).mockReturnValue(false);
     vi.mocked(getTaskSlots).mockReturnValue(["09:30", "09:45"]);
     
-    // 09:30がtargetで、09:45は spanning の一部だが target ではない
+    // 09:30がtargetで、09:45は spanning の一部
     const propsForNonTargetSlot = {
       ...defaultProps,
       dragOverSlot: "09:30", // 09:30がdrag target
-      time: "09:45", // このスロットはspanning対象だがtargetではない
+      time: "09:45", // このスロットはspanning対象でtargetではない
     };
     
     const { container } = render(<TimeSlot {...propsForNonTargetSlot} />);
 
     const timeSlot = container.querySelector('.timeline__slot');
-    // targetスロットではないのでinvalidクラスは付かない
-    expect(timeSlot).not.toHaveClass("timeline__slot--drag-invalid");
+    // spanning対象でdragが無効な場合、targetスロットでなくてもinvalidクラスが付く
+    expect(timeSlot).toHaveClass("timeline__slot--drag-invalid");
     expect(timeSlot).toHaveClass("timeline__slot--drag-spanning");
     expect(timeSlot).toHaveClass("timeline__slot--drag-spanning-last");
   });
