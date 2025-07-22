@@ -84,18 +84,29 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
         taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
       }
       
-      const canPlace = canPlaceTask(time, draggedTask.duration, occupiedSlotsForCheck, timeSlots);
+      const canPlace = canPlaceTask(dragOverSlot, draggedTask.duration, occupiedSlotsForCheck, timeSlots);
       dragFeedbackClass = canPlace ? 'timeline__slot--drag-over' : 'timeline__slot--drag-invalid';
     }
   }
 
   // ドラッグ中のタスクが複数スロットにまたがる場合の視覚フィードバック
   let dragSpanningClass = '';
+  let isInvalidDrag = false;
+  
   if (dragOverSlot && draggedTaskId) {
     const draggedTask = tasks.find(t => t.id === draggedTaskId);
-    if (draggedTask && dragOverSlot) {
+    if (draggedTask) {
+      // Check if this slot is part of the dragged task's span
       const draggedTaskSlots = getTaskSlots(dragOverSlot, draggedTask.duration);
       if (draggedTaskSlots.includes(time)) {
+        // Determine if the drag is invalid (check placement from the drag over slot)
+        const occupiedSlotsForCheck = new Set(occupiedSlots);
+        if (draggedTask.isPlaced && draggedTask.startTime) {
+          const taskSlots = getTaskSlots(draggedTask.startTime, draggedTask.duration);
+          taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
+        }
+        isInvalidDrag = !canPlaceTask(dragOverSlot, draggedTask.duration, occupiedSlotsForCheck, timeSlots);
+        
         const slotIndex = draggedTaskSlots.indexOf(time);
         const totalSlots = draggedTaskSlots.length;
         
@@ -113,6 +124,11 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
         dragSpanningClass = `timeline__slot--drag-spanning ${dragSpanningClass}`;
       }
     }
+  }
+  
+  // Apply invalid class to spanning slots when drag is invalid
+  if (isInvalidDrag && dragSpanningClass) {
+    dragFeedbackClass = 'timeline__slot--drag-invalid';
   }
 
   return (
