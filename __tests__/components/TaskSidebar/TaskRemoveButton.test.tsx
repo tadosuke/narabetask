@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { TaskActions } from "../../../src/components/TaskSidebar/TaskActions";
+import { TaskRemoveButton } from "../../../src/components/TaskSidebar/TaskRemoveButton";
 
 // window.confirmをモック
 Object.defineProperty(window, "confirm", {
@@ -9,7 +9,7 @@ Object.defineProperty(window, "confirm", {
   value: vi.fn(),
 });
 
-describe("TaskActions", () => {
+describe("TaskRemoveButton", () => {
   const defaultProps = {
     taskId: "task-1",
     onTaskRemove: vi.fn(),
@@ -21,13 +21,13 @@ describe("TaskActions", () => {
   });
 
   it("削除ボタンが表示される", () => {
-    render(<TaskActions {...defaultProps} />);
+    render(<TaskRemoveButton {...defaultProps} />);
 
     expect(screen.getByText("削除")).toBeInTheDocument();
   });
 
   it("削除ボタンに正しいCSSクラスが設定される", () => {
-    render(<TaskActions {...defaultProps} />);
+    render(<TaskRemoveButton {...defaultProps} />);
 
     const deleteButton = screen.getByText("削除");
     expect(deleteButton).toHaveClass("task-sidebar__remove");
@@ -37,7 +37,7 @@ describe("TaskActions", () => {
     const mockOnTaskRemove = vi.fn();
     (window.confirm as unknown as ReturnType<typeof vi.fn>).mockReturnValue(true);
 
-    render(<TaskActions {...defaultProps} onTaskRemove={mockOnTaskRemove} />);
+    render(<TaskRemoveButton {...defaultProps} onTaskRemove={mockOnTaskRemove} />);
 
     const deleteButton = screen.getByText("削除");
     fireEvent.click(deleteButton);
@@ -50,7 +50,7 @@ describe("TaskActions", () => {
     const mockOnTaskRemove = vi.fn();
     (window.confirm as unknown as ReturnType<typeof vi.fn>).mockReturnValue(false);
 
-    render(<TaskActions {...defaultProps} onTaskRemove={mockOnTaskRemove} />);
+    render(<TaskRemoveButton {...defaultProps} onTaskRemove={mockOnTaskRemove} />);
 
     const deleteButton = screen.getByText("削除");
     fireEvent.click(deleteButton);
@@ -63,7 +63,7 @@ describe("TaskActions", () => {
     const mockOnTaskRemove = vi.fn();
     (window.confirm as unknown as ReturnType<typeof vi.fn>).mockReturnValue(true);
 
-    render(<TaskActions {...defaultProps} taskId="task-2" onTaskRemove={mockOnTaskRemove} />);
+    render(<TaskRemoveButton {...defaultProps} taskId="task-2" onTaskRemove={mockOnTaskRemove} />);
 
     const deleteButton = screen.getByText("削除");
     fireEvent.click(deleteButton);
@@ -74,7 +74,7 @@ describe("TaskActions", () => {
   it("削除確認のメッセージが正しく表示される", () => {
     (window.confirm as unknown as ReturnType<typeof vi.fn>).mockReturnValue(true);
 
-    render(<TaskActions {...defaultProps} />);
+    render(<TaskRemoveButton {...defaultProps} />);
 
     const deleteButton = screen.getByText("削除");
     fireEvent.click(deleteButton);
