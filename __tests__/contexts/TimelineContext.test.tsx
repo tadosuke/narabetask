@@ -1,7 +1,11 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
-import { TimelineProvider, TimelineContext } from "../../src/contexts/TimelineContext";
+import {
+  TimelineProvider,
+  TimelineContext,
+} from "../../src/contexts/TimelineContext";
+import { useTimelineContext } from "../../src/contexts/useTimelineContext";
 import { useContext } from "react";
 import type { Task, BusinessHours } from "../../src/types";
 
@@ -34,7 +38,6 @@ describe("TimelineContext", () => {
       id: "1",
       name: "テストタスク1",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: true,
       startTime: "09:00",
     },
@@ -42,7 +45,6 @@ describe("TimelineContext", () => {
       id: "2",
       name: "テストタスク2",
       duration: 60,
-      resourceTypes: ["others"],
       isPlaced: false,
     },
   ];
@@ -55,7 +57,7 @@ describe("TimelineContext", () => {
 
   // Test component that consumes the context
   const TestConsumer = () => {
-    const context = useContext(TimelineContext);
+    const context = useTimelineContext();
     if (!context) return <div>No context</div>;
 
     const {
@@ -73,7 +75,9 @@ describe("TimelineContext", () => {
         <div data-testid="drag-over-slot">{dragOverSlot || "none"}</div>
         <div data-testid="time-slots-count">{timeSlots.length}</div>
         <div data-testid="placed-tasks-count">{placedTasks.length}</div>
-        <div data-testid="overlapping-task-ids-count">{overlappingTaskIds.size}</div>
+        <div data-testid="overlapping-task-ids-count">
+          {overlappingTaskIds.size}
+        </div>
         <div data-testid="occupied-slots-count">{occupiedSlots.size}</div>
         <button
           data-testid="drag-over-button"
