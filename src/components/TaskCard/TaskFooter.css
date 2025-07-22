@@ -44,7 +44,8 @@
 
 .task-card__lock-button--locked {
   opacity: 1;
-  color: #4CAF50;
+  background-color: #4CAF50;
+  color: white;
 }
 
 .task-card__lock-button--disabled {
