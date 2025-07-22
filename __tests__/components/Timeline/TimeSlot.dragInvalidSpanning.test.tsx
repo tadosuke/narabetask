@@ -18,7 +18,6 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
       id: "1",
       name: "テストタスク1",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: false,
     },
   ];

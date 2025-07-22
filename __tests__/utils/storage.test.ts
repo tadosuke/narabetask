@@ -29,7 +29,6 @@ const createTestTask = (id: string, name: string): Task => ({
   id,
   name,
   duration: 30,
-  resourceTypes: ['self'],
   isPlaced: false,
 });
 

@@ -20,14 +20,12 @@ describe("TaskStaging", () => {
       id: "1",
       name: "タスク1",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: false,
     },
     {
       id: "2",
       name: "タスク2",
       duration: 60,
-      resourceTypes: ["others"],
       isPlaced: true,
       startTime: "09:00",
     },
@@ -35,7 +33,6 @@ describe("TaskStaging", () => {
       id: "3",
       name: "タスク3",
       duration: 45,
-      resourceTypes: ["machine"],
       isPlaced: false,
     },
   ];

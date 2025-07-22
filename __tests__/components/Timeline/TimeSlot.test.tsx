@@ -16,7 +16,6 @@ describe("TimeSlot", () => {
       id: "1",
       name: "テストタスク1",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: true,
       startTime: "09:00",
     },
@@ -24,7 +23,6 @@ describe("TimeSlot", () => {
       id: "2",
       name: "テストタスク2",
       duration: 60,
-      resourceTypes: ["others"],
       isPlaced: false,
     },
   ];

@@ -42,7 +42,6 @@ describe('Timeline スパニングコーディネーション', () => {
     id: '1',
     name: 'テストタスク',
     duration: 30,
-    resourceTypes: ['self'],
     isPlaced: false
   };
 
@@ -76,7 +75,6 @@ describe('Timeline スパニングコーディネーション', () => {
       id: '2',
       name: '長時間タスク',
       duration: 60, // 1時間（複数スロットにまたがる）
-      resourceTypes: ['self'],
       isPlaced: false
     };
 

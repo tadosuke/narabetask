@@ -29,7 +29,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         id: "1",
         name: "30分タスク",
         duration: 30,
-        resourceTypes: ["self"],
         isPlaced: true,
         startTime: "09:00", // 09:00-09:30を占有
       }
@@ -72,7 +71,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         id: "1",
         name: "タスク1",
         duration: 30,
-        resourceTypes: ["self"],
         isPlaced: true,
         startTime: "09:00",
       },
@@ -80,7 +78,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         id: "2",
         name: "タスク2", 
         duration: 45,
-        resourceTypes: ["others"],
         isPlaced: true,
         startTime: "10:00",
       }
@@ -113,7 +110,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
       id: "1",
       name: "配置済みタスク",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: true,
       startTime: "09:00",
     };
@@ -122,7 +118,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
       id: "2",
       name: "衝突タスク",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: true,
       startTime: "10:00", // 09:30に移動するため衝突しない位置に変更
     };
@@ -164,7 +159,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         id: "1",
         name: "タスク1",
         duration: 30,
-        resourceTypes: ["self"],
         isPlaced: true,
         startTime: "09:00",
       },
@@ -172,7 +166,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         id: "2",
         name: "タスク2",
         duration: 30,
-        resourceTypes: ["self"],
         isPlaced: true,
         startTime: "09:15", // 09:00のタスクと重複
       }

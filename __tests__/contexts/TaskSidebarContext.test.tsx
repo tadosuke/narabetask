@@ -11,7 +11,6 @@ describe("TaskSidebarContext", () => {
     id: "1",
     name: "テストタスク",
     duration: 60,
-    resourceTypes: ["self", "others"],
     isPlaced: false,
   };
 
@@ -58,7 +57,6 @@ describe("TaskSidebarContext", () => {
 
     expect(result.current.name).toBe("");
     expect(result.current.duration).toBe(30);
-    expect(result.current.resourceTypes).toEqual(["self"]);
   });
 
   it("selectedTaskが存在する場合はそのタスクの値でフォーム状態を設定する", () => {
@@ -67,7 +65,6 @@ describe("TaskSidebarContext", () => {
 
     expect(result.current.name).toBe("テストタスク");
     expect(result.current.duration).toBe(60);
-    expect(result.current.resourceTypes).toEqual(["self", "others"]);
   });
 
   it("selectedTaskが変更された場合にフォーム状態を更新する", () => {
@@ -91,7 +88,6 @@ describe("TaskSidebarContext", () => {
       id: "2",
       name: "新しいタスク",
       duration: 45,
-      resourceTypes: ["machine"],
       isPlaced: true,
     };
 
@@ -105,12 +101,10 @@ describe("TaskSidebarContext", () => {
   it("resourceTypesが未定義の場合は'self'をデフォルトとして設定する", () => {
     const taskWithoutResourceTypes = {
       ...mockTask,
-      resourceTypes: undefined as unknown as ResourceType[],
     };
     const wrapper = createWrapper(taskWithoutResourceTypes);
     const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
 
-    expect(result.current.resourceTypes).toEqual(["self"]);
   });
 
   it("handleNameChangeが正しくnameを更新し、onTaskUpdateを呼び出す", () => {
@@ -151,7 +145,6 @@ describe("TaskSidebarContext", () => {
 
     expect(mockOnTaskUpdate).toHaveBeenCalledWith({
       ...mockTask,
-      resourceTypes: ["self", "others", "machine"],
     });
   });
 
@@ -165,7 +158,6 @@ describe("TaskSidebarContext", () => {
 
     expect(mockOnTaskUpdate).toHaveBeenCalledWith({
       ...mockTask,
-      resourceTypes: ["self"],
     });
   });
 

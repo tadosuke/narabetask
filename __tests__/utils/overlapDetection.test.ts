@@ -29,14 +29,12 @@ describe('重複検出', () => {
           id: 'task1',
           startTime: '09:00',
           duration: 60,
-          resourceTypes: ['self'],
           isPlaced: true
         },
         {
           id: 'task2',
           startTime: '09:30',
           duration: 60,
-          resourceTypes: ['self'],
           isPlaced: true
         }
       ];
@@ -52,14 +50,12 @@ describe('重複検出', () => {
           id: 'task1',
           startTime: '09:00',
           duration: 60,
-          resourceTypes: ['self'],
           isPlaced: true
         },
         {
           id: 'task2',
           startTime: '09:30',
           duration: 60,
-          resourceTypes: ['machine'],
           isPlaced: true
         }
       ];
@@ -75,14 +71,12 @@ describe('重複検出', () => {
           id: 'task1',
           startTime: '09:00',
           duration: 30,
-          resourceTypes: ['self'],
           isPlaced: true
         },
         {
           id: 'task2',
           startTime: '09:30',
           duration: 30,
-          resourceTypes: ['self'],
           isPlaced: true
         }
       ];
@@ -98,14 +92,12 @@ describe('重複検出', () => {
           id: 'task1',
           startTime: '09:00',
           duration: 60,
-          resourceTypes: ['self'],
           isPlaced: true
         },
         {
           id: 'task2',
           startTime: '09:30',
           duration: 60,
-          resourceTypes: ['self'],
           isPlaced: false
         }
       ];
@@ -121,14 +113,12 @@ describe('重複検出', () => {
           id: 'task1',
           startTime: '09:00',
           duration: 60,
-          resourceTypes: ['self'],
           isPlaced: true
         },
         {
           id: 'task2',
           startTime: undefined,
           duration: 60,
-          resourceTypes: ['self'],
           isPlaced: true
         }
       ];

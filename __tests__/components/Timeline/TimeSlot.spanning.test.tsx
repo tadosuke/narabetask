@@ -24,7 +24,6 @@ describe('TimeSlot Drag Spanning', () => {
     id: '1',
     name: 'テストタスク',
     duration: 60, // 1時間（複数スロットにまたがる）
-    resourceTypes: ['self'],
     isPlaced: false
   };
 
@@ -91,7 +90,6 @@ describe('TimeSlot Drag Spanning', () => {
       id: '2',
       name: '短いタスク',
       duration: 15, // 15分（単一スロット）
-      resourceTypes: ['self'],
       isPlaced: false
     };
 
