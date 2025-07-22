@@ -17,14 +17,13 @@ interface TaskInfoDisplayProps {
 export const TaskInfoDisplay: React.FC<TaskInfoDisplayProps> = ({
   task,
 }) => {
-  if (!task.isPlaced || !task.startTime) {
-    return null;
-  }
+  const startTime = (task.isPlaced && task.startTime) ? task.startTime : '-';
+  const endTime = (task.isPlaced && task.startTime) ? calculateEndTime(task.startTime, task.duration) : '-';
 
   return (
     <div className="task-sidebar__info">
-      <div><strong>開始時間:</strong> {task.startTime}</div>
-      <div><strong>終了時間:</strong> {calculateEndTime(task.startTime, task.duration)}</div>
+      <div><strong>開始時間:</strong> {startTime}</div>
+      <div><strong>終了時間:</strong> {endTime}</div>
     </div>
   );
 };
