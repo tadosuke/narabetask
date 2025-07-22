@@ -194,6 +194,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       name: "新しいタスク",
       duration: 30,
       isPlaced: false,
+      resourceTypes: ["self"], // デフォルトで「自分」リソースを設定
     };
 
     setTasks((prev) => [...prev, newTask]);

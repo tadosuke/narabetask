@@ -121,7 +121,7 @@ export function calculateEndTime(startTime: string, duration: number): string {
  * @param {string[]} resourceTypes2 - 2つ目のタスクのリソースタイプ
  * @returns {boolean} リソースを共有している場合はtrue
  */
-export function doTasksShareResources(resourceTypes1: string[], resourceTypes2: string[]): boolean {
+export function doTasksShareResources(resourceTypes1: string[] = [], resourceTypes2: string[] = []): boolean {
   return resourceTypes1.some(resource => resourceTypes2.includes(resource));
 }
 
@@ -143,7 +143,7 @@ export function findOverlappingTasks(placedTasks: any[]): Set<string> {
       const task2 = validTasks[j];
       
       // リソースを共有していない場合は重複とみなさない
-      if (!doTasksShareResources(task1.resourceTypes, task2.resourceTypes)) {
+      if (!doTasksShareResources(task1.resourceTypes || [], task2.resourceTypes || [])) {
         continue;
       }
       

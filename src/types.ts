@@ -14,6 +14,8 @@ export interface Task {
   isPlaced: boolean;
   /** タスクがロック状態かどうか */
   isLocked?: boolean;
+  /** タスクが使用するリソースタイプの配列 */
+  resourceTypes?: string[];
 }
 
 /**
