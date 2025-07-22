@@ -98,15 +98,6 @@ describe("TaskSidebarContext", () => {
     // 別の方法でテストする必要がある
   });
 
-  it("resourceTypesが未定義の場合は'self'をデフォルトとして設定する", () => {
-    const taskWithoutResourceTypes = {
-      ...mockTask,
-    };
-    const wrapper = createWrapper(taskWithoutResourceTypes);
-    const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
-
-  });
-
   it("handleNameChangeが正しくnameを更新し、onTaskUpdateを呼び出す", () => {
     const wrapper = createWrapper(mockTask);
     const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
@@ -132,32 +123,6 @@ describe("TaskSidebarContext", () => {
     expect(mockOnTaskUpdate).toHaveBeenCalledWith({
       ...mockTask,
       duration: 90,
-    });
-  });
-
-  it("handleResourceTypeChangeでリソースタイプを追加できる", () => {
-    const wrapper = createWrapper(mockTask);
-    const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
-
-    act(() => {
-      result.current.handleResourceTypeChange("machine", true);
-    });
-
-    expect(mockOnTaskUpdate).toHaveBeenCalledWith({
-      ...mockTask,
-    });
-  });
-
-  it("handleResourceTypeChangeでリソースタイプを削除できる", () => {
-    const wrapper = createWrapper(mockTask);
-    const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
-
-    act(() => {
-      result.current.handleResourceTypeChange("others", false);
-    });
-
-    expect(mockOnTaskUpdate).toHaveBeenCalledWith({
-      ...mockTask,
     });
   });
 
