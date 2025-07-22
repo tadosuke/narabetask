@@ -1,9 +1,9 @@
 import React from 'react';
 
 /**
- * TaskDurationFieldコンポーネントのプロパティ
+ * TaskDurationSliderコンポーネントのプロパティ
  */
-interface TaskDurationFieldProps {
+interface TaskDurationSliderProps {
   /** 所要時間（分） */
   duration: number;
   /** 所要時間変更時のハンドラ */
@@ -32,7 +32,7 @@ const formatDuration = (minutes: number) => {
 /**
  * タスク所要時間スライダーコンポーネント
  */
-export const TaskDurationField: React.FC<TaskDurationFieldProps> = ({
+export const TaskDurationSlider: React.FC<TaskDurationSliderProps> = ({
   duration,
   onDurationChange,
 }) => {
