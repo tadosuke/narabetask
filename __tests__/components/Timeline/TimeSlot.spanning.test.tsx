@@ -1,11 +1,18 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
-import { render } from '@testing-library/react';
-import { TimeSlot } from '../../../src/components/Timeline/TimeSlot';
+import { renderTimeSlot } from "./testUtils";
 import type { Task } from '../../../src/types';
 
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({
+  generateTimeSlots: vi.fn(() => [
+    "09:00",
+    "09:15",
+    "09:30",
+    "09:45",
+    "10:00",
+    "10:15",
+  ]),
   canPlaceTask: vi.fn(() => true),
   getTaskSlots: vi.fn((startTime: string, duration: number) => {
     // 30分タスクの場合は2スロット、60分タスクの場合は4スロット
@@ -15,6 +22,8 @@ vi.mock("../../../src/utils/timeUtils", () => ({
     if (duration >= 60) slots.push("09:45");
     return slots;
   }),
+  findOverlappingTasks: vi.fn(() => new Set()),
+  doTasksShareResources: vi.fn(() => false),
 }));
 
 import { getTaskSlots } from "../../../src/utils/timeUtils";
@@ -53,7 +62,7 @@ describe('TimeSlot Drag Spanning', () => {
   };
 
   it('最初のスロットに正しいスパニングクラスを適用する', () => {
-    const { container } = render(<TimeSlot {...defaultProps} />);
+    const { container } = renderTimeSlot( {...defaultProps});
     
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).toHaveClass("timeline__slot--drag-spanning");
@@ -66,7 +75,7 @@ describe('TimeSlot Drag Spanning', () => {
       time: "09:15", // 中間のスロット
     };
     
-    const { container } = render(<TimeSlot {...middleProps} />);
+    const { container } = renderTimeSlot( {...middleProps});
     
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).toHaveClass("timeline__slot--drag-spanning");
@@ -79,7 +88,7 @@ describe('TimeSlot Drag Spanning', () => {
       time: "09:45", // 最後のスロット（60分タスクの場合）
     };
     
-    const { container } = render(<TimeSlot {...lastProps} />);
+    const { container } = renderTimeSlot( {...lastProps});
     
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).toHaveClass("timeline__slot--drag-spanning");
@@ -104,7 +113,7 @@ describe('TimeSlot Drag Spanning', () => {
       draggedTaskId: "2",
     };
     
-    const { container } = render(<TimeSlot {...singleProps} />);
+    const { container } = renderTimeSlot( {...singleProps});
     
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).toHaveClass("timeline__slot--drag-spanning");
@@ -117,7 +126,7 @@ describe('TimeSlot Drag Spanning', () => {
       time: "10:00", // ドラッグされたタスクが占有しないスロット
     };
     
-    const { container } = render(<TimeSlot {...nonTargetProps} />);
+    const { container } = renderTimeSlot( {...nonTargetProps});
     
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).not.toHaveClass("timeline__slot--drag-spanning");
@@ -133,7 +142,7 @@ describe('TimeSlot Drag Spanning', () => {
       dragOverSlot: null,
     };
     
-    const { container } = render(<TimeSlot {...noDragProps} />);
+    const { container } = renderTimeSlot( {...noDragProps});
     
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).not.toHaveClass("timeline__slot--drag-spanning");
@@ -145,7 +154,7 @@ describe('TimeSlot Drag Spanning', () => {
       draggedTaskId: null,
     };
     
-    const { container } = render(<TimeSlot {...noTaskProps} />);
+    const { container } = renderTimeSlot( {...noTaskProps});
     
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).not.toHaveClass("timeline__slot--drag-spanning");

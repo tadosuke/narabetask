@@ -4,6 +4,7 @@ import { TaskProvider } from './contexts/TaskContext';
 import { TaskSidebarProvider } from './contexts/TaskSidebarContext';
 import { useTaskContext } from './contexts/useTaskContext';
 import { TaskStagingProvider } from './contexts/TaskStagingContext';
+import { TimelineProvider } from './contexts/TimelineContext';
 import { TaskStaging } from './components/TaskStaging';
 import { Timeline } from './components/Timeline';
 import { TaskSidebar } from './components/TaskSidebar';
@@ -102,17 +103,23 @@ function AppContent() {
           />
         </TaskStagingProvider>
         
-        <Timeline
+        <TimelineProvider
           tasks={tasks}
-          selectedTask={selectedTask}
           businessHours={settings.businessHours}
           onTaskDrop={dropTask}
-          onTaskClick={selectTask}
           draggedTaskId={draggedTaskId}
-          onDragStart={startDrag}
           onDragEnd={endDrag}
-          onLockToggle={toggleLock}
-        />
+        >
+          <Timeline
+            selectedTask={selectedTask}
+            businessHours={settings.businessHours}
+            onTaskClick={selectTask}
+            draggedTaskId={draggedTaskId}
+            onDragStart={startDrag}
+            onDragEnd={endDrag}
+            onLockToggle={toggleLock}
+          />
+        </TimelineProvider>
         
         <TaskSidebarProvider 
           selectedTask={selectedTask}
