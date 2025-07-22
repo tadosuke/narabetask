@@ -1,7 +1,8 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { screen, fireEvent } from "@testing-library/react";
 import { TimeSlot } from "../../../src/components/Timeline/TimeSlot";
+import { renderWithTimelineProvider } from "../../test-utils";
 import type { Task } from "../../../src/types";
 
 // timeUtilsモジュールをモック
@@ -36,11 +37,8 @@ describe("TimeSlot", () => {
   const defaultProps = {
     time: "09:00",
     isOccupied: false,
-    dragOverSlot: null,
     draggedTaskId: null,
     tasks: mockTasks,
-    timeSlots: mockTimeSlots,
-    occupiedSlots: mockOccupiedSlots,
     selectedTask: null,
     overlappingTaskIds: mockOverlappingTaskIds,
     onDragOver: vi.fn(),
