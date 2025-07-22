@@ -5,7 +5,7 @@ import { TaskNameField } from './TaskNameField';
 import { TaskDurationField } from './TaskDurationField';
 import { ResourceTypeField } from './ResourceTypeField';
 import { TaskInfoDisplay } from './TaskInfoDisplay';
-import { TaskActions } from './TaskActions';
+import { TaskRemoveButton } from './TaskRemoveButton';
 import './TaskSidebar.css';
 
 /**
@@ -72,7 +72,7 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
         )}
       </div>
 
-      <TaskActions
+      <TaskRemoveButton
         taskId={selectedTask.id}
         onTaskRemove={onTaskRemove}
       />

@@ -1,9 +1,9 @@
 import React from 'react';
 
 /**
- * TaskActionsコンポーネントのプロパティ
+ * TaskRemoveButtonコンポーネントのプロパティ
  */
-interface TaskActionsProps {
+interface TaskRemoveButtonProps {
   /** タスクID */
   taskId: string;
   /** タスク削除時のハンドラ */
@@ -11,9 +11,9 @@ interface TaskActionsProps {
 }
 
 /**
- * タスク操作ボタンコンポーネント
+ * タスク削除ボタンコンポーネント
  */
-export const TaskActions: React.FC<TaskActionsProps> = ({
+export const TaskRemoveButton: React.FC<TaskRemoveButtonProps> = ({
   taskId,
   onTaskRemove,
 }) => {
