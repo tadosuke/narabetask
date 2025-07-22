@@ -102,3 +102,8 @@ export const renderTimeSlotWithProvider = ({
     </TimelineProvider>
   );
 };
+
+// Legacy wrapper for easy transition from old tests
+export const renderTimeSlot = (props: React.ComponentProps<typeof TimeSlot>) => {
+  return renderTimeSlotWithProvider({ timeSlotProps: props });
+};

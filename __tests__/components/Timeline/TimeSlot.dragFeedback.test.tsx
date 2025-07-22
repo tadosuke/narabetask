@@ -1,13 +1,25 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, fireEvent } from "@testing-library/react";
-import { TimeSlot } from "../../../src/components/Timeline/TimeSlot";
+import { fireEvent } from "@testing-library/react";
+import { renderTimeSlot } from "./testUtils";
 import type { Task } from "../../../src/types";
 
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({
+  generateTimeSlots: vi.fn(() => [
+    "09:00",
+    "09:15",
+    "09:30",
+    "12:00",
+    "12:15",
+    "13:00",
+    "13:15",
+    "17:00",
+  ]),
   canPlaceTask: vi.fn(),
   getTaskSlots: vi.fn(),
+  findOverlappingTasks: vi.fn(() => new Set()),
+  doTasksShareResources: vi.fn(() => false),
 }));
 
 import { canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
@@ -73,7 +85,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
       draggedTaskId: "2",
     };
     
-    const { container } = render(<TimeSlot {...propsWithDragOver} />);
+    const { container } = renderTimeSlot( {...propsWithDragOver});
 
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).toHaveClass("timeline__slot--drag-over");
@@ -88,7 +100,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
       draggedTaskId: "2",
     };
     
-    const { container } = render(<TimeSlot {...propsWithDragOver} />);
+    const { container } = renderTimeSlot( {...propsWithDragOver});
 
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).toHaveClass("timeline__slot--drag-invalid");
@@ -101,7 +113,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
       onDragEnter: mockOnDragEnter,
     };
     
-    const { container } = render(<TimeSlot {...propsWithDragEnter} />);
+    const { container } = renderTimeSlot( {...propsWithDragEnter});
 
     const timeSlot = container.querySelector('.timeline__slot');
     
@@ -118,7 +130,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
       onDragLeave: mockOnDragLeave,
     };
     
-    const { container } = render(<TimeSlot {...propsWithDragLeave} />);
+    const { container } = renderTimeSlot( {...propsWithDragLeave});
 
     const timeSlot = container.querySelector('.timeline__slot');
     
@@ -136,7 +148,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
       draggedTaskId: null, // ドラッグされていない
     };
     
-    const { container } = render(<TimeSlot {...propsWithoutDrag} />);
+    const { container } = renderTimeSlot( {...propsWithoutDrag});
 
     const timeSlot = container.querySelector('.timeline__slot');
     // ドラッグフィードバッククラスを持たないことを確認
@@ -153,7 +165,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
       draggedTaskId: "2",
     };
     
-    const { container } = render(<TimeSlot {...propsNotDraggedOver} />);
+    const { container } = renderTimeSlot( {...propsNotDraggedOver});
 
     const timeSlot = container.querySelector('.timeline__slot');
     // ドラッグフィードバッククラスを持たないことを確認
@@ -181,7 +193,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
       draggedTaskId: "1", // 配置済みタスクを移動
     };
     
-    const { container } = render(<TimeSlot {...propsWithPlacedTask} />);
+    const { container } = renderTimeSlot( {...propsWithPlacedTask});
 
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).toHaveClass("timeline__slot--drag-over");
