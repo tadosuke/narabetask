@@ -17,7 +17,7 @@ describe('TaskFooter', () => {
     // リソースアイコンが表示されることを確認
     const resourceIcon = screen.getByTitle('自分');
     expect(resourceIcon).toBeInTheDocument();
-    expect(resourceIcon).toHaveTextContent('■');
+    expect(resourceIcon).toHaveClass('task-card__resource-square');
   });
 
   it('複数のリソースアイコンが並んで表示される', () => {
