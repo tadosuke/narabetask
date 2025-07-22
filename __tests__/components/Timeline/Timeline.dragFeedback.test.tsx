@@ -2,7 +2,8 @@ import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Timeline } from "../../../src/components/Timeline/Timeline";
-import type { Task, BusinessHours, LunchBreak } from "../../../src/types";
+import { TimelineProvider } from "../../../src/contexts/TimelineContext";
+import type { Task, BusinessHours } from "../../../src/types";
 
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({
@@ -27,11 +28,6 @@ describe("Timeline ドラッグコーディネーション", () => {
   const mockBusinessHours: BusinessHours = {
     start: "09:00",
     end: "17:00",
-  };
-
-  const mockLunchBreak: LunchBreak = {
-    start: "12:00",
-    end: "13:00",
   };
 
   const mockTasks: Task[] = [
@@ -59,12 +55,19 @@ describe("Timeline ドラッグコーディネーション", () => {
     tasks: mockTasks,
     selectedTask: null,
     businessHours: mockBusinessHours,
-    lunchBreak: mockLunchBreak,
     onTaskDrop: vi.fn(),
     onTaskClick: vi.fn(),
     draggedTaskId: "2",
     onDragStart: mockOnDragStart,
     onDragEnd: mockOnDragEnd,
+  };
+
+  const renderWithProvider = (props: any) => {
+    return render(
+      <TimelineProvider tasks={props.tasks} businessHours={props.businessHours}>
+        <Timeline {...props} />
+      </TimelineProvider>
+    );
   };
 
   beforeEach(() => {
@@ -76,7 +79,7 @@ describe("Timeline ドラッグコーディネーション", () => {
   it("ドラッグ状態をTimeSlotコンポーネントに正しく伝達する", () => {
     vi.mocked(canPlaceTask).mockReturnValue(true);
     
-    const { container } = render(<Timeline {...defaultProps} />);
+    const { container } = renderWithProvider(defaultProps);
 
     // 複数のTimeSlotが存在することを確認
     const timeSlots = container.querySelectorAll('[data-time]');
@@ -89,7 +92,7 @@ describe("Timeline ドラッグコーディネーション", () => {
   });
 
   it("ドロップ時にドラッグ状態をクリアしonDragEndを呼び出す", () => {
-    const { container } = render(<Timeline {...defaultProps} />);
+    const { container } = renderWithProvider(defaultProps);
 
     const timeSlot = container.querySelector('[data-time="09:30"]');
     const dropEvent = new Event("drop", { bubbles: true });
@@ -104,7 +107,7 @@ describe("Timeline ドラッグコーディネーション", () => {
   });
 
   it("占有されたスロットを正しく計算してTimeSlotに渡す", () => {
-    const { container } = render(<Timeline {...defaultProps} />);
+    const { container } = renderWithProvider(defaultProps);
     
     // 占有されているスロット (09:00, 09:15) を確認
     const occupiedSlot = container.querySelector('[data-time="09:00"]');
@@ -128,7 +131,7 @@ describe("Timeline ドラッグコーディネーション", () => {
       onTaskDrop: mockOnTaskDrop,
     };
     
-    const { container } = render(<Timeline {...propsWithPlacedTaskDrag} />);
+    const { container } = renderWithProvider(propsWithPlacedTaskDrag);
 
     const timeSlot = container.querySelector('[data-time="09:30"]');
     const dropEvent = new Event("drop", { bubbles: true });
@@ -148,7 +151,7 @@ describe("Timeline ドラッグコーディネーション", () => {
       draggedTaskId: null,
     };
     
-    const { container } = render(<Timeline {...propsWithoutDrag} />);
+    const { container } = renderWithProvider(propsWithoutDrag);
 
     const timeSlots = container.querySelectorAll('[data-time]');
     expect(timeSlots.length).toBeGreaterThan(0);

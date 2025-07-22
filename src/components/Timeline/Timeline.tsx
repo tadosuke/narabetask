@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { Task, BusinessHours } from '../../types';
-import { generateTimeSlots, canPlaceTask, getTaskSlots, findOverlappingTasks } from '../../utils/timeUtils';
+import { useTimelineContext } from '../../contexts/useTimelineContext';
 import { TimeSlot } from './TimeSlot';
 import './Timeline.css';
 
@@ -44,77 +44,16 @@ export const Timeline: React.FC<TimelineProps> = ({
   onDragEnd,
   onLockToggle
 }) => {
-  /** ドラッグオーバー中のタイムスロット */
-  const [dragOverSlot, setDragOverSlot] = useState<string | null>(null);
-  
-  /** 営業時間に基づいたタイムスロットを生成 */
-  const timeSlots = generateTimeSlots(businessHours);
-  /** タイムラインに配置済みのタスク一覧 */
-  const placedTasks = tasks.filter(task => task.isPlaced && task.startTime);
-  
-  /** 重複しているタスクのIDのセット */
-  const overlappingTaskIds = findOverlappingTasks(placedTasks);
-  
-  /** 占有されているタイムスロットのセットを作成 */
-  const occupiedSlots = new Set<string>();
-  placedTasks.forEach(task => {
-    if (task.startTime) {
-      const taskSlots = getTaskSlots(task.startTime, task.duration);
-      taskSlots.forEach(slot => occupiedSlots.add(slot));
-    }
-  });
-
-  /** ドラッグオーバー時の処理 */
-  const handleDragOver = (e: React.DragEvent, time: string) => {
-    e.preventDefault();
-    setDragOverSlot(time);
-  };
-
-  /** ドラッグエンター時の処理 - スロットにドラッグが入った時 */
-  const handleDragEnter = (e: React.DragEvent, time: string) => {
-    e.preventDefault();
-    setDragOverSlot(time);
-  };
-
-  /** ドラッグリーブ時の処理 - スロットからドラッグが離れた時 */
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    // Only clear dragOverSlot if we're leaving the slot element itself
-    // Check if the related target is not a child of the current target
-    const currentTarget = e.currentTarget as HTMLElement;
-    const relatedTarget = e.relatedTarget as HTMLElement;
-    
-    if (!currentTarget.contains(relatedTarget)) {
-      setDragOverSlot(null);
-    }
-  };
-
-  /** ドロップ時の処理 - タスクを指定した時刻に配置 */
-  const handleDrop = (e: React.DragEvent, dropTime: string) => {
-    e.preventDefault();
-    const taskId = e.dataTransfer.getData('text/plain');
-    const task = tasks.find(t => t.id === taskId);
-    
-    // Clear drag state
-    setDragOverSlot(null);
-    if (onDragEnd) {
-      onDragEnd();
-    }
-    
-    if (task) {
-      // For placed tasks being moved, exclude their current slots from collision detection
-      const occupiedSlotsForCheck = new Set(occupiedSlots);
-      if (task.isPlaced && task.startTime) {
-        const taskSlots = getTaskSlots(task.startTime, task.duration);
-        taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
-      }
-      
-      // Check if the task can be placed at this time
-      if (canPlaceTask(dropTime, task.duration, occupiedSlotsForCheck, timeSlots)) {
-        onTaskDrop(taskId, dropTime);
-      }
-    }
-  };
+  const {
+    timeSlots,
+    placedTasks,
+    overlappingTaskIds,
+    occupiedSlots,
+    handleDragOver,
+    handleDragEnter,
+    handleDragLeave,
+    handleDrop,
+  } = useTimelineContext();
 
   /** 指定した時刻のタイムスロットをレンダリング */
   const renderTimeSlot = (time: string) => {
@@ -127,17 +66,14 @@ export const Timeline: React.FC<TimelineProps> = ({
         time={time}
         task={task}
         isOccupied={isOccupied}
-        dragOverSlot={dragOverSlot}
         draggedTaskId={draggedTaskId}
         tasks={tasks}
-        timeSlots={timeSlots}
-        occupiedSlots={occupiedSlots}
         selectedTask={selectedTask}
         overlappingTaskIds={overlappingTaskIds}
         onDragOver={handleDragOver}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
+        onDrop={(e, time) => handleDrop(e, time, tasks, timeSlots, onTaskDrop, onDragEnd)}
         onTaskClick={onTaskClick}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}

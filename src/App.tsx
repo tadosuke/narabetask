@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { AppSettings } from './types';
 import { TaskProvider } from './contexts/TaskContext';
+import { TimelineProvider } from './contexts/TimelineContext';
 import { useTaskContext } from './contexts/useTaskContext';
 import { TaskStaging } from './components/TaskStaging';
 import { Timeline } from './components/Timeline';
@@ -98,17 +99,19 @@ function AppContent() {
           onTaskReturn={returnTask}
         />
         
-        <Timeline
-          tasks={tasks}
-          selectedTask={selectedTask}
-          businessHours={settings.businessHours}
-          onTaskDrop={dropTask}
-          onTaskClick={selectTask}
-          draggedTaskId={draggedTaskId}
-          onDragStart={startDrag}
-          onDragEnd={endDrag}
-          onLockToggle={toggleLock}
-        />
+        <TimelineProvider tasks={tasks} businessHours={settings.businessHours}>
+          <Timeline
+            tasks={tasks}
+            selectedTask={selectedTask}
+            businessHours={settings.businessHours}
+            onTaskDrop={dropTask}
+            onTaskClick={selectTask}
+            draggedTaskId={draggedTaskId}
+            onDragStart={startDrag}
+            onDragEnd={endDrag}
+            onLockToggle={toggleLock}
+          />
+        </TimelineProvider>
         
         <TaskSidebar
           selectedTask={selectedTask}

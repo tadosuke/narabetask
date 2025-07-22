@@ -2,7 +2,8 @@ import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from '@testing-library/react';
 import { Timeline } from '../../../src/components/Timeline/Timeline';
-import type { Task, BusinessHours, LunchBreak } from '../../../src/types';
+import { TimelineProvider } from '../../../src/contexts/TimelineContext';
+import type { Task, BusinessHours } from '../../../src/types';
 
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({

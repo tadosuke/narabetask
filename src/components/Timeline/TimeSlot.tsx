@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Task } from '../../types';
-import { canPlaceTask, getTaskSlots } from '../../utils/timeUtils';
+import { useTimelineContext } from '../../contexts/useTimelineContext';
 import { TaskCard } from '../TaskCard';
 import './TimeSlot.css';
 
@@ -14,16 +14,10 @@ interface TimeSlotProps {
   task?: Task;
   /** 占有されているかどうか */
   isOccupied: boolean;
-  /** ドラッグオーバー中のタイムスロット */
-  dragOverSlot: string | null;
   /** 現在ドラッグ中のタスクのID */
   draggedTaskId?: string | null;
   /** 全タスクの配列 */
   tasks: Task[];
-  /** 利用可能なタイムスロットの配列 */
-  timeSlots: string[];
-  /** 占有されているタイムスロットのセット */
-  occupiedSlots: Set<string>;
   /** 選択中のタスク */
   selectedTask: Task | null;
   /** 重複しているタスクのIDのセット */
@@ -54,11 +48,8 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   time,
   task,
   isOccupied,
-  dragOverSlot,
   draggedTaskId,
   tasks,
-  timeSlots,
-  occupiedSlots,
   selectedTask,
   overlappingTaskIds,
   onDragOver,
@@ -70,50 +61,13 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   onDragEnd,
   onLockToggle
 }) => {
-  // ドラッグ中の視覚的フィードバック用のクラス決定
-  const isDragOver = dragOverSlot === time;
-  let dragFeedbackClass = '';
+  const { getDragFeedbackClass, getDragSpanningClass } = useTimelineContext();
   
-  if (isDragOver && draggedTaskId) {
-    const draggedTask = tasks.find(t => t.id === draggedTaskId);
-    if (draggedTask) {
-      // For placed tasks being moved, exclude their current slots from collision detection
-      const occupiedSlotsForCheck = new Set(occupiedSlots);
-      if (draggedTask.isPlaced && draggedTask.startTime) {
-        const taskSlots = getTaskSlots(draggedTask.startTime, draggedTask.duration);
-        taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
-      }
-      
-      const canPlace = canPlaceTask(time, draggedTask.duration, occupiedSlotsForCheck, timeSlots);
-      dragFeedbackClass = canPlace ? 'timeline__slot--drag-over' : 'timeline__slot--drag-invalid';
-    }
-  }
-
+  // ドラッグ中の視覚的フィードバック用のクラス決定
+  const dragFeedbackClass = getDragFeedbackClass(time, draggedTaskId || null, tasks);
+  
   // ドラッグ中のタスクが複数スロットにまたがる場合の視覚フィードバック
-  let dragSpanningClass = '';
-  if (dragOverSlot && draggedTaskId) {
-    const draggedTask = tasks.find(t => t.id === draggedTaskId);
-    if (draggedTask && dragOverSlot) {
-      const draggedTaskSlots = getTaskSlots(dragOverSlot, draggedTask.duration);
-      if (draggedTaskSlots.includes(time)) {
-        const slotIndex = draggedTaskSlots.indexOf(time);
-        const totalSlots = draggedTaskSlots.length;
-        
-        if (totalSlots === 1) {
-          dragSpanningClass = 'timeline__slot--drag-spanning-single';
-        } else if (slotIndex === 0) {
-          dragSpanningClass = 'timeline__slot--drag-spanning-first';
-        } else if (slotIndex === totalSlots - 1) {
-          dragSpanningClass = 'timeline__slot--drag-spanning-last';
-        } else {
-          dragSpanningClass = 'timeline__slot--drag-spanning-middle';
-        }
-        
-        // 基本の spanning クラスも追加
-        dragSpanningClass = `timeline__slot--drag-spanning ${dragSpanningClass}`;
-      }
-    }
-  }
+  const dragSpanningClass = getDragSpanningClass(time, draggedTaskId || null, tasks);
 
   return (
     <div
