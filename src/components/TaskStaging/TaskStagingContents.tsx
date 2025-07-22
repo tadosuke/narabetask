@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Task } from '../../types';
+import { useTaskStagingContext } from '../../contexts/useTaskStagingContext';
 import { TaskCard } from '../TaskCard';
 import './TaskStagingContents.css';
 
@@ -30,8 +31,10 @@ export const TaskStagingContents: React.FC<TaskStagingContentsProps> = ({
   onDragStart,
   onDragEnd
 }) => {
+  const { getUnplacedTasks } = useTaskStagingContext();
+  
   /** まだタイムラインに配置されていないタスクを取得 */
-  const unplacedTasks = tasks.filter(task => !task.isPlaced);
+  const unplacedTasks = getUnplacedTasks(tasks);
 
   return (
     <div className="task-staging__content">

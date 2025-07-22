@@ -1,8 +1,18 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { TaskStagingProvider } from "../../../src/contexts/TaskStagingContext";
 import { TaskStaging } from "../../../src/components/TaskStaging/TaskStaging";
 import type { Task } from "../../../src/types";
+
+// Helper function to render TaskStaging with provider
+const renderWithProvider = (component: React.ReactElement) => {
+  return render(
+    <TaskStagingProvider>
+      {component}
+    </TaskStagingProvider>
+  );
+};
 
 describe("TaskStaging", () => {
   const mockTasks: Task[] = [
@@ -41,14 +51,14 @@ describe("TaskStaging", () => {
   });
 
   it("タイトルと追加ボタンを含むヘッダーを表示する", () => {
-    render(<TaskStaging {...defaultProps} />);
+    renderWithProvider(<TaskStaging {...defaultProps} />);
 
     expect(screen.getByText("タスク一覧")).toBeInTheDocument();
     expect(screen.getByText("+ 新しいタスク")).toBeInTheDocument();
   });
 
   it("配置されていないタスクのみを表示する", () => {
-    render(<TaskStaging {...defaultProps} />);
+    renderWithProvider(<TaskStaging {...defaultProps} />);
 
     // 配置されていないタスクが表示される
     expect(screen.getByText("タスク1")).toBeInTheDocument();
@@ -60,7 +70,7 @@ describe("TaskStaging", () => {
 
   it("追加ボタンをクリックするとonAddTaskが呼ばれる", () => {
     const mockOnAddTask = vi.fn();
-    render(<TaskStaging {...defaultProps} onAddTask={mockOnAddTask} />);
+    renderWithProvider(<TaskStaging {...defaultProps} onAddTask={mockOnAddTask} />);
 
     fireEvent.click(screen.getByText("+ 新しいタスク"));
 
@@ -69,7 +79,7 @@ describe("TaskStaging", () => {
 
   it("タスクをクリックするとonTaskClickが呼ばれる", () => {
     const mockOnTaskClick = vi.fn();
-    render(<TaskStaging {...defaultProps} onTaskClick={mockOnTaskClick} />);
+    renderWithProvider(<TaskStaging {...defaultProps} onTaskClick={mockOnTaskClick} />);
 
     fireEvent.click(screen.getByText("タスク1"));
 
@@ -88,7 +98,7 @@ describe("TaskStaging", () => {
       },
     ];
 
-    render(<TaskStaging {...defaultProps} tasks={tasksAllPlaced} />);
+    renderWithProvider(<TaskStaging {...defaultProps} tasks={tasksAllPlaced} />);
 
     expect(
       screen.getByText("タスクがありません。", { exact: false })
@@ -104,7 +114,7 @@ describe("TaskStaging", () => {
   });
 
   it("タスク配列が空の場合は空の状態を表示する", () => {
-    render(<TaskStaging {...defaultProps} tasks={[]} />);
+    renderWithProvider(<TaskStaging {...defaultProps} tasks={[]} />);
 
     expect(
       screen.getByText("タスクがありません。", { exact: false })
@@ -117,7 +127,7 @@ describe("TaskStaging", () => {
   });
 
   it("説明セクションを表示する", () => {
-    render(<TaskStaging {...defaultProps} />);
+    renderWithProvider(<TaskStaging {...defaultProps} />);
 
     expect(screen.getByText("使い方:")).toBeInTheDocument();
     expect(
@@ -132,7 +142,7 @@ describe("TaskStaging", () => {
   });
 
   it("正しいCSSクラスを持つ", () => {
-    render(<TaskStaging {...defaultProps} />);
+    renderWithProvider(<TaskStaging {...defaultProps} />);
 
     const stagingContainer = screen
       .getByText("タスク一覧")
@@ -144,7 +154,7 @@ describe("TaskStaging", () => {
   });
 
   it("配置されていないタスクが存在する場合はタスクリストを表示する", () => {
-    render(<TaskStaging {...defaultProps} />);
+    renderWithProvider(<TaskStaging {...defaultProps} />);
 
     const taskList = screen.getByText("タスク1").closest(".task-staging__list");
     expect(taskList).toBeInTheDocument();

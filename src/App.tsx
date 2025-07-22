@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { AppSettings } from './types';
 import { TaskProvider } from './contexts/TaskContext';
 import { useTaskContext } from './contexts/useTaskContext';
+import { TaskStagingProvider } from './contexts/TaskStagingContext';
 import { TaskStaging } from './components/TaskStaging';
 import { Timeline } from './components/Timeline';
 import { TaskSidebar } from './components/TaskSidebar';
@@ -88,15 +89,17 @@ function AppContent() {
       </header>
       
       <main className="app__main" onClick={handleMainClick}>
-        <TaskStaging
-          tasks={tasks}
-          selectedTask={selectedTask}
-          onTaskClick={selectTask}
-          onAddTask={addTask}
-          onDragStart={startDrag}
-          onDragEnd={endDrag}
-          onTaskReturn={returnTask}
-        />
+        <TaskStagingProvider>
+          <TaskStaging
+            tasks={tasks}
+            selectedTask={selectedTask}
+            onTaskClick={selectTask}
+            onAddTask={addTask}
+            onDragStart={startDrag}
+            onDragEnd={endDrag}
+            onTaskReturn={returnTask}
+          />
+        </TaskStagingProvider>
         
         <Timeline
           tasks={tasks}

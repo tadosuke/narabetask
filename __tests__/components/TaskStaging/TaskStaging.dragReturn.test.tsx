@@ -1,8 +1,18 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { TaskStagingProvider } from "../../../src/contexts/TaskStagingContext";
 import { TaskStaging } from "../../../src/components/TaskStaging/TaskStaging";
 import type { Task } from "../../../src/types";
+
+// Helper function to render TaskStaging with provider
+const renderWithProvider = (component: React.ReactElement) => {
+  return render(
+    <TaskStagingProvider>
+      {component}
+    </TaskStagingProvider>
+  );
+};
 
 describe("タスクステージング - ドラッグ戻り機能", () => {
   const unplacedTask: Task = {
@@ -36,7 +46,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
   });
 
   it("ステージングエリアでのドラッグオーバーイベントを処理する", () => {
-    const { container } = render(<TaskStaging {...defaultProps} />);
+    const { container } = renderWithProvider(<TaskStaging {...defaultProps} />);
     
     const stagingArea = container.querySelector('.task-staging');
     const dragOverEvent = new Event("dragover", { bubbles: true });
@@ -48,7 +58,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
   });
 
   it("ステージングエリアの上でドラッグしている時にdrag-overクラスを追加する", () => {
-    const { container } = render(<TaskStaging {...defaultProps} />);
+    const { container } = renderWithProvider(<TaskStaging {...defaultProps} />);
     
     const stagingArea = container.querySelector('.task-staging');
     
@@ -61,7 +71,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
   });
 
   it("ドラッグがステージングエリアから離れた時にdrag-overクラスを削除する", () => {
-    const { container } = render(<TaskStaging {...defaultProps} />);
+    const { container } = renderWithProvider(<TaskStaging {...defaultProps} />);
     
     const stagingArea = container.querySelector('.task-staging');
     
@@ -85,7 +95,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
 
   it("配置済みタスクがステージングエリアにドロップされた時にonTaskReturnを呼び出す", () => {
     const mockOnTaskReturn = vi.fn();
-    const { container } = render(
+    const { container } = renderWithProvider(
       <TaskStaging {...defaultProps} onTaskReturn={mockOnTaskReturn} />
     );
     
@@ -105,7 +115,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
 
   it("未配置タスクがステージングエリアにドロップされた時はonTaskReturnを呼び出さない", () => {
     const mockOnTaskReturn = vi.fn();
-    const { container } = render(
+    const { container } = renderWithProvider(
       <TaskStaging {...defaultProps} onTaskReturn={mockOnTaskReturn} />
     );
     
@@ -125,7 +135,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
 
   it("存在しないタスクがドロップされた時はonTaskReturnを呼び出さない", () => {
     const mockOnTaskReturn = vi.fn();
-    const { container } = render(
+    const { container } = renderWithProvider(
       <TaskStaging {...defaultProps} onTaskReturn={mockOnTaskReturn} />
     );
     
@@ -145,7 +155,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
 
   it("ドロップが発生した時にonDragEndを呼び出す", () => {
     const mockOnDragEnd = vi.fn();
-    const { container } = render(
+    const { container } = renderWithProvider(
       <TaskStaging {...defaultProps} onDragEnd={mockOnDragEnd} />
     );
     
@@ -163,7 +173,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
   });
 
   it("ドロップが発生した時にdrag-overクラスを削除する", () => {
-    const { container } = render(<TaskStaging {...defaultProps} />);
+    const { container } = renderWithProvider(<TaskStaging {...defaultProps} />);
     
     const stagingArea = container.querySelector('.task-staging');
     

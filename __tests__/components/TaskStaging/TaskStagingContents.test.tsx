@@ -1,8 +1,18 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { TaskStagingProvider } from "../../../src/contexts/TaskStagingContext";
 import { TaskStagingContents } from "../../../src/components/TaskStaging/TaskStagingContents";
 import type { Task } from "../../../src/types";
+
+// Helper function to render TaskStagingContents with provider
+const renderWithProvider = (component: React.ReactElement) => {
+  return render(
+    <TaskStagingProvider>
+      {component}
+    </TaskStagingProvider>
+  );
+};
 
 describe("TaskStagingContents", () => {
   const mockTasks: Task[] = [
@@ -41,7 +51,7 @@ describe("TaskStagingContents", () => {
   });
 
   it("配置されていないタスクのみを表示する", () => {
-    render(<TaskStagingContents {...defaultProps} />);
+    renderWithProvider(<TaskStagingContents {...defaultProps} />);
 
     // 配置されていないタスクが表示される
     expect(screen.getByText("タスク1")).toBeInTheDocument();
@@ -53,7 +63,7 @@ describe("TaskStagingContents", () => {
 
   it("タスクをクリックするとonTaskClickが呼ばれる", () => {
     const mockOnTaskClick = vi.fn();
-    render(<TaskStagingContents {...defaultProps} onTaskClick={mockOnTaskClick} />);
+    renderWithProvider(<TaskStagingContents {...defaultProps} onTaskClick={mockOnTaskClick} />);
 
     fireEvent.click(screen.getByText("タスク1"));
     expect(mockOnTaskClick).toHaveBeenCalledWith(mockTasks[0]);
@@ -71,7 +81,7 @@ describe("TaskStagingContents", () => {
       },
     ];
 
-    render(<TaskStagingContents {...defaultProps} tasks={tasksAllPlaced} />);
+    renderWithProvider(<TaskStagingContents {...defaultProps} tasks={tasksAllPlaced} />);
 
     expect(
       screen.getByText("タスクがありません。", { exact: false })
@@ -87,7 +97,7 @@ describe("TaskStagingContents", () => {
   });
 
   it("タスク配列が空の場合は空の状態を表示する", () => {
-    render(<TaskStagingContents {...defaultProps} tasks={[]} />);
+    renderWithProvider(<TaskStagingContents {...defaultProps} tasks={[]} />);
 
     expect(
       screen.getByText("タスクがありません。", { exact: false })
@@ -100,7 +110,7 @@ describe("TaskStagingContents", () => {
   });
 
   it("正しいCSSクラスを持つ", () => {
-    render(<TaskStagingContents {...defaultProps} />);
+    renderWithProvider(<TaskStagingContents {...defaultProps} />);
 
     const content = screen.getByText("タスク1").closest(".task-staging__content");
     expect(content).toBeInTheDocument();

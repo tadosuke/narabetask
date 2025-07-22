@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { Task } from '../../types';
+import { useTaskStagingContext } from '../../contexts/useTaskStagingContext';
 import { TaskStagingHeader } from './TaskStagingHeader';
 import { TaskStagingContents } from './TaskStagingContents';
 import { TaskStagingInstructions } from './TaskStagingInstructions';
@@ -38,49 +39,17 @@ export const TaskStaging: React.FC<TaskStagingProps> = ({
   onDragEnd,
   onTaskReturn
 }) => {
-  /** ドラッグオーバー状態の管理 */
-  const [isDragOver, setIsDragOver] = useState(false);
-
-  /** ドラッグオーバー時の処理 */
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  /** ドラッグエンター時の処理 */
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  /** ドラッグリーブ時の処理 */
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    // Only clear drag over state if leaving the container itself
-    const currentTarget = e.currentTarget as HTMLElement;
-    const relatedTarget = e.relatedTarget as HTMLElement;
-    
-    if (!currentTarget.contains(relatedTarget)) {
-      setIsDragOver(false);
-    }
-  };
+  const {
+    isDragOver,
+    handleDragOver,
+    handleDragEnter,
+    handleDragLeave,
+    handleDrop
+  } = useTaskStagingContext();
 
   /** ドロップ時の処理 - タスクを一覧に戻す */
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    
-    const taskId = e.dataTransfer.getData('text/plain');
-    const task = tasks.find(t => t.id === taskId);
-    
-    // Only allow returning placed tasks to staging
-    if (task && task.isPlaced && onTaskReturn) {
-      onTaskReturn(taskId);
-    }
-    
-    if (onDragEnd) {
-      onDragEnd();
-    }
+  const onDrop = (e: React.DragEvent) => {
+    handleDrop(e, onTaskReturn, onDragEnd, tasks);
   };
 
   return (
@@ -89,7 +58,7 @@ export const TaskStaging: React.FC<TaskStagingProps> = ({
       onDragOver={handleDragOver}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
+      onDrop={onDrop}
     >
       <TaskStagingHeader onAddTask={onAddTask} />
       
