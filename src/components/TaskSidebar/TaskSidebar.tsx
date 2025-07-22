@@ -3,6 +3,7 @@ import type { Task } from '../../types';
 import { useTaskSidebarContext } from '../../contexts/useTaskSidebarContext';
 import { TaskNameField } from './TaskNameField';
 import { TaskDurationSlider } from './TaskDurationSlider';
+import { ResourceTypeSelector } from './ResourceTypeSelector';
 import { TaskInfoDisplay } from './TaskInfoDisplay';
 import { TaskRemoveButton } from './TaskRemoveButton';
 import './TaskSidebar.css';
@@ -28,8 +29,10 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
   const {
     name,
     duration,
+    resourceTypes,
     handleNameChange,
     handleDurationChange,
+    handleResourceTypesChange,
   } = useTaskSidebarContext();
 
   if (!selectedTask) {
@@ -57,6 +60,11 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
         <TaskDurationSlider
           duration={duration}
           onDurationChange={handleDurationChange}
+        />
+
+        <ResourceTypeSelector
+          selectedResourceTypes={resourceTypes}
+          onResourceTypesChange={handleResourceTypesChange}
         />
 
         {selectedTask && (

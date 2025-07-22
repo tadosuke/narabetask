@@ -1,4 +1,9 @@
 /**
+ * リソースタイプ
+ */
+export type ResourceType = 'self' | 'others' | 'machine' | 'network';
+
+/**
  * タスクの情報を表すインターフェース
  */
 export interface Task {
@@ -14,6 +19,8 @@ export interface Task {
   isPlaced: boolean;
   /** タスクがロック状態かどうか */
   isLocked?: boolean;
+  /** タスクで使用するリソースタイプのリスト */
+  resourceTypes: ResourceType[];
 }
 
 /**
@@ -35,6 +42,16 @@ export interface BusinessHours {
   /** 営業開始時刻（HH:mm形式） */
   start: string; // HH:mm format
   /** 営業終了時刻（HH:mm形式） */
+  end: string; // HH:mm format
+}
+
+/**
+ * 昼休み時間を表すインターフェース
+ */
+export interface LunchBreak {
+  /** 昼休み開始時刻（HH:mm形式） */
+  start: string; // HH:mm format
+  /** 昼休み終了時刻（HH:mm形式） */
   end: string; // HH:mm format
 }
 

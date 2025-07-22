@@ -1,13 +1,15 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render } from "@testing-library/react";
-import { TimeSlot } from "../../../src/components/Timeline/TimeSlot";
+import { renderTimeSlotWithProvider } from "./testUtils";
 import type { Task } from "../../../src/types";
 
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({
   canPlaceTask: vi.fn(),
   getTaskSlots: vi.fn(),
+  generateTimeSlots: vi.fn(() => ["09:00", "09:15", "09:30", "09:45", "10:00"]),
+  findOverlappingTasks: vi.fn(() => new Set()),
+  doTasksShareResources: vi.fn(() => false),
 }));
 
 import { canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
@@ -55,7 +57,9 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
   it("無効ドラッグ時にspanningクラスとinvalidクラス両方が適用される", () => {
     vi.mocked(canPlaceTask).mockReturnValue(false);
     
-    const { container } = render(<TimeSlot {...defaultProps} />);
+    const { container } = renderTimeSlotWithProvider({
+      timeSlotProps: defaultProps
+    });
 
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).toHaveClass("timeline__slot--drag-invalid");
@@ -66,7 +70,9 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
   it("有効ドラッグ時にはspanningクラスのみが適用される", () => {
     vi.mocked(canPlaceTask).mockReturnValue(true);
     
-    const { container } = render(<TimeSlot {...defaultProps} />);
+    const { container } = renderTimeSlotWithProvider({
+      timeSlotProps: defaultProps
+    });
 
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).not.toHaveClass("timeline__slot--drag-invalid");
@@ -78,7 +84,9 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
     vi.mocked(canPlaceTask).mockReturnValue(false);
     vi.mocked(getTaskSlots).mockReturnValue(["09:30"]); // 単一スロット
     
-    const { container } = render(<TimeSlot {...defaultProps} />);
+    const { container } = renderTimeSlotWithProvider({
+      timeSlotProps: defaultProps
+    });
 
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).toHaveClass("timeline__slot--drag-invalid");
@@ -97,7 +105,9 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
       time: "10:00", // このスロットは最後のスロット
     };
     
-    const { container } = render(<TimeSlot {...propsForLastSlot} />);
+    const { container } = renderTimeSlotWithProvider({
+      timeSlotProps: propsForLastSlot
+    });
 
     const timeSlot = container.querySelector('.timeline__slot');
     // spanning対象でdragが無効な場合、invalidクラスが付く
@@ -117,7 +127,9 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
       time: "09:45", // このスロットはspanning対象でtargetではない
     };
     
-    const { container } = render(<TimeSlot {...propsForNonTargetSlot} />);
+    const { container } = renderTimeSlotWithProvider({
+      timeSlotProps: propsForNonTargetSlot
+    });
 
     const timeSlot = container.querySelector('.timeline__slot');
     // spanning対象でdragが無効な場合、targetスロットでなくてもinvalidクラスが付く

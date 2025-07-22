@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi } from "vitest";
-import { render, fireEvent } from '@testing-library/react';
-import { Timeline } from '../../../src/components/Timeline/Timeline';
+import { fireEvent } from '@testing-library/react';
+import { renderTimelineWithProvider } from './testUtils';
 import type { Task, BusinessHours, LunchBreak } from '../../../src/types';
 
 // timeUtilsモジュールをモック
@@ -59,7 +59,11 @@ describe('Timeline スパニングコーディネーション', () => {
   };
 
   it('ドラッグ状態を複数のTimeSlotコンポーネントに正しく伝達する', () => {
-    const { container } = render(<Timeline {...mockProps} />);
+    const { container } = renderTimelineWithProvider({
+      timelineProps: {
+        ...mockProps,
+      }
+    });
     
     // TimeSlotコンポーネントが正しく生成されていることを確認
     const timeSlots = container.querySelectorAll('[data-time]');
@@ -80,13 +84,15 @@ describe('Timeline スパニングコーディネーション', () => {
       isPlaced: false
     };
 
-    const propsWithMultiSlotTask = {
-      ...mockProps,
-      tasks: [multiSlotTask],
-      draggedTaskId: '2'
-    };
-
-    const { container } = render(<Timeline {...propsWithMultiSlotTask} />);
+    const { container } = renderTimelineWithProvider({
+      providerProps: {
+        tasks: [multiSlotTask],
+      },
+      timelineProps: {
+        ...mockProps,
+        draggedTaskId: '2'
+      }
+    });
     
     // 複数のTimeSlotがレンダリングされていることを確認
     const timeSlots = container.querySelectorAll('[data-time]');
@@ -108,7 +114,11 @@ describe('Timeline スパニングコーディネーション', () => {
   });
 
   it('ドラッグオーバー状態を各TimeSlotに正しく配布する', () => {
-    const { container } = render(<Timeline {...mockProps} />);
+    const { container } = renderTimelineWithProvider({
+      timelineProps: {
+        ...mockProps,
+      }
+    });
     
     const firstSlot = container.querySelector('[data-time="09:00"]');
     expect(firstSlot).toBeInTheDocument();
@@ -131,12 +141,13 @@ describe('Timeline スパニングコーディネーション', () => {
 
   it('ドラッグ終了時にすべてのTimeSlotの状態をクリアする', () => {
     const mockOnDragEnd = vi.fn();
-    const propsWithDragEnd = {
-      ...mockProps,
-      onDragEnd: mockOnDragEnd
-    };
 
-    const { container } = render(<Timeline {...propsWithDragEnd} />);
+    const { container } = renderTimelineWithProvider({
+      timelineProps: {
+        ...mockProps,
+        onDragEnd: mockOnDragEnd
+      }
+    });
     
     const firstSlot = container.querySelector('[data-time="09:00"]');
     
