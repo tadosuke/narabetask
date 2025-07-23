@@ -2,17 +2,12 @@ import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Timeline } from "../../../src/components/Timeline/Timeline";
-import type { Task, BusinessHours, LunchBreak } from "../../../src/types";
+import type { Task, BusinessHours } from "../../../src/types";
 
 describe("Timeline セルフ衝突コーディネーション", () => {
   const mockBusinessHours: BusinessHours = {
     start: "09:00",
     end: "17:00"
-  };
-
-  const mockLunchBreak: LunchBreak = {
-    start: "12:00",
-    end: "13:00"
   };
 
   beforeEach(() => {
@@ -38,7 +33,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         tasks={mockTasks}
         selectedTask={null}
         businessHours={mockBusinessHours}
-        lunchBreak={mockLunchBreak}
         onTaskDrop={mockOnTaskDrop}
         onTaskClick={() => {}}
         draggedTaskId="1"
@@ -85,7 +79,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         tasks={mockTasks}
         selectedTask={null}
         businessHours={mockBusinessHours}
-        lunchBreak={mockLunchBreak}
         onTaskDrop={() => {}}
         onTaskClick={() => {}}
       />
@@ -126,7 +119,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         tasks={[placedTask, conflictTask]}
         selectedTask={null}
         businessHours={mockBusinessHours}
-        lunchBreak={mockLunchBreak}
         onTaskDrop={mockOnTaskDrop}
         onTaskClick={() => {}}
         draggedTaskId="1"
@@ -173,7 +165,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         tasks={overlappingTasks}
         selectedTask={null}
         businessHours={mockBusinessHours}
-        lunchBreak={mockLunchBreak}
         onTaskDrop={() => {}}
         onTaskClick={() => {}}
       />
