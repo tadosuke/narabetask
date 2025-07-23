@@ -11,35 +11,45 @@ const baseMockTask: Task = {
 };
 
 describe('TaskFooter', () => {
-  it('リソースアイコンが表示される', () => {
+  it('ロックボタンが表示される（非配置タスクは無効状態）', () => {
     render(<TaskFooter task={baseMockTask} />);
     
-    // リソースアイコンが表示されることを確認
-    const resourceIcon = screen.getByTitle('自分');
-    expect(resourceIcon).toBeInTheDocument();
-    expect(resourceIcon).toHaveClass('task-card__resource-square');
+    // ロックボタンが表示されることを確認
+    const lockButton = screen.getByRole('button');
+    expect(lockButton).toBeInTheDocument();
+    expect(lockButton).toBeDisabled(); // 非配置タスクなので無効
   });
 
-  it('複数のリソースアイコンが並んで表示される', () => {
-    const taskWithMultipleResources = {
+  it('配置済みタスクではロックボタンが有効になる', () => {
+    const placedTask = {
       ...baseMockTask,
-      resourceTypes: ['self', 'others', 'machine']
+      isPlaced: true
     } as Task;
     
-    render(<TaskFooter task={taskWithMultipleResources} />);
+    render(<TaskFooter task={placedTask} />);
     
-    // 各リソースアイコンが表示されることを確認
-    expect(screen.getByTitle('自分')).toBeInTheDocument();
-    expect(screen.getByTitle('他人')).toBeInTheDocument();
-    expect(screen.getByTitle('マシン')).toBeInTheDocument();
-    
-    // すべてのアイコンが同じ容器内にあることを確認
-    const resourceContainer = screen.getByTitle('自分').closest('.task-card__resource-squares');
-    expect(resourceContainer).toBeInTheDocument();
-    expect(resourceContainer?.children).toHaveLength(3);
+    // ロックボタンが表示され、有効であることを確認
+    const lockButton = screen.getByRole('button');
+    expect(lockButton).toBeInTheDocument();
+    expect(lockButton).not.toBeDisabled();
   });
 
-  it('リソースが選択されていない場合でも、ロックボタンは表示される', () => {
+  it('ロック済みタスクではロック済みスタイルが適用される', () => {
+    const lockedTask = {
+      ...baseMockTask,
+      isPlaced: true,
+      isLocked: true
+    } as Task;
+    
+    render(<TaskFooter task={lockedTask} />);
+    
+    // ロックボタンが表示され、ロック済みスタイルが適用されることを確認
+    const lockButton = screen.getByRole('button');
+    expect(lockButton).toBeInTheDocument();
+    expect(lockButton).toHaveClass('task-card__lock-button--locked');
+  });
+
+  it('リソースタイプに関係なくロックボタンは表示される', () => {
     const taskWithNoResources = {
       ...baseMockTask,
       resourceTypes: []
@@ -54,16 +64,13 @@ describe('TaskFooter', () => {
     const lockButton = screen.getByRole('button');
     expect(lockButton).toBeInTheDocument();
     expect(lockButton).toBeDisabled(); // 非配置タスクなので無効
-    
-    // リソースアイコンはない
-    expect(container.querySelector('.task-card__resource-square')).toBeNull();
   });
 
-  it('リソースタイプがundefinedの場合でも、ロックボタンは表示される', () => {
+  it('リソースタイプがundefinedでもロックボタンは表示される', () => {
     const taskWithUndefinedResources = {
       ...baseMockTask,
-      resourceTypes: undefined as any
-    } as Task;
+      resourceTypes: undefined
+    } as unknown as Task;
     
     const { container } = render(<TaskFooter task={taskWithUndefinedResources} />);
     
@@ -74,23 +81,5 @@ describe('TaskFooter', () => {
     const lockButton = screen.getByRole('button');
     expect(lockButton).toBeInTheDocument();
     expect(lockButton).toBeDisabled(); // 非配置タスクなので無効
-    
-    // リソースアイコンはない
-    expect(container.querySelector('.task-card__resource-square')).toBeNull();
-  });
-
-  it('各リソースタイプが正しい色とラベルを持つ', () => {
-    const taskWithAllResources = {
-      ...baseMockTask,
-      resourceTypes: ['self', 'others', 'machine', 'network']
-    } as Task;
-    
-    render(<TaskFooter task={taskWithAllResources} />);
-    
-    // 各リソースアイコンが正しいラベルを持つことを確認
-    expect(screen.getByTitle('自分')).toBeInTheDocument();
-    expect(screen.getByTitle('他人')).toBeInTheDocument();
-    expect(screen.getByTitle('マシン')).toBeInTheDocument();
-    expect(screen.getByTitle('ネットワーク')).toBeInTheDocument();
   });
 });
