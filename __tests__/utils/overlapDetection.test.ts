@@ -1,52 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { findOverlappingTasks, doTasksShareResources } from '../../src/utils/timeUtils';
+import { findOverlappingTasks } from '../../src/utils/timeUtils';
 
 describe('重複検出', () => {
-  describe('doTasksShareResources', () => {
-    it('タスクが少なくとも一つのリソースを共有する場合にtrueを返す', () => {
-      const resources1 = ['self', 'machine'];
-      const resources2 = ['machine', 'network'];
-      expect(doTasksShareResources(resources1, resources2)).toBe(true);
-    });
-
-    it('タスクがリソースを共有しない場合にfalseを返す', () => {
-      const resources1 = ['self'];
-      const resources2 = ['machine', 'network'];
-      expect(doTasksShareResources(resources1, resources2)).toBe(false);
-    });
-
-    it('すべてのリソースが同じ場合にtrueを返す', () => {
-      const resources1 = ['self', 'machine'];
-      const resources2 = ['self', 'machine'];
-      expect(doTasksShareResources(resources1, resources2)).toBe(true);
-    });
-  });
-
   describe('findOverlappingTasks', () => {
-    it('タスクが時間とリソースを共有する場合に重複を検出する', () => {
-      const tasks = [
-        {
-          id: 'task1',
-          startTime: '09:00',
-          duration: 60,
-          resourceTypes: ['self'],
-          isPlaced: true
-        },
-        {
-          id: 'task2',
-          startTime: '09:30',
-          duration: 60,
-          resourceTypes: ['self'],
-          isPlaced: true
-        }
-      ];
-
-      const overlapping = findOverlappingTasks(tasks);
-      expect(overlapping.has('task1')).toBe(true);
-      expect(overlapping.has('task2')).toBe(true);
-    });
-
-    it('タスクが時間を共有するがリソースを共有しない場合は重複を検出しない', () => {
+    it('タスクが時間を共有する場合に重複を検出する', () => {
       const tasks = [
         {
           id: 'task1',
@@ -65,11 +22,11 @@ describe('重複検出', () => {
       ];
 
       const overlapping = findOverlappingTasks(tasks);
-      expect(overlapping.has('task1')).toBe(false);
-      expect(overlapping.has('task2')).toBe(false);
+      expect(overlapping.has('task1')).toBe(true);
+      expect(overlapping.has('task2')).toBe(true);
     });
 
-    it('タスクがリソースを共有するが時間を共有しない場合は重複を検出しない', () => {
+    it('タスクが時間を共有しない場合は重複を検出しない', () => {
       const tasks = [
         {
           id: 'task1',
@@ -136,6 +93,34 @@ describe('重複検出', () => {
       const overlapping = findOverlappingTasks(tasks);
       expect(overlapping.has('task1')).toBe(false);
       expect(overlapping.has('task2')).toBe(false);
+    });
+
+    it('リソースタイプが異なってもタスクが時間を共有する場合に重複を検出する（リソースロジック削除確認）', () => {
+      // This test verifies that resource types no longer affect overlap detection
+      const tasks = [
+        {
+          id: 'task1',
+          startTime: '09:00',
+          duration: 60,
+          resourceTypes: ['self'], // Different resource type
+          isPlaced: true
+        },
+        {
+          id: 'task2',
+          startTime: '09:30',
+          duration: 60,
+          resourceTypes: ['machine'], // Different resource type
+          isPlaced: true
+        }
+      ];
+
+      const overlapping = findOverlappingTasks(tasks);
+      
+      // Before removing resource logic: this would return empty set
+      // After removing resource logic: this should return both task IDs
+      expect(overlapping.has('task1')).toBe(true);
+      expect(overlapping.has('task2')).toBe(true);
+      expect(overlapping.size).toBe(2);
     });
   });
 });

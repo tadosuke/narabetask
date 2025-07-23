@@ -115,19 +115,11 @@ export function calculateEndTime(startTime: string, duration: number): string {
   return minutesToTime(endMinutes);
 }
 
-/**
- * 2つのタスクがリソースを共有しているかを判定します。
- * @param {string[]} resourceTypes1 - 1つ目のタスクのリソースタイプ
- * @param {string[]} resourceTypes2 - 2つ目のタスクのリソースタイプ
- * @returns {boolean} リソースを共有している場合はtrue
- */
-export function doTasksShareResources(resourceTypes1: string[], resourceTypes2: string[]): boolean {
-  return resourceTypes1.some(resource => resourceTypes2.includes(resource));
-}
+
 
 /**
  * 配置済みタスクの中で重複しているタスクのIDを取得します。
- * 重複は時間の重なりとリソースの共有の両方がある場合に発生します。
+ * 重複は時間の重なりがある場合に発生します。
  * @param {any[]} placedTasks - 配置済みタスクの配列
  * @returns {Set<string>} 重複しているタスクのIDのセット
  */
@@ -141,11 +133,6 @@ export function findOverlappingTasks(placedTasks: any[]): Set<string> {
     for (let j = i + 1; j < validTasks.length; j++) {
       const task1 = validTasks[i];
       const task2 = validTasks[j];
-      
-      // リソースを共有していない場合は重複とみなさない
-      if (!doTasksShareResources(task1.resourceTypes, task2.resourceTypes)) {
-        continue;
-      }
       
       // タスク1の時間スロット
       const task1Slots = getTaskSlots(task1.startTime!, task1.duration);

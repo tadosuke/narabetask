@@ -28,7 +28,7 @@ describe('TaskContext', () => {
     expect(result.current.tasks[0]).toMatchObject({
       name: '新しいタスク',
       duration: 30,
-      resourceTypes: ['self'],
+      resourceTypes: [],
       isPlaced: false,
     });
     expect(result.current.tasks[0].id).toBeTruthy();
