@@ -46,6 +46,8 @@ describe("TaskSidebar", () => {
     id: "1",
     name: "テストタスク",
     duration: 60,
+    workTime: 60,
+    waitTime: 0,
     isPlaced: false
   };
 
@@ -53,6 +55,8 @@ describe("TaskSidebar", () => {
     id: "2",
     name: "配置済みタスク",
     duration: 30,
+    workTime: 30,
+    waitTime: 0,
     isPlaced: true,
     startTime: "09:00"
   };
@@ -80,21 +84,28 @@ describe("TaskSidebar", () => {
 
     expect(screen.getByText("タスク設定")).toBeInTheDocument();
     expect(screen.getByLabelText("タスク名")).toBeInTheDocument();
-    expect(screen.getByLabelText("工数")).toBeInTheDocument();
+    expect(screen.getByText("工数")).toBeInTheDocument(); // 工数 is now just a text label
+    expect(screen.getByLabelText("作業時間")).toBeInTheDocument();
+    expect(screen.getByLabelText("待ち時間")).toBeInTheDocument();
   });
 
   it("フォームフィールドに選択されたタスクのデータを入力する", () => {
     render(<TaskSidebarWrapper {...defaultProps} />);
 
     const nameInput = screen.getByDisplayValue("テストタスク");
-    const durationSlider = screen.getByRole("slider");
+    const workTimeSlider = screen.getByLabelText("作業時間");
+    const waitTimeSlider = screen.getByLabelText("待ち時間");
 
     expect(nameInput).toBeInTheDocument();
-    expect(durationSlider).toBeInTheDocument();
-    expect(durationSlider).toHaveValue("60"); // 1時間 = 60分
+    expect(workTimeSlider).toBeInTheDocument();
+    expect(waitTimeSlider).toBeInTheDocument();
+    expect(workTimeSlider).toHaveValue("60"); // 1時間 = 60分
+    expect(waitTimeSlider).toHaveValue("0"); // 0分
 
-    // Check that duration display shows "1時間"
-    expect(screen.getByText("1時間")).toBeInTheDocument();
+    // Check that duration displays show correct values
+    expect(screen.getByText("1時間")).toBeInTheDocument(); // work time
+    expect(screen.getByText("0分")).toBeInTheDocument(); // wait time
+    expect(screen.getByText("合計: 1時間")).toBeInTheDocument(); // total
   });
 
   it("配置済みタスクの開始時間と終了時間を表示する", () => {
@@ -125,15 +136,15 @@ describe("TaskSidebar", () => {
     expect(nameInput.value).toBe("新しいタスク名");
   });
 
-  it("変更されたときに所要時間を更新する", async () => {
+  it("変更されたときに作業時間を更新する", async () => {
     render(<TaskSidebarWrapper {...defaultProps} />);
 
-    const durationSlider = screen.getByRole("slider");
+    const workTimeSlider = screen.getByLabelText("作業時間");
 
     // Change the slider value to 45 minutes
-    fireEvent.change(durationSlider, { target: { value: "45" } });
+    fireEvent.change(workTimeSlider, { target: { value: "45" } });
 
-    expect(durationSlider).toHaveValue("45");
+    expect(workTimeSlider).toHaveValue("45");
   });
 
   it("タスク名が変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
@@ -153,19 +164,40 @@ describe("TaskSidebar", () => {
     });
   });
 
-  it("所要時間が変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
+  it("作業時間が変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
     const mockOnTaskUpdate = vi.fn();
     render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
 
-    const durationSlider = screen.getByRole("slider");
+    const workTimeSlider = screen.getByLabelText("作業時間");
 
-    // Change the slider value to 45 minutes
-    fireEvent.change(durationSlider, { target: { value: "45" } });
+    // Change the work time slider value to 45 minutes
+    fireEvent.change(workTimeSlider, { target: { value: "45" } });
 
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
-        duration: 45
+        workTime: 45,
+        waitTime: 0,
+        duration: 45 // total should be workTime + waitTime
+      });
+    });
+  });
+
+  it("待ち時間が変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
+    const mockOnTaskUpdate = vi.fn();
+    render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+
+    const waitTimeSlider = screen.getByLabelText("待ち時間");
+
+    // Change the wait time slider value to 30 minutes
+    fireEvent.change(waitTimeSlider, { target: { value: "30" } });
+
+    await waitFor(() => {
+      expect(mockOnTaskUpdate).toHaveBeenCalledWith({
+        ...mockTask,
+        workTime: 60,
+        waitTime: 30,
+        duration: 90 // total should be workTime + waitTime
       });
     });
   });
@@ -223,27 +255,31 @@ describe("TaskSidebar", () => {
     expect(mockOnTaskRemove).not.toHaveBeenCalled();
   });
 
-  it("スライダーで最小値と最大値を設定できる", async () => {
+  it("作業時間スライダーで最小値と最大値を設定できる", async () => {
     const mockOnTaskUpdate = vi.fn();
     render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
 
-    const durationSlider = screen.getByRole("slider");
+    const workTimeSlider = screen.getByLabelText("作業時間");
 
     // Test minimum value (15 minutes)
-    fireEvent.change(durationSlider, { target: { value: "15" } });
+    fireEvent.change(workTimeSlider, { target: { value: "15" } });
 
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
+        workTime: 15,
+        waitTime: 0,
         duration: 15
       });
     });
 
-    fireEvent.change(durationSlider, { target: { value: "240" } });
+    fireEvent.change(workTimeSlider, { target: { value: "240" } });
 
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
+        workTime: 240,
+        waitTime: 0,
         duration: 240
       });
     });
@@ -252,26 +288,32 @@ describe("TaskSidebar", () => {
   it("スライダーの最小値と最大値を正しく設定する", () => {
     render(<TaskSidebarWrapper {...defaultProps} />);
 
-    const durationSlider = screen.getByRole("slider");
+    // Check work time slider attributes
+    const workTimeSlider = screen.getByLabelText("作業時間");
+    expect(workTimeSlider).toHaveAttribute("min", "15"); // 最小値15分
+    expect(workTimeSlider).toHaveAttribute("max", "240"); // 最大値4時間
+    expect(workTimeSlider).toHaveAttribute("step", "15"); // 15分刻み
 
-    // Check slider attributes for the required range
-    expect(durationSlider).toHaveAttribute("min", "15"); // 最小値15分
-    expect(durationSlider).toHaveAttribute("max", "240"); // 最大値4時間
-    expect(durationSlider).toHaveAttribute("step", "15"); // 15分刻み
+    // Check wait time slider attributes  
+    const waitTimeSlider = screen.getByLabelText("待ち時間");
+    expect(waitTimeSlider).toHaveAttribute("min", "0"); // 最小値0分
+    expect(waitTimeSlider).toHaveAttribute("max", "240"); // 最大値4時間
+    expect(waitTimeSlider).toHaveAttribute("step", "15"); // 15分刻み
   });
 
   it("所要時間の表示とスライダーの範囲を正しく設定する", () => {
     render(<TaskSidebarWrapper {...defaultProps} />);
 
-    const durationSlider = screen.getByRole("slider");
-
-    // Check slider attributes
-    expect(durationSlider).toHaveAttribute("min", "15");
-    expect(durationSlider).toHaveAttribute("max", "240");
-    expect(durationSlider).toHaveAttribute("step", "15");
+    // Check work time slider attributes
+    const workTimeSlider = screen.getByLabelText("作業時間");
+    expect(workTimeSlider).toHaveAttribute("min", "15");
+    expect(workTimeSlider).toHaveAttribute("max", "240");
+    expect(workTimeSlider).toHaveAttribute("step", "15");
 
     // Check that duration displays are formatted correctly
-    expect(screen.getByText("1時間")).toBeInTheDocument(); // default 60 minutes
+    expect(screen.getByText("1時間")).toBeInTheDocument(); // work time 60 minutes
+    expect(screen.getByText("0分")).toBeInTheDocument(); // wait time 0 minutes
+    expect(screen.getByText("合計: 1時間")).toBeInTheDocument(); // total
   });
 
   it("タスクが変更されたときにフォームをリセットする", () => {
@@ -283,6 +325,8 @@ describe("TaskSidebar", () => {
       id: "2",
       name: "新しいタスク",
       duration: 30,
+      workTime: 30,
+      waitTime: 0,
       isPlaced: false
     };
 
@@ -290,10 +334,14 @@ describe("TaskSidebar", () => {
 
     expect(screen.getByDisplayValue("新しいタスク")).toBeInTheDocument();
 
-    // Check that slider value is 30 and display shows "30分"
-    const durationSlider = screen.getByRole("slider");
-    expect(durationSlider).toHaveValue("30");
+    // Check that work time slider value is 30 and display shows "30分"
+    const workTimeSlider = screen.getByLabelText("作業時間");
+    expect(workTimeSlider).toHaveValue("30");
     expect(screen.getByText("30分")).toBeInTheDocument();
+
+    // Check that wait time slider is 0
+    const waitTimeSlider = screen.getByLabelText("待ち時間");
+    expect(waitTimeSlider).toHaveValue("0");
   });
 
   it("タスク名入力フィールドにフォーカスしたときにテキストが全選択される", async () => {
