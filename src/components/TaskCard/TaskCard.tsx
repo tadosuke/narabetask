@@ -78,8 +78,27 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         minHeight: `${taskHeight}px`
       }}
     >
-      <TaskHeader task={task} />
-      <TaskFooter task={task} onLockToggle={onLockToggle} />
+      {/* Time visualization background */}
+      <div className="task-card__time-visualization">
+        <div 
+          className="task-card__work-time"
+          style={{
+            [task.isPlaced ? 'height' : 'width']: `${(task.workTime / task.duration) * 100}%`
+          }}
+        />
+        <div 
+          className="task-card__wait-time"
+          style={{
+            [task.isPlaced ? 'height' : 'width']: `${(task.waitTime / task.duration) * 100}%`
+          }}
+        />
+      </div>
+      
+      {/* Content overlay */}
+      <div className="task-card__content">
+        <TaskHeader task={task} />
+        <TaskFooter task={task} onLockToggle={onLockToggle} />
+      </div>
     </div>
   );
 };

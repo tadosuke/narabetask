@@ -2,8 +2,9 @@ import React from 'react';
 import type { Task } from '../../types';
 import { useTaskSidebarContext } from '../../contexts/useTaskSidebarContext';
 import { TaskNameField } from './TaskNameField';
-import { TaskDurationField } from './TaskDurationField';
-
+import { TaskWorkTimeField } from './TaskWorkTimeField';
+import { TaskWaitTimeField } from './TaskWaitTimeField';
+import { TaskTotalTimeDisplay } from './TaskTotalTimeDisplay';
 import { TaskInfoDisplay } from './TaskInfoDisplay';
 import { TaskActions } from './TaskActions';
 import './TaskSidebar.css';
@@ -28,9 +29,11 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
 }) => {
   const {
     name,
-    duration,
+    workTime,
+    waitTime,
     handleNameChange,
-    handleDurationChange,
+    handleWorkTimeChange,
+    handleWaitTimeChange,
   } = useTaskSidebarContext();
 
   if (!selectedTask) {
@@ -55,9 +58,19 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
           onNameChange={handleNameChange}
         />
 
-        <TaskDurationField
-          duration={duration}
-          onDurationChange={handleDurationChange}
+        <TaskWorkTimeField
+          workTime={workTime}
+          onWorkTimeChange={handleWorkTimeChange}
+        />
+
+        <TaskWaitTimeField
+          waitTime={waitTime}
+          onWaitTimeChange={handleWaitTimeChange}
+        />
+
+        <TaskTotalTimeDisplay
+          workTime={workTime}
+          waitTime={waitTime}
         />
 
         {selectedTask && (

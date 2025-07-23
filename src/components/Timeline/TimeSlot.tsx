@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Task } from '../../types';
-import { canPlaceTask, getTaskSlots } from '../../utils/timeUtils';
+import { canPlaceTaskByWorkTime, getTaskSlots, getTaskWorkSlots } from '../../utils/timeUtils';
 import { TaskCard } from '../TaskCard';
 import './TimeSlot.css';
 
@@ -22,8 +22,8 @@ interface TimeSlotProps {
   tasks: Task[];
   /** 利用可能なタイムスロットの配列 */
   timeSlots: string[];
-  /** 占有されているタイムスロットのセット */
-  occupiedSlots: Set<string>;
+  /** 作業時間で占有されているタイムスロットのセット（衝突判定用） */
+  occupiedWorkSlots: Set<string>;
   /** 選択中のタスク */
   selectedTask: Task | null;
   /** 重複しているタスクのIDのセット */
@@ -58,7 +58,7 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   draggedTaskId,
   tasks,
   timeSlots,
-  occupiedSlots,
+  occupiedWorkSlots,
   selectedTask,
   overlappingTaskIds,
   onDragOver,
@@ -77,14 +77,14 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   if (isDragOver && draggedTaskId) {
     const draggedTask = tasks.find(t => t.id === draggedTaskId);
     if (draggedTask) {
-      // For placed tasks being moved, exclude their current slots from collision detection
-      const occupiedSlotsForCheck = new Set(occupiedSlots);
+      // For placed tasks being moved, exclude their current work slots from collision detection
+      const occupiedWorkSlotsForCheck = new Set(occupiedWorkSlots);
       if (draggedTask.isPlaced && draggedTask.startTime) {
-        const taskSlots = getTaskSlots(draggedTask.startTime, draggedTask.duration);
-        taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
+        const taskWorkSlots = getTaskWorkSlots(draggedTask.startTime, draggedTask.workTime);
+        taskWorkSlots.forEach(slot => occupiedWorkSlotsForCheck.delete(slot));
       }
       
-      const canPlace = canPlaceTask(dragOverSlot, draggedTask.duration, occupiedSlotsForCheck, timeSlots);
+      const canPlace = canPlaceTaskByWorkTime(dragOverSlot, draggedTask.workTime, occupiedWorkSlotsForCheck, timeSlots);
       dragFeedbackClass = canPlace ? 'timeline__slot--drag-over' : 'timeline__slot--drag-invalid';
     }
   }
@@ -96,16 +96,16 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   if (dragOverSlot && draggedTaskId) {
     const draggedTask = tasks.find(t => t.id === draggedTaskId);
     if (draggedTask) {
-      // Check if this slot is part of the dragged task's span
+      // Check if this slot is part of the dragged task's span (use full duration for visual feedback)
       const draggedTaskSlots = getTaskSlots(dragOverSlot, draggedTask.duration);
       if (draggedTaskSlots.includes(time)) {
-        // Determine if the drag is invalid (check placement from the drag over slot)
-        const occupiedSlotsForCheck = new Set(occupiedSlots);
+        // Determine if the drag is invalid (check work time placement from the drag over slot)
+        const occupiedWorkSlotsForCheck = new Set(occupiedWorkSlots);
         if (draggedTask.isPlaced && draggedTask.startTime) {
-          const taskSlots = getTaskSlots(draggedTask.startTime, draggedTask.duration);
-          taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
+          const taskWorkSlots = getTaskWorkSlots(draggedTask.startTime, draggedTask.workTime);
+          taskWorkSlots.forEach(slot => occupiedWorkSlotsForCheck.delete(slot));
         }
-        isInvalidDrag = !canPlaceTask(dragOverSlot, draggedTask.duration, occupiedSlotsForCheck, timeSlots);
+        isInvalidDrag = !canPlaceTaskByWorkTime(dragOverSlot, draggedTask.workTime, occupiedWorkSlotsForCheck, timeSlots);
         
         const slotIndex = draggedTaskSlots.indexOf(time);
         const totalSlots = draggedTaskSlots.length;

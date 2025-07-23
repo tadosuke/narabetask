@@ -7,12 +7,16 @@ import type { Task } from '../types';
 interface TaskSidebarContextType {
   /** フォームの名前フィールド */
   name: string;
-  /** フォームの所要時間フィールド */
-  duration: number;
+  /** フォームの作業時間フィールド */
+  workTime: number;
+  /** フォームの待ち時間フィールド */
+  waitTime: number;
   /** 名前変更ハンドラ */
   handleNameChange: (newName: string) => void;
-  /** 所要時間変更ハンドラ */
-  handleDurationChange: (newDuration: number) => void;
+  /** 作業時間変更ハンドラ */
+  handleWorkTimeChange: (newWorkTime: number) => void;
+  /** 待ち時間変更ハンドラ */
+  handleWaitTimeChange: (newWaitTime: number) => void;
 }
 
 /**
@@ -43,29 +47,35 @@ export const TaskSidebarProvider: React.FC<TaskSidebarProviderProps> = ({
   onTaskUpdate,
 }) => {
   const [name, setName] = useState("");
-  const [duration, setDuration] = useState(30);
+  const [workTime, setWorkTime] = useState(15);
+  const [waitTime, setWaitTime] = useState(15);
 
   // selectedTaskが変更された時にフォームを同期
   useEffect(() => {
     if (selectedTask) {
       setName(selectedTask.name);
-      setDuration(selectedTask.duration);
+      setWorkTime(selectedTask.workTime);
+      setWaitTime(selectedTask.waitTime);
     } else {
       setName("");
-      setDuration(30);
+      setWorkTime(15);
+      setWaitTime(15);
     }
   }, [selectedTask]);
 
   /** タスクの変更を自動保存 */
   const autoSaveTask = useCallback((
     updatedName: string,
-    updatedDuration: number
+    updatedWorkTime: number,
+    updatedWaitTime: number
   ) => {
     if (selectedTask && updatedName.trim()) {
       const updatedTask: Task = {
         ...selectedTask,
         name: updatedName.trim(),
-        duration: updatedDuration,
+        workTime: updatedWorkTime,
+        waitTime: updatedWaitTime,
+        duration: updatedWorkTime + updatedWaitTime, // 計算値
       };
       onTaskUpdate(updatedTask);
     }
@@ -74,20 +84,28 @@ export const TaskSidebarProvider: React.FC<TaskSidebarProviderProps> = ({
   /** タスク名の変更処理 */
   const handleNameChange = useCallback((newName: string) => {
     setName(newName);
-    autoSaveTask(newName, duration);
-  }, [autoSaveTask, duration]);
+    autoSaveTask(newName, workTime, waitTime);
+  }, [autoSaveTask, workTime, waitTime]);
 
-  /** 所要時間の変更処理 */
-  const handleDurationChange = useCallback((newDuration: number) => {
-    setDuration(newDuration);
-    autoSaveTask(name, newDuration);
-  }, [autoSaveTask, name]);
+  /** 作業時間の変更処理 */
+  const handleWorkTimeChange = useCallback((newWorkTime: number) => {
+    setWorkTime(newWorkTime);
+    autoSaveTask(name, newWorkTime, waitTime);
+  }, [autoSaveTask, name, waitTime]);
+
+  /** 待ち時間の変更処理 */
+  const handleWaitTimeChange = useCallback((newWaitTime: number) => {
+    setWaitTime(newWaitTime);
+    autoSaveTask(name, workTime, newWaitTime);
+  }, [autoSaveTask, name, workTime]);
 
   const contextValue: TaskSidebarContextType = {
     name,
-    duration,
+    workTime,
+    waitTime,
     handleNameChange,
-    handleDurationChange,
+    handleWorkTimeChange,
+    handleWaitTimeChange,
   };
 
   return (

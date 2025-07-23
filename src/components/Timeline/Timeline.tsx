@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Task, BusinessHours } from '../../types';
-import { generateTimeSlots, canPlaceTask, getTaskSlots, findOverlappingTasks } from '../../utils/timeUtils';
+import { generateTimeSlots, canPlaceTaskByWorkTime, getTaskSlots, getTaskWorkSlots, findOverlappingTasks } from '../../utils/timeUtils';
 import { TimeSlot } from './TimeSlot';
 import './Timeline.css';
 
@@ -55,7 +55,16 @@ export const Timeline: React.FC<TimelineProps> = ({
   /** 重複しているタスクのIDのセット */
   const overlappingTaskIds = findOverlappingTasks(placedTasks);
   
-  /** 占有されているタイムスロットのセットを作成 */
+  /** 作業時間で占有されているタイムスロットのセットを作成 */
+  const occupiedWorkSlots = new Set<string>();
+  placedTasks.forEach(task => {
+    if (task.startTime) {
+      const taskWorkSlots = getTaskWorkSlots(task.startTime, task.workTime);
+      taskWorkSlots.forEach(slot => occupiedWorkSlots.add(slot));
+    }
+  });
+
+  /** 全時間で占有されているタイムスロットのセットを作成（表示用） */
   const occupiedSlots = new Set<string>();
   placedTasks.forEach(task => {
     if (task.startTime) {
@@ -102,15 +111,15 @@ export const Timeline: React.FC<TimelineProps> = ({
     }
     
     if (task) {
-      // For placed tasks being moved, exclude their current slots from collision detection
-      const occupiedSlotsForCheck = new Set(occupiedSlots);
+      // For placed tasks being moved, exclude their current work slots from collision detection
+      const occupiedWorkSlotsForCheck = new Set(occupiedWorkSlots);
       if (task.isPlaced && task.startTime) {
-        const taskSlots = getTaskSlots(task.startTime, task.duration);
-        taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
+        const taskWorkSlots = getTaskWorkSlots(task.startTime, task.workTime);
+        taskWorkSlots.forEach(slot => occupiedWorkSlotsForCheck.delete(slot));
       }
       
-      // Check if the task can be placed at this time
-      if (canPlaceTask(dropTime, task.duration, occupiedSlotsForCheck, timeSlots)) {
+      // Check if the task's work time can be placed at this time (only work time conflicts matter)
+      if (canPlaceTaskByWorkTime(dropTime, task.workTime, occupiedWorkSlotsForCheck, timeSlots)) {
         onTaskDrop(taskId, dropTime);
       }
     }
@@ -131,7 +140,7 @@ export const Timeline: React.FC<TimelineProps> = ({
         draggedTaskId={draggedTaskId}
         tasks={tasks}
         timeSlots={timeSlots}
-        occupiedSlots={occupiedSlots}
+        occupiedWorkSlots={occupiedWorkSlots}
         selectedTask={selectedTask}
         overlappingTaskIds={overlappingTaskIds}
         onDragOver={handleDragOver}

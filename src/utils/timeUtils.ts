@@ -118,14 +118,57 @@ export function calculateEndTime(startTime: string, duration: number): string {
 
 
 /**
- * 配置済みタスクの中で重複しているタスクのIDを取得します。
- * 重複は時間の重なりがある場合に発生します。
+ * 作業時間のスロットのみを考慮してタスクを配置できるか判定します。
+ * @param {string} startTime - タスク開始時刻
+ * @param {number} workTime - タスクの作業時間（分）
+ * @param {Set<string>} occupiedWorkSlots - 既に作業時間で埋まっているタイムスロット
+ * @param {string[]} availableSlots - 利用可能なタイムスロット
+ * @returns {boolean} 配置可能ならtrue
+ */
+export function canPlaceTaskByWorkTime(
+  startTime: string,
+  workTime: number,
+  occupiedWorkSlots: Set<string>,
+  availableSlots: string[]
+): boolean {
+  const startMinutes = timeToMinutes(startTime);
+
+  for (let i = 0; i < workTime; i += 15) {
+    const slotTime = minutesToTime(startMinutes + i);
+    if (!availableSlots.includes(slotTime) || occupiedWorkSlots.has(slotTime)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * タスクの作業時間が占有するタイムスロットを取得します。
+ * @param {string} startTime - タスク開始時刻
+ * @param {number} workTime - タスクの作業時間（分）
+ * @returns {string[]} 作業時間が占有するタイムスロットの配列
+ */
+export function getTaskWorkSlots(startTime: string, workTime: number): string[] {
+  const slots: string[] = [];
+  const startMinutes = timeToMinutes(startTime);
+
+  for (let i = 0; i < workTime; i += 15) {
+    slots.push(minutesToTime(startMinutes + i));
+  }
+
+  return slots;
+}
+/**
+ * 配置済みタスクの中で作業時間が重複しているタスクのIDを取得します。
+ * 作業時間の重複は許可されないが、待ち時間は重複可能です。
  * @param {Task[]} placedTasks - 配置済みタスクの配列
- * @returns {Set<string>} 重複しているタスクのIDのセット
+ * @returns {Set<string>} 作業時間が重複しているタスクのIDのセット
  */
 export function findOverlappingTasks(placedTasks: Array<{
   id: string;
   startTime?: string;
+  workTime: number;
   duration: number;
   isPlaced: boolean;
 }>): Set<string> {
@@ -139,15 +182,15 @@ export function findOverlappingTasks(placedTasks: Array<{
       const task1 = validTasks[i];
       const task2 = validTasks[j];
       
-      // タスク1の時間スロット
-      const task1Slots = getTaskSlots(task1.startTime!, task1.duration);
-      // タスク2の時間スロット
-      const task2Slots = getTaskSlots(task2.startTime!, task2.duration);
+      // タスク1の作業時間スロット
+      const task1WorkSlots = getTaskWorkSlots(task1.startTime!, task1.workTime);
+      // タスク2の作業時間スロット
+      const task2WorkSlots = getTaskWorkSlots(task2.startTime!, task2.workTime);
       
-      // 時間スロットの重複をチェック
-      const hasTimeOverlap = task1Slots.some(slot => task2Slots.includes(slot));
+      // 作業時間スロットの重複をチェック
+      const hasWorkTimeOverlap = task1WorkSlots.some(slot => task2WorkSlots.includes(slot));
       
-      if (hasTimeOverlap) {
+      if (hasWorkTimeOverlap) {
         overlappingIds.add(task1.id);
         overlappingIds.add(task2.id);
       }

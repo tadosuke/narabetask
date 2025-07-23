@@ -15,16 +15,28 @@ interface TaskHeaderProps {
  * タスク名と所要時間を表示します
  */
 export const TaskHeader: React.FC<TaskHeaderProps> = ({ task }) => {
-  /** 所要時間を読みやすい形式でフォーマット */
-  const durationText = task.duration >= 60 
-    ? `${Math.floor(task.duration / 60)}h ${task.duration % 60}m`
-    : `${task.duration}m`;
+  /** 作業時間と待ち時間を簡潔な形式でフォーマット（タスク一覧用） */
+  const formatTimeShort = (minutes: number) => {
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+      return remainingMinutes > 0 ? `${hours}h${remainingMinutes}m` : `${hours}h`;
+    }
+    return `${minutes}m`;
+  };
+
+  // タスク一覧での表示: "15m + 30m"形式
+  const timeText = task.isPlaced 
+    ? task.name // タイムライン上ではタイトルのみ
+    : `${formatTimeShort(task.workTime)} + ${formatTimeShort(task.waitTime)}`;
 
   return (
     <div className="task-card__header">
       <span className="task-card__name">{task.name}</span>
       <div className="task-card__header-right">
-        <span className="task-card__duration">{durationText}</span>
+        {!task.isPlaced && (
+          <span className="task-card__duration">{timeText}</span>
+        )}
       </div>
     </div>
   );

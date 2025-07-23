@@ -28,6 +28,8 @@ Object.defineProperty(window, 'localStorage', {
 const createTestTask = (id: string, name: string): Task => ({
   id,
   name,
+  workTime: 15,
+  waitTime: 15,
   duration: 30,
   isPlaced: false
 });
