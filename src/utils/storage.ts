@@ -29,6 +29,25 @@ export const saveToStorage = (tasks: Task[], selectedTask: Task | null): void =>
 };
 
 /**
+ * Migrate legacy tasks to include workTime and waitTime fields
+ */
+const migrateLegacyTask = (task: any): Task => {
+  // If task already has workTime and waitTime, return as is
+  if (typeof task.workTime === 'number' && typeof task.waitTime === 'number') {
+    return task as Task;
+  }
+  
+  // Legacy task migration: assume all duration was work time
+  const duration = task.duration || 30;
+  return {
+    ...task,
+    duration,
+    workTime: duration,
+    waitTime: 0,
+  } as Task;
+};
+
+/**
  * Load application state from localStorage
  * Returns null if no saved state exists or if loading fails
  */
@@ -47,7 +66,13 @@ export const loadFromStorage = (): PersistedState | null => {
       return null;
     }
     
-    return parsed;
+    // Migrate legacy tasks
+    const migratedTasks = parsed.tasks.map(migrateLegacyTask);
+    
+    return {
+      ...parsed,
+      tasks: migratedTasks,
+    };
   } catch (error) {
     console.warn('Failed to load state from localStorage:', error);
     return null;

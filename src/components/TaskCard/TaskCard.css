@@ -13,8 +13,16 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  background-color: #f5f5f5;
   border: 1px solid #ddd;
+  
+  /* Color-coded background using CSS custom properties */
+  background: linear-gradient(
+    to right,
+    #E3F2FD 0%,
+    #E3F2FD var(--work-time-ratio, 100%),
+    #FFF3E0 var(--work-time-ratio, 100%),
+    #FFF3E0 100%
+  );
 }
 
 .task-card:hover {

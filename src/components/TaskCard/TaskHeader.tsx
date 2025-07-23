@@ -12,19 +12,28 @@ interface TaskHeaderProps {
 
 /**
  * タスクカードのヘッダーコンポーネント
- * タスク名と所要時間を表示します
+ * タスク名、作業時間、待ち時間を表示します
  */
 export const TaskHeader: React.FC<TaskHeaderProps> = ({ task }) => {
   /** 所要時間を読みやすい形式でフォーマット */
-  const durationText = task.duration >= 60 
-    ? `${Math.floor(task.duration / 60)}h ${task.duration % 60}m`
-    : `${task.duration}m`;
+  const formatTime = (minutes: number) => {
+    if (minutes === 0) return "";
+    return minutes >= 60 
+      ? `${Math.floor(minutes / 60)}h ${minutes % 60}m`
+      : `${minutes}m`;
+  };
+
+  const workTimeText = formatTime(task.workTime);
+  const waitTimeText = formatTime(task.waitTime);
 
   return (
     <div className="task-card__header">
       <span className="task-card__name">{task.name}</span>
       <div className="task-card__header-right">
-        <span className="task-card__duration">{durationText}</span>
+        <div className="task-card__time-breakdown">
+          {workTimeText && <span className="task-card__work-time">{workTimeText}</span>}
+          {waitTimeText && <span className="task-card__wait-time">+{waitTimeText}</span>}
+        </div>
       </div>
     </div>
   );

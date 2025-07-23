@@ -5,87 +5,98 @@ import { TaskDurationField } from "../../../src/components/TaskSidebar/TaskDurat
 
 describe("TaskDurationField", () => {
   const defaultProps = {
-    duration: 60,
-    onDurationChange: vi.fn()
+    workTime: 60,
+    waitTime: 30,
+    onWorkTimeChange: vi.fn(),
+    onWaitTimeChange: vi.fn()
   };
 
-  it("スライダーとラベルが表示される", () => {
+  it("工数ラベルと作業時間・待ち時間スライダーが表示される", () => {
     render(<TaskDurationField {...defaultProps} />);
 
-    expect(screen.getByLabelText("工数")).toBeInTheDocument();
     expect(screen.getByText("工数")).toBeInTheDocument();
-    expect(screen.getByRole("slider")).toBeInTheDocument();
+    expect(screen.getByLabelText("作業時間")).toBeInTheDocument();
+    expect(screen.getByLabelText("待ち時間")).toBeInTheDocument();
+    expect(screen.getAllByRole("slider")).toHaveLength(2);
   });
 
-  it("プロパティで渡された所要時間が表示される", () => {
+  it("プロパティで渡された作業時間と待ち時間が表示される", () => {
     render(<TaskDurationField {...defaultProps} />);
 
-    const durationSlider = screen.getByRole("slider");
-    expect(durationSlider).toHaveValue("60");
+    const workTimeSlider = screen.getByLabelText("作業時間");
+    const waitTimeSlider = screen.getByLabelText("待ち時間");
+    
+    expect(workTimeSlider).toHaveValue("60");
+    expect(waitTimeSlider).toHaveValue("30");
     expect(screen.getByText("1時間")).toBeInTheDocument();
-  });
-
-  it("スライダーの最小値、最大値、ステップが正しく設定される", () => {
-    render(<TaskDurationField {...defaultProps} />);
-
-    const durationSlider = screen.getByRole("slider");
-    expect(durationSlider).toHaveAttribute("min", "15");
-    expect(durationSlider).toHaveAttribute("max", "240");
-    expect(durationSlider).toHaveAttribute("step", "15");
-  });
-
-  it("所要時間が変更されたときにonDurationChangeを呼び出す", () => {
-    const mockOnDurationChange = vi.fn();
-    render(<TaskDurationField {...defaultProps} onDurationChange={mockOnDurationChange} />);
-
-    const durationSlider = screen.getByRole("slider");
-    fireEvent.change(durationSlider, { target: { value: "45" } });
-
-    expect(mockOnDurationChange).toHaveBeenCalledWith(45);
-  });
-
-  it("分単位の時間を正しくフォーマットする", () => {
-    render(<TaskDurationField {...defaultProps} duration={30} />);
-
     expect(screen.getByText("30分")).toBeInTheDocument();
   });
 
-  it("時間単位の時間を正しくフォーマットする", () => {
-    render(<TaskDurationField {...defaultProps} duration={120} />);
-
-    expect(screen.getByText("2時間")).toBeInTheDocument();
-  });
-
-  it("時間と分を組み合わせた時間を正しくフォーマットする", () => {
-    render(<TaskDurationField {...defaultProps} duration={90} />);
-
-    expect(screen.getByText("1時間30分")).toBeInTheDocument();
-  });
-
-  it("正しいIDが設定される", () => {
+  it("作業時間スライダーの最小値、最大値、ステップが正しく設定される", () => {
     render(<TaskDurationField {...defaultProps} />);
 
-    const durationSlider = screen.getByRole("slider");
-    expect(durationSlider).toHaveAttribute("id", "task-duration");
+    const workTimeSlider = screen.getByLabelText("作業時間");
+    expect(workTimeSlider).toHaveAttribute("min", "15");
+    expect(workTimeSlider).toHaveAttribute("max", "240");
+    expect(workTimeSlider).toHaveAttribute("step", "15");
   });
 
-  it("最小値でonDurationChangeを呼び出す", () => {
-    const mockOnDurationChange = vi.fn();
-    render(<TaskDurationField {...defaultProps} onDurationChange={mockOnDurationChange} />);
+  it("待ち時間スライダーの最小値、最大値、ステップが正しく設定される", () => {
+    render(<TaskDurationField {...defaultProps} />);
 
-    const durationSlider = screen.getByRole("slider");
-    fireEvent.change(durationSlider, { target: { value: "15" } });
-
-    expect(mockOnDurationChange).toHaveBeenCalledWith(15);
+    const waitTimeSlider = screen.getByLabelText("待ち時間");
+    expect(waitTimeSlider).toHaveAttribute("min", "0");
+    expect(waitTimeSlider).toHaveAttribute("max", "240");
+    expect(waitTimeSlider).toHaveAttribute("step", "15");
   });
 
-  it("最大値でonDurationChangeを呼び出す", () => {
-    const mockOnDurationChange = vi.fn();
-    render(<TaskDurationField {...defaultProps} onDurationChange={mockOnDurationChange} />);
+  it("作業時間が変更されたときにonWorkTimeChangeを呼び出す", () => {
+    const mockOnWorkTimeChange = vi.fn();
+    render(<TaskDurationField {...defaultProps} onWorkTimeChange={mockOnWorkTimeChange} />);
 
-    const durationSlider = screen.getByRole("slider");
-    fireEvent.change(durationSlider, { target: { value: "240" } });
+    const workTimeSlider = screen.getByLabelText("作業時間");
+    fireEvent.change(workTimeSlider, { target: { value: "45" } });
 
-    expect(mockOnDurationChange).toHaveBeenCalledWith(240);
+    expect(mockOnWorkTimeChange).toHaveBeenCalledWith(45);
+  });
+
+  it("待ち時間が変更されたときにonWaitTimeChangeを呼び出す", () => {
+    const mockOnWaitTimeChange = vi.fn();
+    render(<TaskDurationField {...defaultProps} onWaitTimeChange={mockOnWaitTimeChange} />);
+
+    const waitTimeSlider = screen.getByLabelText("待ち時間");
+    fireEvent.change(waitTimeSlider, { target: { value: "60" } });
+
+    expect(mockOnWaitTimeChange).toHaveBeenCalledWith(60);
+  });
+
+  it("合計時間が正しく表示される", () => {
+    render(<TaskDurationField {...defaultProps} />);
+
+    expect(screen.getByText("合計: 1時間30分")).toBeInTheDocument();
+  });
+
+  it("分単位の時間を正しくフォーマットする", () => {
+    render(<TaskDurationField {...defaultProps} workTime={30} waitTime={15} />);
+
+    expect(screen.getByText("30分")).toBeInTheDocument();
+    expect(screen.getByText("15分")).toBeInTheDocument();
+    expect(screen.getByText("合計: 45分")).toBeInTheDocument();
+  });
+
+  it("時間単位の時間を正しくフォーマットする", () => {
+    render(<TaskDurationField {...defaultProps} workTime={120} waitTime={60} />);
+
+    expect(screen.getByText("2時間")).toBeInTheDocument();
+    expect(screen.getByText("1時間")).toBeInTheDocument();
+    expect(screen.getByText("合計: 3時間")).toBeInTheDocument();
+  });
+
+  it("0分の待ち時間を正しくフォーマットする", () => {
+    render(<TaskDurationField {...defaultProps} workTime={60} waitTime={0} />);
+
+    expect(screen.getByText("1時間")).toBeInTheDocument();
+    expect(screen.getByText("0分")).toBeInTheDocument();
+    expect(screen.getByText("合計: 1時間")).toBeInTheDocument();
   });
 });

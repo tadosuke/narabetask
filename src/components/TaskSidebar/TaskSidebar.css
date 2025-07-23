@@ -104,6 +104,16 @@
   border: 1px solid #e9ecef;
 }
 
+.task-sidebar__total-duration {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background-color: #e3f2fd;
+  border-radius: 6px;
+  text-align: center;
+  color: #1976d2;
+  font-size: 14px;
+}
+
 .task-sidebar__checkbox-group {
   display: flex;
   flex-direction: column;

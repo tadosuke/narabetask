@@ -64,6 +64,15 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   const taskHeight = task.isPlaced ? calculateHeight(task.duration) : 60; // デフォルトの高さは60px
 
+  /** 作業時間と待ち時間の比率を計算してCSS変数を設定 */
+  const workTimeRatio = task.duration > 0 ? (task.workTime / task.duration) * 100 : 100;
+  const waitTimeRatio = task.duration > 0 ? (task.waitTime / task.duration) * 100 : 0;
+
+  const backgroundStyle = {
+    '--work-time-ratio': `${workTimeRatio}%`,
+    '--wait-time-ratio': `${waitTimeRatio}%`,
+  } as React.CSSProperties;
+
   return (
     <div
       className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''} ${isOverlapping ? 'task-card--overlapping' : ''} ${task.isLocked ? 'task-card--locked' : ''}`}
@@ -73,6 +82,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       onDragEnd={onDragEnd}
       style={{
         ...style,
+        ...backgroundStyle,
         width: task.isPlaced ? '120px' : '200px',
         height: `${taskHeight}px`,
         minHeight: `${taskHeight}px`

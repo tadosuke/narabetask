@@ -28,9 +28,11 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
 }) => {
   const {
     name,
-    duration,
+    workTime,
+    waitTime,
     handleNameChange,
-    handleDurationChange,
+    handleWorkTimeChange,
+    handleWaitTimeChange,
   } = useTaskSidebarContext();
 
   if (!selectedTask) {
@@ -56,8 +58,10 @@ export const TaskSidebar: React.FC<TaskSidebarProps> = ({
         />
 
         <TaskDurationField
-          duration={duration}
-          onDurationChange={handleDurationChange}
+          workTime={workTime}
+          waitTime={waitTime}
+          onWorkTimeChange={handleWorkTimeChange}
+          onWaitTimeChange={handleWaitTimeChange}
         />
 
         {selectedTask && (
