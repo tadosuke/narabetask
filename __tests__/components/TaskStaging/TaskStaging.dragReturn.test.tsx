@@ -19,17 +19,15 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
     id: "1",
     name: "未配置タスク",
     duration: 30,
-    resourceType: "self",
-    isPlaced: false,
+    isPlaced: false
   };
 
   const placedTask: Task = {
     id: "2",
     name: "配置済みタスク",
     duration: 60,
-    resourceType: "others",
     isPlaced: true,
-    startTime: "09:00",
+    startTime: "09:00"
   };
 
   const mockTasks: Task[] = [unplacedTask, placedTask];
@@ -38,7 +36,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
     tasks: mockTasks,
     onTaskClick: vi.fn(),
     onAddTask: vi.fn(),
-    onTaskReturn: vi.fn(),
+    onTaskReturn: vi.fn()
   };
 
   beforeEach(() => {
@@ -144,7 +142,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
     const dropEvent = new Event("drop", { bubbles: true });
     Object.defineProperty(dropEvent, "preventDefault", { value: vi.fn() });
     Object.defineProperty(dropEvent, "dataTransfer", {
-      value: { getData: vi.fn(() => "nonexistent") },
+      value: { getData: vi.fn(() => "nonexistent") }
     });
     
     fireEvent(stagingArea!, dropEvent);
@@ -164,7 +162,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
     const dropEvent = new Event("drop", { bubbles: true });
     Object.defineProperty(dropEvent, "preventDefault", { value: vi.fn() });
     Object.defineProperty(dropEvent, "dataTransfer", {
-      value: { getData: vi.fn(() => "2") },
+      value: { getData: vi.fn(() => "2") }
     });
     
     fireEvent(stagingArea!, dropEvent);
@@ -188,7 +186,7 @@ describe("タスクステージング - ドラッグ戻り機能", () => {
     const dropEvent = new Event("drop", { bubbles: true });
     Object.defineProperty(dropEvent, "preventDefault", { value: vi.fn() });
     Object.defineProperty(dropEvent, "dataTransfer", {
-      value: { getData: vi.fn(() => "2") },
+      value: { getData: vi.fn(() => "2") }
     });
     
     fireEvent(stagingArea!, dropEvent);

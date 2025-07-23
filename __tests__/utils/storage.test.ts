@@ -16,21 +16,20 @@ const localStorageMock = (() => {
     },
     clear: () => {
       store = {};
-    },
+    }
   };
 })();
 
 // Replace global localStorage with mock
 Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock,
+  value: localStorageMock
 });
 
 const createTestTask = (id: string, name: string): Task => ({
   id,
   name,
   duration: 30,
-  resourceTypes: ['self'],
-  isPlaced: false,
+  isPlaced: false
 });
 
 describe('storage utilities', () => {
@@ -100,7 +99,7 @@ describe('storage utilities', () => {
       // Save some data first
       localStorageMock.setItem('narabetask_state', JSON.stringify({
         tasks,
-        selectedTaskId,
+        selectedTaskId
       }));
 
       const result = loadFromStorage();
@@ -128,7 +127,7 @@ describe('storage utilities', () => {
       // Save data with invalid structure
       localStorageMock.setItem('narabetask_state', JSON.stringify({
         tasks: 'not an array',
-        selectedTaskId: '1',
+        selectedTaskId: '1'
       }));
 
       const result = loadFromStorage();

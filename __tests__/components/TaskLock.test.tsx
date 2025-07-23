@@ -7,7 +7,6 @@ const baseMockTask: Task = {
   id: '1',
   name: 'テストタスク',
   duration: 30,
-  resourceTypes: ['self'],
   isPlaced: false,
   isLocked: false
 };

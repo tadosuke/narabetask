@@ -7,7 +7,7 @@ import type { Task } from "../../../src/types";
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({
   canPlaceTask: vi.fn(() => true),
-  getTaskSlots: vi.fn(() => ["09:00", "09:15"]),
+  getTaskSlots: vi.fn(() => ["09:00", "09:15"])
 }));
 
 describe("TimeSlot", () => {
@@ -16,16 +16,14 @@ describe("TimeSlot", () => {
       id: "1",
       name: "テストタスク1",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: true,
-      startTime: "09:00",
+      startTime: "09:00"
     },
     {
       id: "2",
       name: "テストタスク2",
       duration: 60,
-      resourceTypes: ["others"],
-      isPlaced: false,
+      isPlaced: false
     },
   ];
 
@@ -49,7 +47,7 @@ describe("TimeSlot", () => {
     onDrop: vi.fn(),
     onTaskClick: vi.fn(),
     onDragStart: vi.fn(),
-    onDragEnd: vi.fn(),
+    onDragEnd: vi.fn()
   };
 
   beforeEach(() => {
@@ -65,7 +63,7 @@ describe("TimeSlot", () => {
   it("タスクが配置されている場合はタスクを表示する", () => {
     const propsWithTask = {
       ...defaultProps,
-      task: mockTasks[0],
+      task: mockTasks[0]
     };
     
     render(<TimeSlot {...propsWithTask} />);
@@ -76,7 +74,7 @@ describe("TimeSlot", () => {
   it("占有済みスロットのスタイルを適用する", () => {
     const occupiedProps = {
       ...defaultProps,
-      isOccupied: true,
+      isOccupied: true
     };
     
     const { container } = render(<TimeSlot {...occupiedProps} />);
@@ -89,7 +87,7 @@ describe("TimeSlot", () => {
     const mockOnDragOver = vi.fn();
     const propsWithDragOver = {
       ...defaultProps,
-      onDragOver: mockOnDragOver,
+      onDragOver: mockOnDragOver
     };
     
     const { container } = render(<TimeSlot {...propsWithDragOver} />);
@@ -106,7 +104,7 @@ describe("TimeSlot", () => {
     const mockOnDrop = vi.fn();
     const propsWithDrop = {
       ...defaultProps,
-      onDrop: mockOnDrop,
+      onDrop: mockOnDrop
     };
     
     const { container } = render(<TimeSlot {...propsWithDrop} />);
@@ -114,7 +112,7 @@ describe("TimeSlot", () => {
     const timeSlot = container.querySelector('.timeline__slot');
     
     fireEvent.drop(timeSlot!, {
-      dataTransfer: { getData: vi.fn(() => "2") },
+      dataTransfer: { getData: vi.fn(() => "2") }
     });
     
     expect(mockOnDrop).toHaveBeenCalled();
@@ -126,7 +124,7 @@ describe("TimeSlot", () => {
     const propsWithTask = {
       ...defaultProps,
       task: mockTasks[0],
-      onTaskClick: mockOnTaskClick,
+      onTaskClick: mockOnTaskClick
     };
     
     render(<TimeSlot {...propsWithTask} />);
@@ -149,7 +147,7 @@ describe("TimeSlot", () => {
       time: "12:00",
       isOccupied: true,
       dragOverSlot: "12:00",
-      draggedTaskId: "2",
+      draggedTaskId: "2"
     };
     
     const { container } = render(<TimeSlot {...combinedProps} />);

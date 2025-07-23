@@ -7,7 +7,7 @@ import { TaskNameField } from "../../../src/components/TaskSidebar/TaskNameField
 describe("TaskNameField", () => {
   const defaultProps = {
     name: "テストタスク名",
-    onNameChange: vi.fn(),
+    onNameChange: vi.fn()
   };
 
   it("入力フィールドにラベルが表示される", () => {

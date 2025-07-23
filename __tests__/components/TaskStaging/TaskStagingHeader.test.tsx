@@ -7,7 +7,7 @@ describe("TaskStagingHeader", () => {
   const mockOnAddTask = vi.fn();
 
   const defaultProps = {
-    onAddTask: mockOnAddTask,
+    onAddTask: mockOnAddTask
   };
 
   beforeEach(() => {

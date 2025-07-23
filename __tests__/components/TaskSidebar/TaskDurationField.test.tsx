@@ -6,7 +6,7 @@ import { TaskDurationField } from "../../../src/components/TaskSidebar/TaskDurat
 describe("TaskDurationField", () => {
   const defaultProps = {
     duration: 60,
-    onDurationChange: vi.fn(),
+    onDurationChange: vi.fn()
   };
 
   it("スライダーとラベルが表示される", () => {

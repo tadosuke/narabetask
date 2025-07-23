@@ -11,8 +11,7 @@ describe("TaskSidebarContext", () => {
     id: "1",
     name: "テストタスク",
     duration: 60,
-    resourceTypes: ["self", "others"],
-    isPlaced: false,
+    isPlaced: false
   };
 
   const mockOnTaskUpdate = vi.fn();
@@ -80,7 +79,7 @@ describe("TaskSidebarContext", () => {
           >
             {children}
           </TaskSidebarProvider>
-        ),
+        )
       }
     );
 
@@ -89,8 +88,7 @@ describe("TaskSidebarContext", () => {
       id: "2",
       name: "新しいタスク",
       duration: 45,
-      resourceTypes: ["machine"],
-      isPlaced: true,
+      isPlaced: true
     };
 
     rerender({ selectedTask: newTask });
@@ -110,7 +108,7 @@ describe("TaskSidebarContext", () => {
 
     expect(mockOnTaskUpdate).toHaveBeenCalledWith({
       ...mockTask,
-      name: "更新されたタスク名",
+      name: "更新されたタスク名"
     });
   });
 
@@ -124,7 +122,7 @@ describe("TaskSidebarContext", () => {
 
     expect(mockOnTaskUpdate).toHaveBeenCalledWith({
       ...mockTask,
-      duration: 90,
+      duration: 90
     });
   });
 
@@ -171,7 +169,7 @@ describe("TaskSidebarContext", () => {
 
     expect(mockOnTaskUpdate).toHaveBeenCalledWith({
       ...mockTask,
-      name: "更新されたタスク名",
+      name: "更新されたタスク名"
     });
   });
 });

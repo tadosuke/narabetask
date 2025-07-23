@@ -6,7 +6,6 @@ const baseMockTask: Task = {
   id: '1',
   name: 'テストタスク',
   duration: 30,
-  resourceTypes: ['self'],
   isPlaced: false
 };
 
@@ -51,9 +50,7 @@ describe('TaskFooter', () => {
 
   it('リソースタイプに関係なくロックボタンは表示される', () => {
     const taskWithNoResources = {
-      ...baseMockTask,
-      resourceTypes: []
-    } as Task;
+      ...baseMockTask    } as Task;
     
     const { container } = render(<TaskFooter task={taskWithNoResources} />);
     
@@ -68,9 +65,7 @@ describe('TaskFooter', () => {
 
   it('リソースタイプがundefinedでもロックボタンは表示される', () => {
     const taskWithUndefinedResources = {
-      ...baseMockTask,
-      resourceTypes: undefined
-    } as unknown as Task;
+      ...baseMockTask    } as unknown as Task;
     
     const { container } = render(<TaskFooter task={taskWithUndefinedResources} />);
     

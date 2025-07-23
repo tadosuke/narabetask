@@ -9,25 +9,22 @@ describe("TaskInfoDisplay", () => {
     id: "1",
     name: "配置済みタスク",
     duration: 30,
-    resourceTypes: ["self"],
     isPlaced: true,
-    startTime: "09:00",
+    startTime: "09:00"
   };
 
   const unplacedTask: Task = {
     id: "2",
     name: "未配置タスク",
     duration: 60,
-    resourceTypes: ["self"],
-    isPlaced: false,
+    isPlaced: false
   };
 
   const placedTaskWithoutStartTime: Task = {
     id: "3",
     name: "開始時間なしタスク",
     duration: 45,
-    resourceTypes: ["self"],
-    isPlaced: true,
+    isPlaced: true
   };
 
   it("配置済みタスクの開始時間と終了時間を表示する", () => {
@@ -60,9 +57,8 @@ describe("TaskInfoDisplay", () => {
       id: "4",
       name: "長いタスク",
       duration: 90,
-      resourceTypes: ["self"],
       isPlaced: true,
-      startTime: "10:00",
+      startTime: "10:00"
     };
 
     render(<TaskInfoDisplay task={longerTask} />);
@@ -76,9 +72,8 @@ describe("TaskInfoDisplay", () => {
       id: "5",
       name: "午後のタスク",
       duration: 45,
-      resourceTypes: ["self"],
       isPlaced: true,
-      startTime: "14:15",
+      startTime: "14:15"
     };
 
     render(<TaskInfoDisplay task={afternoonTask} />);

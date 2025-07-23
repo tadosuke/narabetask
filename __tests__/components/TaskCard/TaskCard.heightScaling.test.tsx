@@ -9,8 +9,7 @@ describe("タスクカード - 高さスケーリング", () => {
     id: "1",
     name: "テストタスク",
     duration: 15,
-    resourceTypes: ["self"],
-    isPlaced: false,
+    isPlaced: false
   };
 
   it("ステージングタスクにはデフォルトの高さ（60px）を持つ", () => {

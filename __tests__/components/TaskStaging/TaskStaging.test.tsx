@@ -20,30 +20,27 @@ describe("TaskStaging", () => {
       id: "1",
       name: "タスク1",
       duration: 30,
-      resourceTypes: ["self"],
-      isPlaced: false,
+      isPlaced: false
     },
     {
       id: "2",
       name: "タスク2",
       duration: 60,
-      resourceTypes: ["others"],
       isPlaced: true,
-      startTime: "09:00",
+      startTime: "09:00"
     },
     {
       id: "3",
       name: "タスク3",
       duration: 45,
-      resourceTypes: ["machine"],
-      isPlaced: false,
+      isPlaced: false
     },
   ];
 
   const defaultProps = {
     tasks: mockTasks,
     onTaskClick: vi.fn(),
-    onAddTask: vi.fn(),
+    onAddTask: vi.fn()
   };
 
   beforeEach(() => {
@@ -92,9 +89,8 @@ describe("TaskStaging", () => {
         id: "1",
         name: "タスク1",
         duration: 30,
-        resourceType: "self",
         isPlaced: true,
-        startTime: "09:00",
+        startTime: "09:00"
       },
     ];
 
@@ -105,7 +101,7 @@ describe("TaskStaging", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText("「新しいタスク」ボタンでタスクを作成してください。", {
-        exact: false,
+        exact: false
       })
     ).toBeInTheDocument();
 
@@ -121,7 +117,7 @@ describe("TaskStaging", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText("「新しいタスク」ボタンでタスクを作成してください。", {
-        exact: false,
+        exact: false
       })
     ).toBeInTheDocument();
   });

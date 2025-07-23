@@ -9,8 +9,7 @@ describe("TaskHeader", () => {
     id: "1",
     name: "テストタスク",
     duration: 60,
-    resourceTypes: ["self"],
-    isPlaced: false,
+    isPlaced: false
   };
 
   it("タスク名を正しく表示する", () => {
