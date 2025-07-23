@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { TaskSidebarProvider } from "../../src/contexts/TaskSidebarContext";
 import { useTaskSidebarContext } from "../../src/contexts/useTaskSidebarContext";
-import type { Task, ResourceType } from "../../src/types";
+import type { Task } from "../../src/types";
 import React from "react";
 
 describe("TaskSidebarContext", () => {
@@ -58,7 +58,6 @@ describe("TaskSidebarContext", () => {
 
     expect(result.current.name).toBe("");
     expect(result.current.duration).toBe(30);
-    expect(result.current.resourceTypes).toEqual(["self"]);
   });
 
   it("selectedTaskが存在する場合はそのタスクの値でフォーム状態を設定する", () => {
@@ -67,7 +66,6 @@ describe("TaskSidebarContext", () => {
 
     expect(result.current.name).toBe("テストタスク");
     expect(result.current.duration).toBe(60);
-    expect(result.current.resourceTypes).toEqual(["self", "others"]);
   });
 
   it("selectedTaskが変更された場合にフォーム状態を更新する", () => {
@@ -102,17 +100,6 @@ describe("TaskSidebarContext", () => {
     // 別の方法でテストする必要がある
   });
 
-  it("resourceTypesが未定義の場合は'self'をデフォルトとして設定する", () => {
-    const taskWithoutResourceTypes = {
-      ...mockTask,
-      resourceTypes: undefined as unknown as ResourceType[],
-    };
-    const wrapper = createWrapper(taskWithoutResourceTypes);
-    const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
-
-    expect(result.current.resourceTypes).toEqual(["self"]);
-  });
-
   it("handleNameChangeが正しくnameを更新し、onTaskUpdateを呼び出す", () => {
     const wrapper = createWrapper(mockTask);
     const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
@@ -138,34 +125,6 @@ describe("TaskSidebarContext", () => {
     expect(mockOnTaskUpdate).toHaveBeenCalledWith({
       ...mockTask,
       duration: 90,
-    });
-  });
-
-  it("handleResourceTypeChangeでリソースタイプを追加できる", () => {
-    const wrapper = createWrapper(mockTask);
-    const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
-
-    act(() => {
-      result.current.handleResourceTypeChange("machine", true);
-    });
-
-    expect(mockOnTaskUpdate).toHaveBeenCalledWith({
-      ...mockTask,
-      resourceTypes: ["self", "others", "machine"],
-    });
-  });
-
-  it("handleResourceTypeChangeでリソースタイプを削除できる", () => {
-    const wrapper = createWrapper(mockTask);
-    const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
-
-    act(() => {
-      result.current.handleResourceTypeChange("others", false);
-    });
-
-    expect(mockOnTaskUpdate).toHaveBeenCalledWith({
-      ...mockTask,
-      resourceTypes: ["self"],
     });
   });
 
