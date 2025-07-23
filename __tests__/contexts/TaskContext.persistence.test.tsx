@@ -18,13 +18,13 @@ const localStorageMock = (() => {
     },
     clear: () => {
       store = {};
-    },
+    }
   };
 })();
 
 // Replace global localStorage with mock
 Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock,
+  value: localStorageMock
 });
 
 // Helper wrapper for TaskProvider
@@ -36,8 +36,7 @@ const createTestTask = (id: string, name: string): Task => ({
   id,
   name,
   duration: 30,
-  resourceTypes: ['self'],
-  isPlaced: false,
+  isPlaced: false
 });
 
 describe('TaskContext persistence', () => {
@@ -61,7 +60,7 @@ describe('TaskContext persistence', () => {
     // Pre-populate localStorage with saved state
     localStorageMock.setItem('narabetask_state', JSON.stringify({
       tasks: savedTasks,
-      selectedTaskId: 'task-1',
+      selectedTaskId: 'task-1'
     }));
 
     const { result } = renderHook(() => useTaskContext(), { wrapper: Wrapper });
@@ -84,7 +83,7 @@ describe('TaskContext persistence', () => {
     // Pre-populate localStorage with non-existent selectedTaskId
     localStorageMock.setItem('narabetask_state', JSON.stringify({
       tasks: savedTasks,
-      selectedTaskId: 'non-existent-id',
+      selectedTaskId: 'non-existent-id'
     }));
 
     const { result } = renderHook(() => useTaskContext(), { wrapper: Wrapper });

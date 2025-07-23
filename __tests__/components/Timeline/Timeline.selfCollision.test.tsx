@@ -4,18 +4,15 @@ import { render, fireEvent } from "@testing-library/react";
 import { Timeline } from "../../../src/components/Timeline/Timeline";
 import type { Task, BusinessHours, LunchBreak } from "../../../src/types";
 
-// Real timeUtils functions without mocking
-import { generateTimeSlots, canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
-
 describe("Timeline セルフ衝突コーディネーション", () => {
   const mockBusinessHours: BusinessHours = {
     start: "09:00",
-    end: "17:00",
+    end: "17:00"
   };
 
   const mockLunchBreak: LunchBreak = {
     start: "12:00",
-    end: "13:00",
+    end: "13:00"
   };
 
   beforeEach(() => {
@@ -29,7 +26,6 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         id: "1",
         name: "30分タスク",
         duration: 30,
-        resourceTypes: ["self"],
         isPlaced: true,
         startTime: "09:00", // 09:00-09:30を占有
       }
@@ -56,7 +52,7 @@ describe("Timeline セルフ衝突コーディネーション", () => {
     const dropEvent = new Event("drop", { bubbles: true });
     Object.defineProperty(dropEvent, "preventDefault", { value: vi.fn() });
     Object.defineProperty(dropEvent, "dataTransfer", {
-      value: { getData: vi.fn(() => "1") },
+      value: { getData: vi.fn(() => "1") }
     });
 
     fireEvent(timeSlot!, dropEvent);
@@ -72,17 +68,15 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         id: "1",
         name: "タスク1",
         duration: 30,
-        resourceTypes: ["self"],
         isPlaced: true,
-        startTime: "09:00",
+        startTime: "09:00"
       },
       {
         id: "2",
         name: "タスク2", 
         duration: 45,
-        resourceTypes: ["others"],
         isPlaced: true,
-        startTime: "10:00",
+        startTime: "10:00"
       }
     ];
 
@@ -113,16 +107,14 @@ describe("Timeline セルフ衝突コーディネーション", () => {
       id: "1",
       name: "配置済みタスク",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: true,
-      startTime: "09:00",
+      startTime: "09:00"
     };
 
     const conflictTask: Task = {
       id: "2",
       name: "衝突タスク",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: true,
       startTime: "10:00", // 09:30に移動するため衝突しない位置に変更
     };
@@ -148,7 +140,7 @@ describe("Timeline セルフ衝突コーディネーション", () => {
     const dropEvent = new Event("drop", { bubbles: true });
     Object.defineProperty(dropEvent, "preventDefault", { value: vi.fn() });
     Object.defineProperty(dropEvent, "dataTransfer", {
-      value: { getData: vi.fn(() => "1") },
+      value: { getData: vi.fn(() => "1") }
     });
 
     fireEvent(timeSlot!, dropEvent);
@@ -164,15 +156,13 @@ describe("Timeline セルフ衝突コーディネーション", () => {
         id: "1",
         name: "タスク1",
         duration: 30,
-        resourceTypes: ["self"],
         isPlaced: true,
-        startTime: "09:00",
+        startTime: "09:00"
       },
       {
         id: "2",
         name: "タスク2",
         duration: 30,
-        resourceTypes: ["self"],
         isPlaced: true,
         startTime: "09:15", // 09:00のタスクと重複
       }

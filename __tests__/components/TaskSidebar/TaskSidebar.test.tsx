@@ -9,7 +9,7 @@ import type { Task } from "../../../src/types";
 // window.confirmをモック
 Object.defineProperty(window, "confirm", {
   writable: true,
-  value: vi.fn(),
+  value: vi.fn()
 });
 
 // TaskSidebarをProviderでラップするヘルパーコンポーネント
@@ -22,7 +22,7 @@ interface TaskSidebarWrapperProps {
 const TaskSidebarWrapper: React.FC<TaskSidebarWrapperProps> = ({
   selectedTask,
   onTaskUpdate,
-  onTaskRemove,
+  onTaskRemove
 }) => (
   <TaskSidebarProvider 
     selectedTask={selectedTask}
@@ -38,7 +38,7 @@ const TaskSidebarWrapper: React.FC<TaskSidebarWrapperProps> = ({
 // window.confirmをモック
 Object.defineProperty(window, "confirm", {
   writable: true,
-  value: vi.fn(),
+  value: vi.fn()
 });
 
 describe("TaskSidebar", () => {
@@ -46,23 +46,21 @@ describe("TaskSidebar", () => {
     id: "1",
     name: "テストタスク",
     duration: 60,
-    resourceTypes: ["self"],
-    isPlaced: false,
+    isPlaced: false
   };
 
   const mockPlacedTask: Task = {
     id: "2",
     name: "配置済みタスク",
     duration: 30,
-    resourceTypes: ["others"],
     isPlaced: true,
-    startTime: "09:00",
+    startTime: "09:00"
   };
 
   const defaultProps = {
     selectedTask: mockTask,
     onTaskUpdate: vi.fn(),
-    onTaskRemove: vi.fn(),
+    onTaskRemove: vi.fn()
   };
 
   beforeEach(() => {
@@ -150,7 +148,7 @@ describe("TaskSidebar", () => {
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
-        name: "更新されたタスク",
+        name: "更新されたタスク"
       });
     });
   });
@@ -167,7 +165,7 @@ describe("TaskSidebar", () => {
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
-        duration: 45,
+        duration: 45
       });
     });
   });
@@ -237,7 +235,7 @@ describe("TaskSidebar", () => {
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
-        duration: 15,
+        duration: 15
       });
     });
 
@@ -246,7 +244,7 @@ describe("TaskSidebar", () => {
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
-        duration: 240,
+        duration: 240
       });
     });
   });
@@ -285,8 +283,7 @@ describe("TaskSidebar", () => {
       id: "2",
       name: "新しいタスク",
       duration: 30,
-      resourceTypes: ["machine"],
-      isPlaced: false,
+      isPlaced: false
     };
 
     rerender(<TaskSidebarWrapper {...defaultProps} selectedTask={newTask} />);

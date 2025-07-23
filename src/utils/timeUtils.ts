@@ -120,10 +120,15 @@ export function calculateEndTime(startTime: string, duration: number): string {
 /**
  * 配置済みタスクの中で重複しているタスクのIDを取得します。
  * 重複は時間の重なりがある場合に発生します。
- * @param {any[]} placedTasks - 配置済みタスクの配列
+ * @param {Task[]} placedTasks - 配置済みタスクの配列
  * @returns {Set<string>} 重複しているタスクのIDのセット
  */
-export function findOverlappingTasks(placedTasks: any[]): Set<string> {
+export function findOverlappingTasks(placedTasks: Array<{
+  id: string;
+  startTime?: string;
+  duration: number;
+  isPlaced: boolean;
+}>): Set<string> {
   const overlappingIds = new Set<string>();
   
   // 配置済みで開始時間が設定されているタスクのみを対象とする

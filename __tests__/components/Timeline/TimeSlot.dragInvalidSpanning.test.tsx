@@ -7,7 +7,7 @@ import type { Task } from "../../../src/types";
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({
   canPlaceTask: vi.fn(),
-  getTaskSlots: vi.fn(),
+  getTaskSlots: vi.fn()
 }));
 
 import { canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
@@ -18,8 +18,7 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
       id: "1",
       name: "テストタスク1",
       duration: 30,
-      resourceTypes: ["self"],
-      isPlaced: false,
+      isPlaced: false
     },
   ];
 
@@ -43,7 +42,7 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
     onDrop: vi.fn(),
     onTaskClick: vi.fn(),
     onDragStart: vi.fn(),
-    onDragEnd: vi.fn(),
+    onDragEnd: vi.fn()
   };
 
   beforeEach(() => {

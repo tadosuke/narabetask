@@ -18,7 +18,7 @@ vi.mock("../../../src/utils/timeUtils", () => ({
   canPlaceTask: vi.fn(),
   getTaskSlots: vi.fn(),
   findOverlappingTasks: vi.fn(() => new Set()),
-  doTasksShareResources: vi.fn(() => false),
+  doTasksShareResources: vi.fn(() => false)
 }));
 
 import { canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
@@ -26,12 +26,12 @@ import { canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
 describe("Timeline ドラッグコーディネーション", () => {
   const mockBusinessHours: BusinessHours = {
     start: "09:00",
-    end: "17:00",
+    end: "17:00"
   };
 
   const mockLunchBreak: LunchBreak = {
     start: "12:00",
-    end: "13:00",
+    end: "13:00"
   };
 
   const mockTasks: Task[] = [
@@ -39,16 +39,14 @@ describe("Timeline ドラッグコーディネーション", () => {
       id: "1",
       name: "テストタスク1",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: true,
-      startTime: "09:00",
+      startTime: "09:00"
     },
     {
       id: "2", 
       name: "テストタスク2",
       duration: 60,
-      resourceTypes: ["others"],
-      isPlaced: false,
+      isPlaced: false
     },
   ];
 
@@ -64,7 +62,7 @@ describe("Timeline ドラッグコーディネーション", () => {
     onTaskClick: vi.fn(),
     draggedTaskId: "2",
     onDragStart: mockOnDragStart,
-    onDragEnd: mockOnDragEnd,
+    onDragEnd: mockOnDragEnd
   };
 
   beforeEach(() => {
@@ -95,7 +93,7 @@ describe("Timeline ドラッグコーディネーション", () => {
     const dropEvent = new Event("drop", { bubbles: true });
     Object.defineProperty(dropEvent, "preventDefault", { value: vi.fn() });
     Object.defineProperty(dropEvent, "dataTransfer", {
-      value: { getData: vi.fn(() => "2") },
+      value: { getData: vi.fn(() => "2") }
     });
 
     fireEvent(timeSlot!, dropEvent);
@@ -125,7 +123,7 @@ describe("Timeline ドラッグコーディネーション", () => {
     const propsWithPlacedTaskDrag = {
       ...defaultProps,
       draggedTaskId: "1", // 配置済みタスクをドラッグ
-      onTaskDrop: mockOnTaskDrop,
+      onTaskDrop: mockOnTaskDrop
     };
     
     const { container } = render(<Timeline {...propsWithPlacedTaskDrag} />);
@@ -134,7 +132,7 @@ describe("Timeline ドラッグコーディネーション", () => {
     const dropEvent = new Event("drop", { bubbles: true });
     Object.defineProperty(dropEvent, "preventDefault", { value: vi.fn() });
     Object.defineProperty(dropEvent, "dataTransfer", {
-      value: { getData: vi.fn(() => "1") },
+      value: { getData: vi.fn(() => "1") }
     });
 
     fireEvent(timeSlot!, dropEvent);
@@ -145,7 +143,7 @@ describe("Timeline ドラッグコーディネーション", () => {
   it("ドラッグされていない状態では適切なプロパティをTimeSlotに渡す", () => {
     const propsWithoutDrag = {
       ...defaultProps,
-      draggedTaskId: null,
+      draggedTaskId: null
     };
     
     const { container } = render(<Timeline {...propsWithoutDrag} />);

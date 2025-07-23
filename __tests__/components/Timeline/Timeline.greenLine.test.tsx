@@ -24,7 +24,7 @@ vi.mock("../../../src/utils/timeUtils", () => ({
     return slots;
   }),
   findOverlappingTasks: vi.fn(() => new Set()),
-  doTasksShareResources: vi.fn(() => false),
+  doTasksShareResources: vi.fn(() => false)
 }));
 
 describe('Timeline スパニングコーディネーション', () => {
@@ -42,7 +42,6 @@ describe('Timeline スパニングコーディネーション', () => {
     id: '1',
     name: 'テストタスク',
     duration: 30,
-    resourceTypes: ['self'],
     isPlaced: false
   };
 
@@ -76,7 +75,6 @@ describe('Timeline スパニングコーディネーション', () => {
       id: '2',
       name: '長時間タスク',
       duration: 60, // 1時間（複数スロットにまたがる）
-      resourceTypes: ['self'],
       isPlaced: false
     };
 

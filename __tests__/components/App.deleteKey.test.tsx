@@ -86,7 +86,7 @@ describe("アプリ - Delete キー機能", () => {
     const mockInput = document.createElement("input");
     Object.defineProperty(document, "activeElement", {
       get: () => mockInput,
-      configurable: true,
+      configurable: true
     });
 
     vi.mocked(window.confirm).mockReturnValue(true);
@@ -119,7 +119,7 @@ describe("アプリ - Delete キー機能", () => {
     // Cleanup: restore original activeElement
     Object.defineProperty(document, "activeElement", {
       get: () => originalActiveElement,
-      configurable: true,
+      configurable: true
     });
   });
 });

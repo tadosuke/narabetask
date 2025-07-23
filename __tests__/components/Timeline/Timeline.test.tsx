@@ -19,13 +19,13 @@ vi.mock("../../../src/utils/timeUtils", () => ({
   canPlaceTask: vi.fn(() => true),
   getTaskSlots: vi.fn(() => ["09:00", "09:15"]),
   findOverlappingTasks: vi.fn(() => new Set()),
-  doTasksShareResources: vi.fn(() => false),
+  doTasksShareResources: vi.fn(() => false)
 }));
 
 describe("Timeline", () => {
   const mockBusinessHours: BusinessHours = {
     start: "09:00",
-    end: "17:00",
+    end: "17:00"
   };
 
   const mockTasks: Task[] = [
@@ -33,16 +33,14 @@ describe("Timeline", () => {
       id: "1",
       name: "テストタスク1",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: true,
-      startTime: "09:00",
+      startTime: "09:00"
     },
     {
       id: "2",
       name: "テストタスク2",
       duration: 60,
-      resourceTypes: ["others"],
-      isPlaced: false,
+      isPlaced: false
     },
   ];
 
@@ -51,7 +49,7 @@ describe("Timeline", () => {
     selectedTask: null,
     businessHours: mockBusinessHours,
     onTaskDrop: vi.fn(),
-    onTaskClick: vi.fn(),
+    onTaskClick: vi.fn()
   };
 
   beforeEach(() => {
@@ -110,7 +108,7 @@ describe("Timeline", () => {
     const dropEvent = new Event("drop", { bubbles: true });
     Object.defineProperty(dropEvent, "preventDefault", { value: vi.fn() });
     Object.defineProperty(dropEvent, "dataTransfer", {
-      value: { getData: vi.fn(() => "2") },
+      value: { getData: vi.fn(() => "2") }
     });
 
     fireEvent(timeSlot!, dropEvent);
@@ -136,7 +134,7 @@ describe("Timeline", () => {
       ...defaultProps,
       draggedTaskId: "2",
       onDragStart: mockOnDragStart,
-      onDragEnd: mockOnDragEnd,
+      onDragEnd: mockOnDragEnd
     };
 
     const { container } = render(<Timeline {...propsWithDragHandlers} />);
@@ -149,7 +147,7 @@ describe("Timeline", () => {
     const dropEvent = new Event("drop", { bubbles: true });
     Object.defineProperty(dropEvent, "preventDefault", { value: vi.fn() });
     Object.defineProperty(dropEvent, "dataTransfer", {
-      value: { getData: vi.fn(() => "2") },
+      value: { getData: vi.fn(() => "2") }
     });
 
     fireEvent(timeSlot!, dropEvent);

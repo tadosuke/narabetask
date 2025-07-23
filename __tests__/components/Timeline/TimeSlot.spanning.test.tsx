@@ -14,7 +14,7 @@ vi.mock("../../../src/utils/timeUtils", () => ({
     if (duration >= 45) slots.push("09:30");
     if (duration >= 60) slots.push("09:45");
     return slots;
-  }),
+  })
 }));
 
 import { getTaskSlots } from "../../../src/utils/timeUtils";
@@ -24,7 +24,6 @@ describe('TimeSlot Drag Spanning', () => {
     id: '1',
     name: 'テストタスク',
     duration: 60, // 1時間（複数スロットにまたがる）
-    resourceTypes: ['self'],
     isPlaced: false
   };
 
@@ -49,7 +48,7 @@ describe('TimeSlot Drag Spanning', () => {
     onDrop: vi.fn(),
     onTaskClick: vi.fn(),
     onDragStart: vi.fn(),
-    onDragEnd: vi.fn(),
+    onDragEnd: vi.fn()
   };
 
   it('最初のスロットに正しいスパニングクラスを適用する', () => {
@@ -91,7 +90,6 @@ describe('TimeSlot Drag Spanning', () => {
       id: '2',
       name: '短いタスク',
       duration: 15, // 15分（単一スロット）
-      resourceTypes: ['self'],
       isPlaced: false
     };
 
@@ -101,7 +99,7 @@ describe('TimeSlot Drag Spanning', () => {
     const singleProps = {
       ...defaultProps,
       tasks: [singleSlotTask],
-      draggedTaskId: "2",
+      draggedTaskId: "2"
     };
     
     const { container } = render(<TimeSlot {...singleProps} />);
@@ -130,7 +128,7 @@ describe('TimeSlot Drag Spanning', () => {
   it('ドラッグオーバーが設定されていない場合はスパニングクラスを適用しない', () => {
     const noDragProps = {
       ...defaultProps,
-      dragOverSlot: null,
+      dragOverSlot: null
     };
     
     const { container } = render(<TimeSlot {...noDragProps} />);
@@ -142,7 +140,7 @@ describe('TimeSlot Drag Spanning', () => {
   it('ドラッグされたタスクがない場合はスパニングクラスを適用しない', () => {
     const noTaskProps = {
       ...defaultProps,
-      draggedTaskId: null,
+      draggedTaskId: null
     };
     
     const { container } = render(<TimeSlot {...noTaskProps} />);

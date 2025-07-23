@@ -7,7 +7,7 @@ import type { Task } from "../../../src/types";
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({
   canPlaceTask: vi.fn(),
-  getTaskSlots: vi.fn(),
+  getTaskSlots: vi.fn()
 }));
 
 import { canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
@@ -18,16 +18,14 @@ describe("TimeSlot ドラッグフィードバック", () => {
       id: "1",
       name: "テストタスク1",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: true,
-      startTime: "09:00",
+      startTime: "09:00"
     },
     {
       id: "2", 
       name: "テストタスク2",
       duration: 60,
-      resourceTypes: ["others"],
-      isPlaced: false,
+      isPlaced: false
     },
   ];
 
@@ -55,7 +53,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
     onDrop: vi.fn(),
     onTaskClick: vi.fn(),
     onDragStart: mockOnDragStart,
-    onDragEnd: mockOnDragEnd,
+    onDragEnd: mockOnDragEnd
   };
 
   beforeEach(() => {
@@ -70,7 +68,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
     const propsWithDragOver = {
       ...defaultProps,
       dragOverSlot: "09:30",
-      draggedTaskId: "2",
+      draggedTaskId: "2"
     };
     
     const { container } = render(<TimeSlot {...propsWithDragOver} />);
@@ -85,7 +83,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
     const propsWithDragOver = {
       ...defaultProps,
       dragOverSlot: "09:30",
-      draggedTaskId: "2",
+      draggedTaskId: "2"
     };
     
     const { container } = render(<TimeSlot {...propsWithDragOver} />);
@@ -98,7 +96,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
     const mockOnDragEnter = vi.fn();
     const propsWithDragEnter = {
       ...defaultProps,
-      onDragEnter: mockOnDragEnter,
+      onDragEnter: mockOnDragEnter
     };
     
     const { container } = render(<TimeSlot {...propsWithDragEnter} />);
@@ -115,7 +113,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
     const mockOnDragLeave = vi.fn();
     const propsWithDragLeave = {
       ...defaultProps,
-      onDragLeave: mockOnDragLeave,
+      onDragLeave: mockOnDragLeave
     };
     
     const { container } = render(<TimeSlot {...propsWithDragLeave} />);
@@ -150,7 +148,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
     const propsNotDraggedOver = {
       ...defaultProps,
       dragOverSlot: "09:45", // 異なる時刻
-      draggedTaskId: "2",
+      draggedTaskId: "2"
     };
     
     const { container } = render(<TimeSlot {...propsNotDraggedOver} />);
@@ -166,9 +164,8 @@ describe("TimeSlot ドラッグフィードバック", () => {
       id: "1",
       name: "配置済みタスク",
       duration: 30,
-      resourceTypes: ["self"],
       isPlaced: true,
-      startTime: "09:00",
+      startTime: "09:00"
     };
 
     vi.mocked(canPlaceTask).mockReturnValue(true);

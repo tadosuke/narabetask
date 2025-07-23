@@ -23,16 +23,14 @@ const TestComponent: React.FC = () => {
       id: "1",
       name: "未配置タスク",
       duration: 30,
-      resourceTypes: ["self"],
-      isPlaced: false,
+      isPlaced: false
     },
     {
       id: "2", 
       name: "配置済みタスク",
       duration: 60,
-      resourceTypes: ["others"],
       isPlaced: true,
-      startTime: "09:00",
+      startTime: "09:00"
     }
   ];
 

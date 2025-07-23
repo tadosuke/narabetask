@@ -1,13 +1,4 @@
 /**
- * タスクで使用されるリソースの種類
- * - self: 自分自身のリソース
- * - others: 他人のリソース
- * - machine: マシン・機械のリソース
- * - network: ネットワークのリソース
- */
-export type ResourceType = 'self' | 'others' | 'machine' | 'network';
-
-/**
  * タスクの情報を表すインターフェース
  */
 export interface Task {
@@ -17,8 +8,6 @@ export interface Task {
   name: string;
   /** タスクの所要時間（分単位、15分刻み） */
   duration: number; // in minutes, 15-minute increments
-  /** タスクで使用するリソースの種類（複数選択可能） */
-  resourceTypes: ResourceType[];
   /** タイムラインに配置された際の開始時刻（HH:mm形式） */
   startTime?: string; // HH:mm format when placed on timeline
   /** タイムラインに配置されているかどうか */

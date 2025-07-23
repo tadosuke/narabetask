@@ -28,8 +28,7 @@ describe('TaskContext', () => {
     expect(result.current.tasks[0]).toMatchObject({
       name: '新しいタスク',
       duration: 30,
-      resourceTypes: [],
-      isPlaced: false,
+      isPlaced: false
     });
     expect(result.current.tasks[0].id).toBeTruthy();
     expect(result.current.selectedTask).toEqual(result.current.tasks[0]);
@@ -89,7 +88,7 @@ describe('TaskContext', () => {
 
     expect(result.current.tasks[0]).toMatchObject({
       startTime: '09:00',
-      isPlaced: true,
+      isPlaced: true
     });
   });
 
@@ -114,7 +113,7 @@ describe('TaskContext', () => {
     expect(result.current.tasks[0]).toMatchObject({
       startTime: undefined,
       isPlaced: false,
-      isLocked: false,
+      isLocked: false
     });
   });
 
@@ -228,7 +227,7 @@ describe('TaskContext', () => {
     expect(result.current.tasks[0]).toMatchObject({
       name: 'Updated Task',
       startTime: '09:00',
-      isPlaced: true,
+      isPlaced: true
     });
   });
 });

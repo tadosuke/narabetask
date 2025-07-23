@@ -6,13 +6,13 @@ import { TaskActions } from "../../../src/components/TaskSidebar/TaskActions";
 // window.confirmをモック
 Object.defineProperty(window, "confirm", {
   writable: true,
-  value: vi.fn(),
+  value: vi.fn()
 });
 
 describe("TaskActions", () => {
   const defaultProps = {
     taskId: "task-1",
-    onTaskRemove: vi.fn(),
+    onTaskRemove: vi.fn()
   };
 
   beforeEach(() => {

@@ -34,14 +34,14 @@ describe('TaskContext - dropTaskとreturnTaskでのselectedTask更新', () => {
     expect(result.current.tasks[0]).toMatchObject({
       id: taskId,
       startTime: '09:00',
-      isPlaced: true,
+      isPlaced: true
     });
 
     // selectedTaskも新しいstartTimeを反映して更新されること
     expect(result.current.selectedTask).toMatchObject({
       id: taskId,
       startTime: '09:00',
-      isPlaced: true,
+      isPlaced: true
     });
     
     // 単に参照が同じオブジェクトではなく、更新されたデータが含まれていることを確認
@@ -79,7 +79,7 @@ describe('TaskContext - dropTaskとreturnTaskでのselectedTask更新', () => {
     expect(result.current.tasks[1]).toMatchObject({
       id: secondTaskId,
       startTime: '09:00',
-      isPlaced: true,
+      isPlaced: true
     });
 
     // selectedTaskは最初のタスクのまま変更されないこと
@@ -115,7 +115,7 @@ describe('TaskContext - dropTaskとreturnTaskでのselectedTask更新', () => {
     expect(result.current.tasks[0]).toMatchObject({
       id: taskId,
       startTime: '09:00',
-      isPlaced: true,
+      isPlaced: true
     });
 
     // selectedTaskはnullのままであること
@@ -141,7 +141,7 @@ describe('TaskContext - dropTaskとreturnTaskでのselectedTask更新', () => {
     expect(result.current.selectedTask).toMatchObject({
       id: taskId,
       startTime: '09:00',
-      isPlaced: true,
+      isPlaced: true
     });
 
     // タスクをタスク一覧に戻す
@@ -154,7 +154,7 @@ describe('TaskContext - dropTaskとreturnTaskでのselectedTask更新', () => {
       id: taskId,
       startTime: undefined,
       isPlaced: false,
-      isLocked: false,
+      isLocked: false
     });
 
     // selectedTaskも更新されて、startTimeがundefined、isPlacedがfalseになること
@@ -162,7 +162,7 @@ describe('TaskContext - dropTaskとreturnTaskでのselectedTask更新', () => {
       id: taskId,
       startTime: undefined,
       isPlaced: false,
-      isLocked: false,
+      isLocked: false
     });
     
     // 確実にstartTimeがundefinedになっていることを確認
@@ -210,7 +210,7 @@ describe('TaskContext - dropTaskとreturnTaskでのselectedTask更新', () => {
       id: secondTaskId,
       startTime: undefined,
       isPlaced: false,
-      isLocked: false,
+      isLocked: false
     });
 
     // selectedTaskは最初のタスクのまま変更されないこと
@@ -251,7 +251,7 @@ describe('TaskContext - dropTaskとreturnTaskでのselectedTask更新', () => {
       id: taskId,
       startTime: undefined,
       isPlaced: false,
-      isLocked: false,
+      isLocked: false
     });
 
     // selectedTaskはnullのままであること
