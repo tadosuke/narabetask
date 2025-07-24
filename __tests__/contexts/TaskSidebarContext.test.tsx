@@ -11,6 +11,8 @@ describe("TaskSidebarContext", () => {
     id: "1",
     name: "テストタスク",
     duration: 60,
+    workTime: 60,
+    waitTime: 0,
     isPlaced: false
   };
 
@@ -56,7 +58,8 @@ describe("TaskSidebarContext", () => {
     const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
 
     expect(result.current.name).toBe("");
-    expect(result.current.duration).toBe(30);
+    expect(result.current.workTime).toBe(30);
+    expect(result.current.waitTime).toBe(0);
   });
 
   it("selectedTaskが存在する場合はそのタスクの値でフォーム状態を設定する", () => {
@@ -64,7 +67,8 @@ describe("TaskSidebarContext", () => {
     const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
 
     expect(result.current.name).toBe("テストタスク");
-    expect(result.current.duration).toBe(60);
+    expect(result.current.workTime).toBe(60);
+    expect(result.current.waitTime).toBe(0);
   });
 
   it("selectedTaskが変更された場合にフォーム状態を更新する", () => {
@@ -108,21 +112,42 @@ describe("TaskSidebarContext", () => {
 
     expect(mockOnTaskUpdate).toHaveBeenCalledWith({
       ...mockTask,
-      name: "更新されたタスク名"
+      name: "更新されたタスク名",
+      workTime: 60,
+      waitTime: 0,
+      duration: 60 // workTime + waitTime
     });
   });
 
-  it("handleDurationChangeが正しくdurationを更新し、onTaskUpdateを呼び出す", () => {
+  it("handleWorkTimeChangeが正しくworkTimeを更新し、onTaskUpdateを呼び出す", () => {
     const wrapper = createWrapper(mockTask);
     const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
 
     act(() => {
-      result.current.handleDurationChange(90);
+      result.current.handleWorkTimeChange(90);
     });
 
     expect(mockOnTaskUpdate).toHaveBeenCalledWith({
       ...mockTask,
-      duration: 90
+      workTime: 90,
+      waitTime: 0,
+      duration: 90 // workTime + waitTime
+    });
+  });
+
+  it("handleWaitTimeChangeが正しくwaitTimeを更新し、onTaskUpdateを呼び出す", () => {
+    const wrapper = createWrapper(mockTask);
+    const { result } = renderHook(() => useTaskSidebarContext(), { wrapper });
+
+    act(() => {
+      result.current.handleWaitTimeChange(30);
+    });
+
+    expect(mockOnTaskUpdate).toHaveBeenCalledWith({
+      ...mockTask,
+      workTime: 60,
+      waitTime: 30,
+      duration: 90 // workTime + waitTime
     });
   });
 
@@ -169,7 +194,10 @@ describe("TaskSidebarContext", () => {
 
     expect(mockOnTaskUpdate).toHaveBeenCalledWith({
       ...mockTask,
-      name: "更新されたタスク名"
+      name: "更新されたタスク名",
+      workTime: 60,
+      waitTime: 0,
+      duration: 60 // workTime + waitTime
     });
   });
 });

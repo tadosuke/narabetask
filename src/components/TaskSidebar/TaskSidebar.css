@@ -156,6 +156,42 @@
   background-color: #da190b;
 }
 
+/* Total time display styles */
+.task-sidebar__total-time-display {
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.task-sidebar__total-time-breakdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #666;
+}
+
+.task-sidebar__time-component {
+  font-weight: 500;
+}
+
+.task-sidebar__time-separator {
+  color: #999;
+  font-weight: bold;
+}
+
+.task-sidebar__total-time-value {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  padding-top: 8px;
+  border-top: 1px solid #e9ecef;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .task-sidebar {
