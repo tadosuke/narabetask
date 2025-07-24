@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Task } from '../../types';
-import { canPlaceTask, getTaskSlots } from '../../utils/timeUtils';
+import { canPlaceTaskWithWorkTime, getTaskSlots, getWorkTimeSlots } from '../../utils/timeUtils';
 import { TaskCard } from '../TaskCard';
 import './TimeSlot.css';
 
@@ -77,14 +77,14 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   if (isDragOver && draggedTaskId) {
     const draggedTask = tasks.find(t => t.id === draggedTaskId);
     if (draggedTask) {
-      // For placed tasks being moved, exclude their current slots from collision detection
+      // For placed tasks being moved, exclude their current work time slots from collision detection
       const occupiedSlotsForCheck = new Set(occupiedSlots);
       if (draggedTask.isPlaced && draggedTask.startTime) {
-        const taskSlots = getTaskSlots(draggedTask.startTime, draggedTask.duration);
-        taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
+        const taskWorkSlots = getWorkTimeSlots(draggedTask.startTime, draggedTask.duration, draggedTask.workTime, draggedTask.waitTime);
+        taskWorkSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
       }
       
-      const canPlace = canPlaceTask(dragOverSlot, draggedTask.duration, occupiedSlotsForCheck, timeSlots);
+      const canPlace = canPlaceTaskWithWorkTime(dragOverSlot, draggedTask.duration, draggedTask.workTime, draggedTask.waitTime, occupiedSlotsForCheck, timeSlots);
       dragFeedbackClass = canPlace ? 'timeline__slot--drag-over' : 'timeline__slot--drag-invalid';
     }
   }
@@ -102,10 +102,10 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
         // Determine if the drag is invalid (check placement from the drag over slot)
         const occupiedSlotsForCheck = new Set(occupiedSlots);
         if (draggedTask.isPlaced && draggedTask.startTime) {
-          const taskSlots = getTaskSlots(draggedTask.startTime, draggedTask.duration);
-          taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
+          const taskWorkSlots = getWorkTimeSlots(draggedTask.startTime, draggedTask.duration, draggedTask.workTime, draggedTask.waitTime);
+          taskWorkSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
         }
-        isInvalidDrag = !canPlaceTask(dragOverSlot, draggedTask.duration, occupiedSlotsForCheck, timeSlots);
+        isInvalidDrag = !canPlaceTaskWithWorkTime(dragOverSlot, draggedTask.duration, draggedTask.workTime, draggedTask.waitTime, occupiedSlotsForCheck, timeSlots);
         
         const slotIndex = draggedTaskSlots.indexOf(time);
         const totalSlots = draggedTaskSlots.length;

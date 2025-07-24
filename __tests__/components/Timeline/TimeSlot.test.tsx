@@ -7,7 +7,9 @@ import type { Task } from "../../../src/types";
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({
   canPlaceTask: vi.fn(() => true),
-  getTaskSlots: vi.fn(() => ["09:00", "09:15"])
+  canPlaceTaskWithWorkTime: vi.fn(() => true),
+  getTaskSlots: vi.fn(() => ["09:00", "09:15"]),
+  getWorkTimeSlots: vi.fn(() => ["09:00", "09:15"])
 }));
 
 describe("TimeSlot", () => {

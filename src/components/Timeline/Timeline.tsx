@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Task, BusinessHours } from '../../types';
-import { generateTimeSlots, canPlaceTask, getTaskSlots, findOverlappingTasks } from '../../utils/timeUtils';
+import { generateTimeSlots, canPlaceTaskWithWorkTime, getWorkTimeSlots, findOverlappingTasksWithWorkTime } from '../../utils/timeUtils';
 import { TimeSlot } from './TimeSlot';
 import './Timeline.css';
 
@@ -53,14 +53,14 @@ export const Timeline: React.FC<TimelineProps> = ({
   const placedTasks = tasks.filter(task => task.isPlaced && task.startTime);
   
   /** 重複しているタスクのIDのセット */
-  const overlappingTaskIds = findOverlappingTasks(placedTasks);
+  const overlappingTaskIds = findOverlappingTasksWithWorkTime(placedTasks);
   
-  /** 占有されているタイムスロットのセットを作成 */
+  /** 占有されているタイムスロットのセットを作成（作業時間のみ） */
   const occupiedSlots = new Set<string>();
   placedTasks.forEach(task => {
     if (task.startTime) {
-      const taskSlots = getTaskSlots(task.startTime, task.duration);
-      taskSlots.forEach(slot => occupiedSlots.add(slot));
+      const workSlots = getWorkTimeSlots(task.startTime, task.duration, task.workTime, task.waitTime);
+      workSlots.forEach(slot => occupiedSlots.add(slot));
     }
   });
 
@@ -102,15 +102,15 @@ export const Timeline: React.FC<TimelineProps> = ({
     }
     
     if (task) {
-      // For placed tasks being moved, exclude their current slots from collision detection
+      // For placed tasks being moved, exclude their current work time slots from collision detection
       const occupiedSlotsForCheck = new Set(occupiedSlots);
       if (task.isPlaced && task.startTime) {
-        const taskSlots = getTaskSlots(task.startTime, task.duration);
-        taskSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
+        const taskWorkSlots = getWorkTimeSlots(task.startTime, task.duration, task.workTime, task.waitTime);
+        taskWorkSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
       }
       
-      // Check if the task can be placed at this time
-      if (canPlaceTask(dropTime, task.duration, occupiedSlotsForCheck, timeSlots)) {
+      // Check if the task can be placed at this time (considering work time only)
+      if (canPlaceTaskWithWorkTime(dropTime, task.duration, task.workTime, task.waitTime, occupiedSlotsForCheck, timeSlots)) {
         onTaskDrop(taskId, dropTime);
       }
     }
