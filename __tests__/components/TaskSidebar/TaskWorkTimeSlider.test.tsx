@@ -6,7 +6,7 @@ import { TaskWorkTimeSlider } from "../../../src/components/TaskSidebar/TaskWork
 describe("TaskWorkTimeSlider", () => {
   const defaultProps = {
     workTime: 60,
-    onWorkTimeChange: vi.fn()
+    onWorkTimeChange: vi.fn(),
   };
 
   it("スライダーとラベルが表示される", () => {
@@ -29,14 +29,19 @@ describe("TaskWorkTimeSlider", () => {
     render(<TaskWorkTimeSlider {...defaultProps} />);
 
     const workTimeSlider = screen.getByRole("slider");
-    expect(workTimeSlider).toHaveAttribute("min", "0");
+    expect(workTimeSlider).toHaveAttribute("min", "15");
     expect(workTimeSlider).toHaveAttribute("max", "240");
     expect(workTimeSlider).toHaveAttribute("step", "15");
   });
 
   it("作業時間が変更されたときにonWorkTimeChangeを呼び出す", () => {
     const mockOnWorkTimeChange = vi.fn();
-    render(<TaskWorkTimeSlider {...defaultProps} onWorkTimeChange={mockOnWorkTimeChange} />);
+    render(
+      <TaskWorkTimeSlider
+        {...defaultProps}
+        onWorkTimeChange={mockOnWorkTimeChange}
+      />
+    );
 
     const workTimeSlider = screen.getByRole("slider");
     fireEvent.change(workTimeSlider, { target: { value: "45" } });
@@ -77,17 +82,27 @@ describe("TaskWorkTimeSlider", () => {
 
   it("最小値でonWorkTimeChangeを呼び出す", () => {
     const mockOnWorkTimeChange = vi.fn();
-    render(<TaskWorkTimeSlider {...defaultProps} onWorkTimeChange={mockOnWorkTimeChange} />);
+    render(
+      <TaskWorkTimeSlider
+        {...defaultProps}
+        onWorkTimeChange={mockOnWorkTimeChange}
+      />
+    );
 
     const workTimeSlider = screen.getByRole("slider");
-    fireEvent.change(workTimeSlider, { target: { value: "0" } });
+    fireEvent.change(workTimeSlider, { target: { value: "15" } });
 
-    expect(mockOnWorkTimeChange).toHaveBeenCalledWith(0);
+    expect(mockOnWorkTimeChange).toHaveBeenCalledWith(15);
   });
 
   it("最大値でonWorkTimeChangeを呼び出す", () => {
     const mockOnWorkTimeChange = vi.fn();
-    render(<TaskWorkTimeSlider {...defaultProps} onWorkTimeChange={mockOnWorkTimeChange} />);
+    render(
+      <TaskWorkTimeSlider
+        {...defaultProps}
+        onWorkTimeChange={mockOnWorkTimeChange}
+      />
+    );
 
     const workTimeSlider = screen.getByRole("slider");
     fireEvent.change(workTimeSlider, { target: { value: "240" } });

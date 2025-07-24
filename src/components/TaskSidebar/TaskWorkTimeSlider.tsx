@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 /**
  * TaskWorkTimeSliderコンポーネントのプロパティ
@@ -11,7 +11,7 @@ interface TaskWorkTimeSliderProps {
 }
 
 /** 作業時間のスライダー設定 */
-const WORK_TIME_MIN = 0; // 最小値: 0分
+const WORK_TIME_MIN = 15; // 最小値: 15分
 const WORK_TIME_MAX = 240; // 最大値: 4時間 = 240分
 const WORK_TIME_STEP = 15; // 15分刻み
 
@@ -20,7 +20,7 @@ const WORK_TIME_STEP = 15; // 15分刻み
  */
 const formatWorkTime = (minutes: number) => {
   if (minutes === 0) {
-    return '0分';
+    return "0分";
   }
   if (minutes >= 60) {
     const hours = Math.floor(minutes / 60);

@@ -9,7 +9,7 @@ import type { Task } from "../../../src/types";
 // window.confirmをモック
 Object.defineProperty(window, "confirm", {
   writable: true,
-  value: vi.fn()
+  value: vi.fn(),
 });
 
 // TaskSidebarをProviderでラップするヘルパーコンポーネント
@@ -22,23 +22,17 @@ interface TaskSidebarWrapperProps {
 const TaskSidebarWrapper: React.FC<TaskSidebarWrapperProps> = ({
   selectedTask,
   onTaskUpdate,
-  onTaskRemove
+  onTaskRemove,
 }) => (
-  <TaskSidebarProvider 
-    selectedTask={selectedTask}
-    onTaskUpdate={onTaskUpdate}
-  >
-    <TaskSidebar
-      selectedTask={selectedTask}
-      onTaskRemove={onTaskRemove}
-    />
+  <TaskSidebarProvider selectedTask={selectedTask} onTaskUpdate={onTaskUpdate}>
+    <TaskSidebar selectedTask={selectedTask} onTaskRemove={onTaskRemove} />
   </TaskSidebarProvider>
 );
 
 // window.confirmをモック
 Object.defineProperty(window, "confirm", {
   writable: true,
-  value: vi.fn()
+  value: vi.fn(),
 });
 
 describe("TaskSidebar", () => {
@@ -48,7 +42,7 @@ describe("TaskSidebar", () => {
     duration: 60,
     workTime: 60,
     waitTime: 0,
-    isPlaced: false
+    isPlaced: false,
   };
 
   const mockPlacedTask: Task = {
@@ -56,13 +50,13 @@ describe("TaskSidebar", () => {
     name: "配置済みタスク",
     duration: 30,
     isPlaced: true,
-    startTime: "09:00"
+    startTime: "09:00",
   };
 
   const defaultProps = {
     selectedTask: mockTask,
     onTaskUpdate: vi.fn(),
-    onTaskRemove: vi.fn()
+    onTaskRemove: vi.fn(),
   };
 
   beforeEach(() => {
@@ -105,7 +99,9 @@ describe("TaskSidebar", () => {
   });
 
   it("配置済みタスクの開始時間と終了時間を表示する", () => {
-    render(<TaskSidebarWrapper {...defaultProps} selectedTask={mockPlacedTask} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} selectedTask={mockPlacedTask} />
+    );
 
     expect(screen.getByText("開始時間:")).toBeInTheDocument();
     expect(screen.getByText("終了時間:")).toBeInTheDocument();
@@ -146,7 +142,9 @@ describe("TaskSidebar", () => {
   it("タスク名が変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
     const mockOnTaskUpdate = vi.fn();
     const user = userEvent.setup();
-    render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />
+    );
 
     const nameInput = screen.getByLabelText("タスク名");
     await user.clear(nameInput);
@@ -155,14 +153,16 @@ describe("TaskSidebar", () => {
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
-        name: "更新されたタスク"
+        name: "更新されたタスク",
       });
     });
   });
 
   it("作業時間が変更されたときに自動的にonTaskUpdateを呼び出す", async () => {
     const mockOnTaskUpdate = vi.fn();
-    render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />
+    );
 
     const workTimeSlider = screen.getByLabelText("作業時間");
 
@@ -173,7 +173,7 @@ describe("TaskSidebar", () => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
         workTime: 45,
-        duration: 45 // duration should be workTime + waitTime (45 + 0)
+        duration: 45, // duration should be workTime + waitTime (45 + 0)
       });
     });
   });
@@ -181,7 +181,9 @@ describe("TaskSidebar", () => {
   it("タスク名が空の場合は自動保存を行わない", async () => {
     const mockOnTaskUpdate = vi.fn();
     const user = userEvent.setup();
-    render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />
+    );
 
     const nameInput = screen.getByLabelText("タスク名");
     await user.clear(nameInput);
@@ -209,7 +211,9 @@ describe("TaskSidebar", () => {
       true
     );
 
-    render(<TaskSidebarWrapper {...defaultProps} onTaskRemove={mockOnTaskRemove} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskRemove={mockOnTaskRemove} />
+    );
 
     fireEvent.click(screen.getByText("削除"));
 
@@ -223,7 +227,9 @@ describe("TaskSidebar", () => {
       false
     );
 
-    render(<TaskSidebarWrapper {...defaultProps} onTaskRemove={mockOnTaskRemove} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskRemove={mockOnTaskRemove} />
+    );
 
     fireEvent.click(screen.getByText("削除"));
 
@@ -233,18 +239,20 @@ describe("TaskSidebar", () => {
 
   it("スライダーで最小値と最大値を設定できる", async () => {
     const mockOnTaskUpdate = vi.fn();
-    render(<TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />);
+    render(
+      <TaskSidebarWrapper {...defaultProps} onTaskUpdate={mockOnTaskUpdate} />
+    );
 
     const workTimeSlider = screen.getByLabelText("作業時間");
 
-    // Test minimum value (0 minutes)
-    fireEvent.change(workTimeSlider, { target: { value: "0" } });
+    // Test minimum value (15 minutes)
+    fireEvent.change(workTimeSlider, { target: { value: "15" } });
 
     await waitFor(() => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
-        workTime: 0,
-        duration: 0 // workTime (0) + waitTime (0)
+        workTime: 15,
+        duration: 15, // workTime (15) + waitTime (0)
       });
     });
 
@@ -254,7 +262,7 @@ describe("TaskSidebar", () => {
       expect(mockOnTaskUpdate).toHaveBeenCalledWith({
         ...mockTask,
         workTime: 240,
-        duration: 240 // workTime (240) + waitTime (0)
+        duration: 240, // workTime (240) + waitTime (0)
       });
     });
   });
@@ -266,7 +274,7 @@ describe("TaskSidebar", () => {
     const waitTimeSlider = screen.getByLabelText("待ち時間");
 
     // Check work time slider attributes
-    expect(workTimeSlider).toHaveAttribute("min", "0"); // 最小値0分
+    expect(workTimeSlider).toHaveAttribute("min", "15"); // 最小値15分
     expect(workTimeSlider).toHaveAttribute("max", "240"); // 最大値4時間
     expect(workTimeSlider).toHaveAttribute("step", "15"); // 15分刻み
 
@@ -281,7 +289,7 @@ describe("TaskSidebar", () => {
 
     // Check work time slider
     const workTimeSlider = screen.getByLabelText("作業時間");
-    expect(workTimeSlider).toHaveAttribute("min", "0");
+    expect(workTimeSlider).toHaveAttribute("min", "15");
     expect(workTimeSlider).toHaveAttribute("max", "240");
     expect(workTimeSlider).toHaveAttribute("step", "15");
 
@@ -306,7 +314,7 @@ describe("TaskSidebar", () => {
       duration: 30,
       workTime: 30,
       waitTime: 0,
-      isPlaced: false
+      isPlaced: false,
     };
 
     rerender(<TaskSidebarWrapper {...defaultProps} selectedTask={newTask} />);
@@ -316,11 +324,11 @@ describe("TaskSidebar", () => {
     // Check that work time slider value is 30
     const workTimeSlider = screen.getByLabelText("作業時間");
     expect(workTimeSlider).toHaveValue("30");
-    
+
     // Check that wait time slider value is 0
     const waitTimeSlider = screen.getByLabelText("待ち時間");
     expect(waitTimeSlider).toHaveValue("0");
-    
+
     // Check total time display
     expect(screen.getByText("= 30分")).toBeInTheDocument();
   });
