@@ -1,3 +1,13 @@
+/* TaskCard用カラー変数 */
+:root {
+  --taskcard-blue: #2196f3;
+  --taskcard-default: #f5f5f5;
+  --taskcard-selected: #e8f4fd;
+}
+
+.task-card--selected {
+  --taskcard-default: var(--taskcard-selected);
+}
 .task-card {
   padding: 4px 12px;
   border-radius: 6px;

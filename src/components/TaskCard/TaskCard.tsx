@@ -75,9 +75,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
     const workPercentage = (workTime / totalTime) * 100;
 
-    // 作業時間の部分は青色、待ち時間の部分は元の背景色
-    const blueColor = "#2196F3"; // 枠線と同じ青色
-    const defaultColor = isSelected ? "#e8f4fd" : "#f5f5f5";
+    // 作業時間の部分は青色、待ち時間の部分は元の背景色（CSS変数で管理）
+    const blueColor = "var(--taskcard-blue)";
+    const defaultColor = isSelected
+      ? "var(--taskcard-selected)"
+      : "var(--taskcard-default)";
 
     // 配置済みタスク（タイムライン）は縦分割、ステージングエリアは横分割
     const gradientDirection = task.isPlaced ? "to bottom" : "to right";
