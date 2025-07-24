@@ -62,17 +62,54 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     return slotsNeeded * baseSlotHeight;
   };
 
+  /** 背景グラデーションを計算（作業時間・待ち時間に基づく） */
+  const calculateBackgroundStyle = (): React.CSSProperties => {
+    // ステージングエリアのタスクのみに適用
+    if (task.isPlaced) {
+      return {};
+    }
+
+    const workTime = task.workTime || 0;
+    const waitTime = task.waitTime || 0;
+    const totalTime = workTime + waitTime;
+
+    // 合計時間が0の場合は、デフォルトの背景を使用
+    if (totalTime === 0) {
+      return {};
+    }
+
+    const workPercentage = (workTime / totalTime) * 100;
+    
+    // 作業時間の部分は青色、待ち時間の部分は元の背景色
+    const blueColor = '#2196F3'; // 枠線と同じ青色
+    const defaultColor = isSelected ? '#e8f4fd' : '#f5f5f5';
+    
+    return {
+      background: `linear-gradient(to right, ${blueColor} 0%, ${blueColor} ${workPercentage}%, ${defaultColor} ${workPercentage}%, ${defaultColor} 100%)`,
+      backgroundColor: 'transparent' // CSS の background-color を無効化
+    };
+  };
+
+  /** 作業時間・待ち時間の分割背景が適用されるかチェック */
+  const hasSplitBackground = (): boolean => {
+    if (task.isPlaced) return false;
+    const workTime = task.workTime || 0;
+    const waitTime = task.waitTime || 0;
+    return (workTime + waitTime) > 0;
+  };
+
   const taskHeight = task.isPlaced ? calculateHeight(task.duration) : 60; // デフォルトの高さは60px
 
   return (
     <div
-      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''} ${isOverlapping ? 'task-card--overlapping' : ''} ${task.isLocked ? 'task-card--locked' : ''}`}
+      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''} ${isOverlapping ? 'task-card--overlapping' : ''} ${task.isLocked ? 'task-card--locked' : ''} ${hasSplitBackground() ? 'task-card--split-background' : ''}`}
       onClick={onClick}
       draggable={!task.isLocked}
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
       style={{
         ...style,
+        ...calculateBackgroundStyle(),
         width: task.isPlaced ? '120px' : '200px',
         height: `${taskHeight}px`,
         minHeight: `${taskHeight}px`
