@@ -64,11 +64,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   /** 背景グラデーションを計算（作業時間・待ち時間に基づく） */
   const calculateBackgroundStyle = (): React.CSSProperties => {
-    // ステージングエリアのタスクのみに適用
-    if (task.isPlaced) {
-      return {};
-    }
-
     const workTime = task.workTime || 0;
     const waitTime = task.waitTime || 0;
     const totalTime = workTime + waitTime;
@@ -84,15 +79,17 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     const blueColor = '#2196F3'; // 枠線と同じ青色
     const defaultColor = isSelected ? '#e8f4fd' : '#f5f5f5';
     
+    // 配置済みタスク（タイムライン）は縦分割、ステージングエリアは横分割
+    const gradientDirection = task.isPlaced ? 'to bottom' : 'to right';
+    
     return {
-      background: `linear-gradient(to right, ${blueColor} 0%, ${blueColor} ${workPercentage}%, ${defaultColor} ${workPercentage}%, ${defaultColor} 100%)`,
+      background: `linear-gradient(${gradientDirection}, ${blueColor} 0%, ${blueColor} ${workPercentage}%, ${defaultColor} ${workPercentage}%, ${defaultColor} 100%)`,
       backgroundColor: 'transparent' // CSS の background-color を無効化
     };
   };
 
   /** 作業時間・待ち時間の分割背景が適用されるかチェック */
   const hasSplitBackground = (): boolean => {
-    if (task.isPlaced) return false;
     const workTime = task.workTime || 0;
     const waitTime = task.waitTime || 0;
     return (workTime + waitTime) > 0;

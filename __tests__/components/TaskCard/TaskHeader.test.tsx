@@ -18,30 +18,16 @@ describe("TaskHeader", () => {
     expect(screen.getByText("テストタスク")).toBeInTheDocument();
   });
 
-  it("60分以上の場合は時間と分で所要時間を表示する", () => {
+  it("所要時間は表示されない", () => {
     render(<TaskHeader task={mockTask} />);
 
-    expect(screen.getByText("1h 0m")).toBeInTheDocument();
+    expect(screen.queryByText("1h 0m")).not.toBeInTheDocument();
   });
 
-  it("60分未満の場合は分単位で所要時間を表示する", () => {
+  it("45分のタスクでも所要時間は表示されない", () => {
     const shortTask = { ...mockTask, duration: 45 };
     render(<TaskHeader task={shortTask} />);
 
-    expect(screen.getByText("45m")).toBeInTheDocument();
-  });
-
-  it("90分の場合は正しく表示する", () => {
-    const longTask = { ...mockTask, duration: 90 };
-    render(<TaskHeader task={longTask} />);
-
-    expect(screen.getByText("1h 30m")).toBeInTheDocument();
-  });
-
-  it("120分の場合は正しく表示する", () => {
-    const longTask = { ...mockTask, duration: 120 };
-    render(<TaskHeader task={longTask} />);
-
-    expect(screen.getByText("2h 0m")).toBeInTheDocument();
+    expect(screen.queryByText("45m")).not.toBeInTheDocument();
   });
 });
