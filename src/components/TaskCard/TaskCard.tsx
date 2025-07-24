@@ -1,8 +1,8 @@
-import React from 'react';
-import type { Task } from '../../types';
-import { TaskHeader } from './TaskHeader';
-import { TaskFooter } from './TaskFooter';
-import './TaskCard.css';
+import React from "react";
+import type { Task } from "../../types";
+import { TaskHeader } from "./TaskHeader";
+import { TaskFooter } from "./TaskFooter";
+import "./TaskCard.css";
 
 /**
  * TaskCardコンポーネントのプロパティ
@@ -39,7 +39,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onLockToggle,
   style,
   isSelected = false,
-  isOverlapping = false
+  isOverlapping = false,
 }) => {
   /** ドラッグ開始時の処理 */
   const handleDragStart = (e: React.DragEvent) => {
@@ -48,8 +48,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       e.preventDefault();
       return;
     }
-    
-    e.dataTransfer.setData('text/plain', task.id);
+
+    e.dataTransfer.setData("text/plain", task.id);
     if (onDragStart) {
       onDragStart(e);
     }
@@ -74,17 +74,17 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     }
 
     const workPercentage = (workTime / totalTime) * 100;
-    
+
     // 作業時間の部分は青色、待ち時間の部分は元の背景色
-    const blueColor = '#2196F3'; // 枠線と同じ青色
-    const defaultColor = isSelected ? '#e8f4fd' : '#f5f5f5';
-    
+    const blueColor = "#2196F3"; // 枠線と同じ青色
+    const defaultColor = isSelected ? "#e8f4fd" : "#f5f5f5";
+
     // 配置済みタスク（タイムライン）は縦分割、ステージングエリアは横分割
-    const gradientDirection = task.isPlaced ? 'to bottom' : 'to right';
-    
+    const gradientDirection = task.isPlaced ? "to bottom" : "to right";
+
     return {
       background: `linear-gradient(${gradientDirection}, ${blueColor} 0%, ${blueColor} ${workPercentage}%, ${defaultColor} ${workPercentage}%, ${defaultColor} 100%)`,
-      backgroundColor: 'transparent' // CSS の background-color を無効化
+      backgroundColor: "transparent", // CSS の background-color を無効化
     };
   };
 
@@ -92,14 +92,20 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const hasSplitBackground = (): boolean => {
     const workTime = task.workTime || 0;
     const waitTime = task.waitTime || 0;
-    return (workTime + waitTime) > 0;
+    return workTime + waitTime > 0;
   };
 
   const taskHeight = task.isPlaced ? calculateHeight(task.duration) : 60; // デフォルトの高さは60px
 
   return (
     <div
-      className={`task-card ${task.isPlaced ? 'task-card--placed' : 'task-card--staging'} ${isSelected ? 'task-card--selected' : ''} ${isOverlapping ? 'task-card--overlapping' : ''} ${task.isLocked ? 'task-card--locked' : ''} ${hasSplitBackground() ? 'task-card--split-background' : ''}`}
+      className={`task-card ${
+        task.isPlaced ? "task-card--placed" : "task-card--staging"
+      } ${isSelected ? "task-card--selected" : ""} ${
+        isOverlapping ? "task-card--overlapping" : ""
+      } ${task.isLocked ? "task-card--locked" : ""} ${
+        hasSplitBackground() ? "task-card--split-background" : ""
+      }`}
       onClick={onClick}
       draggable={!task.isLocked}
       onDragStart={handleDragStart}
@@ -107,12 +113,25 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       style={{
         ...style,
         ...calculateBackgroundStyle(),
-        width: task.isPlaced ? '120px' : '200px',
+        width: task.isPlaced ? "120px" : "200px",
         height: `${taskHeight}px`,
-        minHeight: `${taskHeight}px`
+        minHeight: `${taskHeight}px`,
       }}
     >
       <TaskHeader task={task} />
+      {/* タスク一覧上（isPlacedがfalse）の場合のみ時間表示 */}
+      {!task.isPlaced && (
+        <div className="task-card__time">
+          {task.workTime !== undefined && task.waitTime !== undefined ? (
+            <>
+              <span>作業: {task.workTime}分</span> /{" "}
+              <span>待ち: {task.waitTime}分</span>
+            </>
+          ) : (
+            <span>合計: {task.duration}分</span>
+          )}
+        </div>
+      )}
       <TaskFooter task={task} onLockToggle={onLockToggle} />
     </div>
   );
