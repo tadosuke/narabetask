@@ -22,7 +22,7 @@ describe("TaskCard - Split Background", () => {
     
     // インラインスタイルでgradient背景が設定されているかチェック（ステージングエリアは横分割）
     expect(taskCard).toHaveStyle({
-      background: "linear-gradient(to right, #2196F3 0%, #2196F3 50%, #f5f5f5 50%, #f5f5f5 100%)"
+      background: "linear-gradient(to right, var(--taskcard-blue) 0%, var(--taskcard-blue) 50%, var(--taskcard-default) 50%, var(--taskcard-default) 100%)"
     });
   });
 
@@ -43,7 +43,7 @@ describe("TaskCard - Split Background", () => {
     
     // 100%青色の背景が設定されているかチェック（ステージングエリアは横分割）
     expect(taskCard).toHaveStyle({
-      background: "linear-gradient(to right, #2196F3 0%, #2196F3 100%, #f5f5f5 100%, #f5f5f5 100%)"
+      background: "linear-gradient(to right, var(--taskcard-blue) 0%, var(--taskcard-blue) 100%, var(--taskcard-default) 100%, var(--taskcard-default) 100%)"
     });
   });
 
@@ -64,7 +64,7 @@ describe("TaskCard - Split Background", () => {
     
     // 100%通常背景色が設定されているかチェック（ステージングエリアは横分割）
     expect(taskCard).toHaveStyle({
-      background: "linear-gradient(to right, #2196F3 0%, #2196F3 0%, #f5f5f5 0%, #f5f5f5 100%)"
+      background: "linear-gradient(to right, var(--taskcard-blue) 0%, var(--taskcard-blue) 0%, var(--taskcard-default) 0%, var(--taskcard-default) 100%)"
     });
   });
 
@@ -100,7 +100,7 @@ describe("TaskCard - Split Background", () => {
     
     // 配置済みタスクは縦分割（to bottom）
     expect(taskCard).toHaveStyle({
-      background: "linear-gradient(to bottom, #2196F3 0%, #2196F3 66.66666666666666%, #f5f5f5 66.66666666666666%, #f5f5f5 100%)"
+      background: "linear-gradient(to bottom, var(--taskcard-blue) 0%, var(--taskcard-blue) 66.66666666666666%, var(--taskcard-default) 66.66666666666666%, var(--taskcard-default) 100%)"
     });
   });
 
@@ -122,7 +122,7 @@ describe("TaskCard - Split Background", () => {
     
     // 選択済み背景色 (#e8f4fd) で分割背景が設定されているかチェック（ステージングエリアは横分割）
     expect(taskCard).toHaveStyle({
-      background: "linear-gradient(to right, #2196F3 0%, #2196F3 75%, #e8f4fd 75%, #e8f4fd 100%)"
+      background: "linear-gradient(to right, var(--taskcard-blue) 0%, var(--taskcard-blue) 75%, var(--taskcard-selected) 75%, var(--taskcard-selected) 100%)"
     });
   });
 
@@ -144,7 +144,7 @@ describe("TaskCard - Split Background", () => {
     
     // 100%青色の縦分割背景が設定されているかチェック
     expect(taskCard).toHaveStyle({
-      background: "linear-gradient(to bottom, #2196F3 0%, #2196F3 100%, #f5f5f5 100%, #f5f5f5 100%)"
+      background: "linear-gradient(to bottom, var(--taskcard-blue) 0%, var(--taskcard-blue) 100%, var(--taskcard-default) 100%, var(--taskcard-default) 100%)"
     });
   });
 });
