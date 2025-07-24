@@ -20,9 +20,9 @@ describe("TaskCard - Split Background", () => {
     const taskCard = screen.getByText("分割テストタスク").closest(".task-card");
     expect(taskCard).toHaveClass("task-card--split-background");
     
-    // インラインスタイルでgradient背景が設定されているかチェック
+    // インラインスタイルでgradient背景が設定されているかチェック（ステージングエリアは横分割）
     expect(taskCard).toHaveStyle({
-      background: "linear-gradient(to bottom, #2196F3 0%, #2196F3 50%, #f5f5f5 50%, #f5f5f5 100%)"
+      background: "linear-gradient(to right, #2196F3 0%, #2196F3 50%, #f5f5f5 50%, #f5f5f5 100%)"
     });
   });
 
@@ -41,9 +41,9 @@ describe("TaskCard - Split Background", () => {
     const taskCard = screen.getByText("作業のみタスク").closest(".task-card");
     expect(taskCard).toHaveClass("task-card--split-background");
     
-    // 100%青色の背景が設定されているかチェック
+    // 100%青色の背景が設定されているかチェック（ステージングエリアは横分割）
     expect(taskCard).toHaveStyle({
-      background: "linear-gradient(to bottom, #2196F3 0%, #2196F3 100%, #f5f5f5 100%, #f5f5f5 100%)"
+      background: "linear-gradient(to right, #2196F3 0%, #2196F3 100%, #f5f5f5 100%, #f5f5f5 100%)"
     });
   });
 
@@ -62,9 +62,9 @@ describe("TaskCard - Split Background", () => {
     const taskCard = screen.getByText("待ちのみタスク").closest(".task-card");
     expect(taskCard).toHaveClass("task-card--split-background");
     
-    // 100%通常背景色が設定されているかチェック
+    // 100%通常背景色が設定されているかチェック（ステージングエリアは横分割）
     expect(taskCard).toHaveStyle({
-      background: "linear-gradient(to bottom, #2196F3 0%, #2196F3 0%, #f5f5f5 0%, #f5f5f5 100%)"
+      background: "linear-gradient(to right, #2196F3 0%, #2196F3 0%, #f5f5f5 0%, #f5f5f5 100%)"
     });
   });
 
@@ -82,7 +82,7 @@ describe("TaskCard - Split Background", () => {
     expect(taskCard).not.toHaveClass("task-card--split-background");
   });
 
-  it("配置済みタスクの場合、分割背景は適用されない", () => {
+  it("配置済みタスクの場合、分割背景が適用される（縦分割）", () => {
     const placedTaskWithWorkAndWait: Task = {
       id: "5",
       name: "配置済みタスク",
@@ -96,7 +96,12 @@ describe("TaskCard - Split Background", () => {
     render(<TaskCard task={placedTaskWithWorkAndWait} />);
     
     const taskCard = screen.getByText("配置済みタスク").closest(".task-card");
-    expect(taskCard).not.toHaveClass("task-card--split-background");
+    expect(taskCard).toHaveClass("task-card--split-background");
+    
+    // 配置済みタスクは縦分割（to bottom）
+    expect(taskCard).toHaveStyle({
+      background: "linear-gradient(to bottom, #2196F3 0%, #2196F3 66.66666666666666%, #f5f5f5 66.66666666666666%, #f5f5f5 100%)"
+    });
   });
 
   it("選択済みタスクの場合、選択済み背景色で分割背景が適用される", () => {
@@ -115,9 +120,31 @@ describe("TaskCard - Split Background", () => {
     expect(taskCard).toHaveClass("task-card--split-background");
     expect(taskCard).toHaveClass("task-card--selected");
     
-    // 選択済み背景色 (#e8f4fd) で分割背景が設定されているかチェック
+    // 選択済み背景色 (#e8f4fd) で分割背景が設定されているかチェック（ステージングエリアは横分割）
     expect(taskCard).toHaveStyle({
-      background: "linear-gradient(to bottom, #2196F3 0%, #2196F3 75%, #e8f4fd 75%, #e8f4fd 100%)"
+      background: "linear-gradient(to right, #2196F3 0%, #2196F3 75%, #e8f4fd 75%, #e8f4fd 100%)"
+    });
+  });
+
+  it("配置済みタスクで作業時間のみの場合、100%青色の縦分割背景が適用される", () => {
+    const placedTaskWithWorkOnly: Task = {
+      id: "7",
+      name: "配置済み作業のみタスク",
+      duration: 45,
+      workTime: 45,
+      waitTime: 0,
+      isPlaced: true,
+      startTime: "10:00"
+    };
+
+    render(<TaskCard task={placedTaskWithWorkOnly} />);
+    
+    const taskCard = screen.getByText("配置済み作業のみタスク").closest(".task-card");
+    expect(taskCard).toHaveClass("task-card--split-background");
+    
+    // 100%青色の縦分割背景が設定されているかチェック
+    expect(taskCard).toHaveStyle({
+      background: "linear-gradient(to bottom, #2196F3 0%, #2196F3 100%, #f5f5f5 100%, #f5f5f5 100%)"
     });
   });
 });
