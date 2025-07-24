@@ -85,7 +85,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     const defaultColor = isSelected ? '#e8f4fd' : '#f5f5f5';
     
     return {
-      background: `linear-gradient(to right, ${blueColor} 0%, ${blueColor} ${workPercentage}%, ${defaultColor} ${workPercentage}%, ${defaultColor} 100%)`,
+      background: `linear-gradient(to bottom, ${blueColor} 0%, ${blueColor} ${workPercentage}%, ${defaultColor} ${workPercentage}%, ${defaultColor} 100%)`,
       backgroundColor: 'transparent' // CSS の background-color を無効化
     };
   };

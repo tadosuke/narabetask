@@ -16,7 +16,8 @@ describe("TaskCard", () => {
     render(<TaskCard task={mockTask} />);
 
     expect(screen.getByText("テストタスク")).toBeInTheDocument();
-    expect(screen.getByText("1h 0m")).toBeInTheDocument();
+    // 時間表示は削除されたので期待しない
+    expect(screen.queryByText("1h 0m")).not.toBeInTheDocument();
   });
 
 
