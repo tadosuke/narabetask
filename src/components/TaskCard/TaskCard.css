@@ -27,6 +27,20 @@
   border: 2px dashed rgba(0, 0, 0, 0.3);
 }
 
+/* Enhanced styling for staging area with split time display */
+.task-card--staging .task-card__header {
+  gap: 8px;
+}
+
+.task-card--staging .task-card__header-right {
+  flex-shrink: 0;
+}
+
+.task-card--staging .task-card__duration {
+  text-align: right;
+  min-width: fit-content;
+}
+
 .task-card--placed {
   border: 2px solid rgba(0, 0, 0, 0.5);
   min-width: 60px;

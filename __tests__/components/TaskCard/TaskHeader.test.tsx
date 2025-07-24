@@ -44,4 +44,72 @@ describe("TaskHeader", () => {
 
     expect(screen.getByText("2h 0m")).toBeInTheDocument();
   });
+
+  describe("ステージングエリアでの作業時間・待ち時間分割表示", () => {
+    it("ステージングエリアで作業時間と待ち時間が両方ある場合は分割表示する", () => {
+      const taskWithWorkWait: Task = {
+        ...mockTask,
+        duration: 60,
+        workTime: 45,
+        waitTime: 15,
+        isPlaced: false
+      };
+      render(<TaskHeader task={taskWithWorkWait} />);
+
+      expect(screen.getByText("45m + 15m")).toBeInTheDocument();
+    });
+
+    it("ステージングエリアで作業時間・待ち時間が時間単位の場合も正しく表示する", () => {
+      const taskWithLongTimes: Task = {
+        ...mockTask,
+        duration: 135,
+        workTime: 75,
+        waitTime: 60,
+        isPlaced: false
+      };
+      render(<TaskHeader task={taskWithLongTimes} />);
+
+      expect(screen.getByText("1h 15m + 1h 0m")).toBeInTheDocument();
+    });
+
+    it("配置済みタスクでは作業時間・待ち時間があっても分割表示しない", () => {
+      const placedTaskWithWorkWait: Task = {
+        ...mockTask,
+        duration: 60,
+        workTime: 45,
+        waitTime: 15,
+        isPlaced: true
+      };
+      render(<TaskHeader task={placedTaskWithWorkWait} />);
+
+      expect(screen.getByText("1h 0m")).toBeInTheDocument();
+      expect(screen.queryByText("45m + 15m")).not.toBeInTheDocument();
+    });
+
+    it("ステージングエリアで作業時間のみの場合は通常表示する", () => {
+      const taskWithWorkOnly: Task = {
+        ...mockTask,
+        duration: 45,
+        workTime: 45,
+        isPlaced: false
+      };
+      render(<TaskHeader task={taskWithWorkOnly} />);
+
+      expect(screen.getByText("45m")).toBeInTheDocument();
+      expect(screen.queryByText("45m +")).not.toBeInTheDocument();
+    });
+
+    it("ステージングエリアで待ち時間のみの場合は通常表示する", () => {
+      const taskWithWaitOnly: Task = {
+        ...mockTask,
+        duration: 30,
+        waitTime: 30,
+        isPlaced: false
+      };
+      render(<TaskHeader task={taskWithWaitOnly} />);
+
+      expect(screen.getByText("30m")).toBeInTheDocument();
+      expect(screen.queryByText("+ 30m")).not.toBeInTheDocument();
+    });
+  });
 });

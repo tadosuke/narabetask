@@ -24,3 +24,9 @@
   font-size: 10px;
   opacity: 0.9;
 }
+
+/* Styling for split time display in staging area */
+.task-card--staging .task-card__duration {
+  white-space: nowrap;
+  font-weight: 500;
+}
