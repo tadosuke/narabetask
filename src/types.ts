@@ -8,6 +8,10 @@ export interface Task {
   name: string;
   /** タスクの所要時間（分単位、15分刻み） */
   duration: number; // in minutes, 15-minute increments
+  /** 作業時間（分単位、15分刻み） */
+  workTime?: number; // in minutes, 15-minute increments
+  /** 待ち時間（分単位、15分刻み） */
+  waitTime?: number; // in minutes, 15-minute increments
   /** タイムラインに配置された際の開始時刻（HH:mm形式） */
   startTime?: string; // HH:mm format when placed on timeline
   /** タイムラインに配置されているかどうか */

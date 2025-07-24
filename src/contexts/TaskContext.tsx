@@ -193,6 +193,8 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       id: generateId(),
       name: "新しいタスク",
       duration: 30,
+      workTime: 30,
+      waitTime: 0,
       isPlaced: false,
     };
 
