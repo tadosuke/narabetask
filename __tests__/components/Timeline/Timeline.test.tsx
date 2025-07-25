@@ -17,8 +17,11 @@ vi.mock("../../../src/utils/timeUtils", () => ({
     "17:00",
   ]),
   canPlaceTask: vi.fn(() => true),
+  canPlaceTaskWithWorkTime: vi.fn(() => true),
   getTaskSlots: vi.fn(() => ["09:00", "09:15"]),
+  getWorkTimeSlots: vi.fn(() => ["09:00", "09:15"]),
   findOverlappingTasks: vi.fn(() => new Set()),
+  findOverlappingTasksWithWorkTime: vi.fn(() => new Set()),
   doTasksShareResources: vi.fn(() => false)
 }));
 

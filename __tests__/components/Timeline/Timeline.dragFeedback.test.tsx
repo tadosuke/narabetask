@@ -15,13 +15,16 @@ vi.mock("../../../src/utils/timeUtils", () => ({
     "13:00",
     "13:15",
   ]),
-  canPlaceTask: vi.fn(),
-  getTaskSlots: vi.fn(),
+  canPlaceTask: vi.fn(() => true),
+  canPlaceTaskWithWorkTime: vi.fn(() => true),
+  getTaskSlots: vi.fn(() => ["09:00", "09:15"]),
+  getWorkTimeSlots: vi.fn(() => ["09:00", "09:15"]),
   findOverlappingTasks: vi.fn(() => new Set()),
+  findOverlappingTasksWithWorkTime: vi.fn(() => new Set()),
   doTasksShareResources: vi.fn(() => false)
 }));
 
-import { canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
+import { canPlaceTaskWithWorkTime, getTaskSlots } from "../../../src/utils/timeUtils";
 
 describe("Timeline ドラッグコーディネーション", () => {
   const mockBusinessHours: BusinessHours = {
@@ -66,7 +69,7 @@ describe("Timeline ドラッグコーディネーション", () => {
   });
 
   it("ドラッグ状態をTimeSlotコンポーネントに正しく伝達する", () => {
-    vi.mocked(canPlaceTask).mockReturnValue(true);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(true);
     
     const { container } = render(<Timeline {...defaultProps} />);
 
@@ -112,7 +115,7 @@ describe("Timeline ドラッグコーディネーション", () => {
 
   it("配置済みタスクを移動する際は現在の占有状態を正しく管理する", () => {
     const mockOnTaskDrop = vi.fn();
-    vi.mocked(canPlaceTask).mockReturnValue(true);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(true);
     
     const propsWithPlacedTaskDrag = {
       ...defaultProps,

@@ -15,6 +15,7 @@ vi.mock("../../../src/utils/timeUtils", () => ({
     "10:15",
   ]),
   canPlaceTask: vi.fn(() => true),
+  canPlaceTaskWithWorkTime: vi.fn(() => true),
   getTaskSlots: vi.fn((startTime: string, duration: number) => {
     // 30分タスクの場合は2スロット、60分タスクの場合は4スロット
     const slots = [startTime];
@@ -23,7 +24,16 @@ vi.mock("../../../src/utils/timeUtils", () => ({
     if (duration >= 60) slots.push("09:45");
     return slots;
   }),
+  getWorkTimeSlots: vi.fn((startTime: string, duration: number) => {
+    // For simplicity, assume same as getTaskSlots in test
+    const slots = [startTime];
+    if (duration >= 30) slots.push("09:15");
+    if (duration >= 45) slots.push("09:30");
+    if (duration >= 60) slots.push("09:45");
+    return slots;
+  }),
   findOverlappingTasks: vi.fn(() => new Set()),
+  findOverlappingTasksWithWorkTime: vi.fn(() => new Set()),
   doTasksShareResources: vi.fn(() => false)
 }));
 

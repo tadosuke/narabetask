@@ -6,11 +6,13 @@ import type { Task } from "../../../src/types";
 
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({
-  canPlaceTask: vi.fn(),
-  getTaskSlots: vi.fn()
+  canPlaceTask: vi.fn(() => true),
+  canPlaceTaskWithWorkTime: vi.fn(() => true),
+  getTaskSlots: vi.fn(() => ["09:00", "09:15"]),
+  getWorkTimeSlots: vi.fn(() => ["09:00", "09:15"])
 }));
 
-import { canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
+import { canPlaceTaskWithWorkTime, getTaskSlots } from "../../../src/utils/timeUtils";
 
 describe("TimeSlot ドラッグフィードバック", () => {
   const mockTasks: Task[] = [
@@ -63,7 +65,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
   });
 
   it("有効なスロット上でドラッグしているときにドラッグオーバークラスを適用する", () => {
-    vi.mocked(canPlaceTask).mockReturnValue(true);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(true);
     
     const propsWithDragOver = {
       ...defaultProps,
@@ -78,7 +80,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
   });
 
   it("無効なスロット上でドラッグしているときにドラッグ無効クラスを適用する", () => {
-    vi.mocked(canPlaceTask).mockReturnValue(false);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(false);
     
     const propsWithDragOver = {
       ...defaultProps,
@@ -126,7 +128,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
   });
 
   it("タスクがドラッグされていない場合はドラッグフィードバックを表示しない", () => {
-    vi.mocked(canPlaceTask).mockReturnValue(true);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(true);
     
     const propsWithoutDrag = {
       ...defaultProps,
@@ -143,7 +145,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
   });
 
   it("ドラッグオーバー対象でない場合はドラッグフィードバックを表示しない", () => {
-    vi.mocked(canPlaceTask).mockReturnValue(true);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(true);
     
     const propsNotDraggedOver = {
       ...defaultProps,
@@ -168,7 +170,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
       startTime: "09:00"
     };
 
-    vi.mocked(canPlaceTask).mockReturnValue(true);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(true);
     vi.mocked(getTaskSlots).mockReturnValue(["09:00", "09:15"]);
 
     const propsWithPlacedTask = {
@@ -183,7 +185,7 @@ describe("TimeSlot ドラッグフィードバック", () => {
     const timeSlot = container.querySelector('.timeline__slot');
     expect(timeSlot).toHaveClass("timeline__slot--drag-over");
     
-    // canPlaceTaskが正しく呼ばれることを確認
-    expect(canPlaceTask).toHaveBeenCalled();
+    // canPlaceTaskWithWorkTimeが正しく呼ばれることを確認
+    expect(canPlaceTaskWithWorkTime).toHaveBeenCalled();
   });
 });

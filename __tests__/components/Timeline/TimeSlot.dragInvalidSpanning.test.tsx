@@ -6,11 +6,13 @@ import type { Task } from "../../../src/types";
 
 // timeUtilsモジュールをモック
 vi.mock("../../../src/utils/timeUtils", () => ({
-  canPlaceTask: vi.fn(),
-  getTaskSlots: vi.fn()
+  canPlaceTask: vi.fn(() => true),
+  canPlaceTaskWithWorkTime: vi.fn(() => true),
+  getTaskSlots: vi.fn(() => ["09:00", "09:15"]),
+  getWorkTimeSlots: vi.fn(() => ["09:00", "09:15"])
 }));
 
-import { canPlaceTask, getTaskSlots } from "../../../src/utils/timeUtils";
+import { canPlaceTaskWithWorkTime, getTaskSlots } from "../../../src/utils/timeUtils";
 
 describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
   const mockTasks: Task[] = [
@@ -52,7 +54,7 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
   });
 
   it("無効ドラッグ時にspanningクラスとinvalidクラス両方が適用される", () => {
-    vi.mocked(canPlaceTask).mockReturnValue(false);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(false);
     
     const { container } = render(<TimeSlot {...defaultProps} />);
 
@@ -63,7 +65,7 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
   });
 
   it("有効ドラッグ時にはspanningクラスのみが適用される", () => {
-    vi.mocked(canPlaceTask).mockReturnValue(true);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(true);
     
     const { container } = render(<TimeSlot {...defaultProps} />);
 
@@ -74,7 +76,7 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
   });
 
   it("単一スロットタスクで無効ドラッグ時に適切なクラスが適用される", () => {
-    vi.mocked(canPlaceTask).mockReturnValue(false);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(false);
     vi.mocked(getTaskSlots).mockReturnValue(["09:30"]); // 単一スロット
     
     const { container } = render(<TimeSlot {...defaultProps} />);
@@ -86,7 +88,7 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
   });
 
   it("最後のスロットで無効ドラッグ時に適切なクラスが適用される", () => {
-    vi.mocked(canPlaceTask).mockReturnValue(false);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(false);
     vi.mocked(getTaskSlots).mockReturnValue(["09:45", "10:00"]);
     
     // 最後のスロット(10:00)の場合
@@ -106,7 +108,7 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
   });
 
   it("spanning対象でtarget slot以外にもinvalidクラスが付く", () => {
-    vi.mocked(canPlaceTask).mockReturnValue(false);
+    vi.mocked(canPlaceTaskWithWorkTime).mockReturnValue(false);
     vi.mocked(getTaskSlots).mockReturnValue(["09:30", "09:45"]);
     
     // 09:30がtargetで、09:45は spanning の一部
