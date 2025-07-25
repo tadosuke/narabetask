@@ -118,14 +118,23 @@ export const Timeline: React.FC<TimelineProps> = ({
 
   /** 指定した時刻のタイムスロットをレンダリング */
   const renderTimeSlot = (time: string) => {
-    const task = placedTasks.find(t => t.startTime === time);
+    // 同じ開始時間のタスクをすべて取得し、開始時間順でソート
+    const tasksAtTime = placedTasks
+      .filter(t => t.startTime === time)
+      .sort((a, b) => {
+        if (a.startTime && b.startTime) {
+          return a.startTime.localeCompare(b.startTime);
+        }
+        return 0;
+      });
+    
     const isOccupied = occupiedSlots.has(time);
 
     return (
       <TimeSlot
         key={time}
         time={time}
-        task={task}
+        slotTasks={tasksAtTime}
         isOccupied={isOccupied}
         dragOverSlot={dragOverSlot}
         draggedTaskId={draggedTaskId}

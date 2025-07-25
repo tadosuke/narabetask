@@ -10,7 +10,7 @@ import './TimeSlot.css';
 interface TimeSlotProps {
   /** 時刻 */
   time: string;
-  /** このスロットに配置されたタスク */
+  /** このスロットに配置されたタスク (後方互換性のため) */
   task?: Task;
   /** 占有されているかどうか */
   isOccupied: boolean;
@@ -18,8 +18,10 @@ interface TimeSlotProps {
   dragOverSlot: string | null;
   /** 現在ドラッグ中のタスクのID */
   draggedTaskId?: string | null;
-  /** 全タスクの配列 */
-  tasks: Task[];
+  /** 全タスクの配列 (後方互換性のため) */
+  tasks?: Task[];
+  /** このスロットに配置されたタスクの配列 (新しいAPI) */
+  slotTasks?: Task[];
   /** 利用可能なタイムスロットの配列 */
   timeSlots: string[];
   /** 占有されているタイムスロットのセット */
@@ -52,11 +54,12 @@ interface TimeSlotProps {
  */
 export const TimeSlot: React.FC<TimeSlotProps> = ({
   time,
-  task,
+  task: singleTask,
   isOccupied,
   dragOverSlot,
   draggedTaskId,
-  tasks,
+  tasks: globalTasks = [],
+  slotTasks,
   timeSlots,
   occupiedSlots,
   selectedTask,
@@ -70,12 +73,14 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   onDragEnd,
   onLockToggle
 }) => {
+  // Handle backward compatibility: use slotTasks if provided, otherwise create array from single task
+  const tasksInSlot = slotTasks || (singleTask ? [singleTask] : []);
   // ドラッグ中の視覚的フィードバック用のクラス決定
   const isDragOver = dragOverSlot === time;
   let dragFeedbackClass = '';
   
   if (isDragOver && draggedTaskId) {
-    const draggedTask = tasks.find(t => t.id === draggedTaskId);
+    const draggedTask = globalTasks.find(t => t.id === draggedTaskId);
     if (draggedTask) {
       // For placed tasks being moved, exclude their current work time slots from collision detection
       const occupiedSlotsForCheck = new Set(occupiedSlots);
@@ -94,7 +99,7 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   let isInvalidDrag = false;
   
   if (dragOverSlot && draggedTaskId) {
-    const draggedTask = tasks.find(t => t.id === draggedTaskId);
+    const draggedTask = globalTasks.find(t => t.id === draggedTaskId);
     if (draggedTask) {
       // Check if this slot is part of the dragged task's span
       const draggedTaskSlots = getTaskSlots(dragOverSlot, draggedTask.duration);
@@ -141,23 +146,29 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
       data-time={time}
     >
       <div className="timeline__time-label">{time}</div>
-      {task && (
-        <TaskCard
-          task={task}
-          isSelected={selectedTask?.id === task.id}
-          isOverlapping={overlappingTaskIds.has(task.id)}
-          onClick={() => onTaskClick(task)}
-          onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
-          onDragEnd={onDragEnd}
-          onLockToggle={onLockToggle}
-          style={{
-            position: 'absolute',
-            left: '60px',
-            right: '8px',
-            top: '2px',
-            zIndex: 2
-          }}
-        />
+      {tasksInSlot.length > 0 && (
+        <div className="timeline__tasks-container">
+          {tasksInSlot.map((task, index) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              isSelected={selectedTask?.id === task.id}
+              isOverlapping={overlappingTaskIds.has(task.id)}
+              onClick={() => onTaskClick(task)}
+              onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
+              onDragEnd={onDragEnd}
+              onLockToggle={onLockToggle}
+              style={{
+                position: 'absolute',
+                left: `${60 + index * 150}px`, // Start at 60px and offset each task by 150px
+                right: index === tasksInSlot.length - 1 ? '8px' : 'auto', // Only apply right margin to the last task
+                width: index === tasksInSlot.length - 1 ? 'auto' : '142px', // Fixed width except for the last task
+                top: '2px',
+                zIndex: 2
+              }}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

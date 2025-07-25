@@ -36,6 +36,13 @@
   z-index: 1;
 }
 
+.timeline__tasks-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 40px;
+}
+
 /* Drag and drop feedback */
 .timeline__slot--drag-over {
   /* Green visual feedback removed as per issue requirements */
