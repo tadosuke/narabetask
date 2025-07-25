@@ -1,3 +1,13 @@
+/* TaskCard用カラー変数 */
+:root {
+  --taskcard-blue: #2196f3;
+  --taskcard-default: #f5f5f5;
+  --taskcard-selected: #e8f4fd;
+}
+
+.task-card--selected {
+  --taskcard-default: var(--taskcard-selected);
+}
 .task-card {
   padding: 4px 12px;
   border-radius: 6px;
@@ -33,10 +43,6 @@
   margin-top: -1px;
 }
 
-
-
-
-
 /* Drag and drop states */
 .task-card:active {
   cursor: grabbing;
@@ -49,7 +55,7 @@
 /* Selected state - brighter appearance */
 .task-card--selected {
   background-color: #e8f4fd;
-  border-color: #2196F3;
+  border-color: #2196f3;
   box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
 }
 
@@ -91,4 +97,12 @@
 /* Split background for work/wait time visualization */
 .task-card--split-background {
   background-color: transparent !important;
+}
+
+/* 時間表示用 */
+.task-card__time {
+  font-size: 11px;
+  color: #555;
+  margin: 2px 0 4px 0;
+  text-align: left;
 }
