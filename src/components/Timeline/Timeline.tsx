@@ -195,11 +195,9 @@ export const Timeline: React.FC<TimelineProps> = ({
           業務時間: {businessHours.start} - {businessHours.end}
         </div>
       </div>
-      <div className="timeline__content">
+      <div className="timeline__grid">
         {renderHorizontalTasks()}
-        <div className="timeline__grid">
-          {timeSlots.map(renderTimeSlot)}
-        </div>
+        {timeSlots.map(renderTimeSlot)}
       </div>
     </div>
   );

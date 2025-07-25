@@ -24,22 +24,19 @@
   font-weight: 500;
 }
 
-.timeline__content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
 .timeline__horizontal-tasks {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 100px;
-  margin-bottom: 20px;
   background: white;
   border-radius: 4px;
   border: 1px solid #ddd;
   overflow-x: auto;
   padding: 10px;
+  z-index: 10;
+  margin-bottom: 20px;
 }
 
 .timeline__horizontal-task {
@@ -49,6 +46,7 @@
 }
 
 .timeline__grid {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 1px;
@@ -57,6 +55,7 @@
   overflow: hidden;
   flex: 1;
   overflow-y: auto;
+  padding-top: 120px; /* Space for horizontal tasks */
 }
 
 /* Responsive design */
