@@ -69,29 +69,15 @@ function calculateTaskStyle(task: Task, overlapLayout: Map<string, TaskOverlapIn
     };
   }
   
-  // 重複あり：各タスクを間隔なしで隣接配置
+  // 重複あり：タスクを左詰めで隙間なく配置
   const baseLeft = 60; // 元の左端位置
-  const baseRight = 8; // 元の右端マージン
-  const availableWidth = `(100% - ${baseLeft}px - ${baseRight}px)`;
-  
-  // 最後のカラム以外は、次のカラムの開始位置まで拡張して間隔をなくす
-  const isLastColumn = overlapInfo.columnIndex === overlapInfo.totalColumns - 1;
-  const leftOffset = `calc(${baseLeft}px + ${availableWidth} * ${overlapInfo.columnIndex} / ${overlapInfo.totalColumns})`;
-  
-  let rightPosition: string;
-  if (isLastColumn) {
-    // 最後のカラムは右端まで拡張
-    rightPosition = `${baseRight}px`;
-  } else {
-    // 最後でないカラムは次のカラムの開始位置まで拡張（間隔をなくす）
-    const nextColumnStart = `calc(${baseLeft}px + ${availableWidth} * ${overlapInfo.columnIndex + 1} / ${overlapInfo.totalColumns})`;
-    rightPosition = `calc(100% - (${nextColumnStart}))`;
-  }
+  const taskWidth = 120; // 各タスクの固定幅
+  const leftPosition = baseLeft + (overlapInfo.columnIndex * taskWidth);
   
   return {
     position: 'absolute',
-    left: leftOffset,
-    right: rightPosition,
+    left: `${leftPosition}px`,
+    width: `${taskWidth}px`,
     top: '2px',
     zIndex: 2 + overlapInfo.columnIndex // 後のタスクが上に表示される
   };
