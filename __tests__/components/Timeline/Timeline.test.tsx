@@ -22,7 +22,8 @@ vi.mock("../../../src/utils/timeUtils", () => ({
   getWorkTimeSlots: vi.fn(() => ["09:00", "09:15"]),
   findOverlappingTasks: vi.fn(() => new Set()),
   findOverlappingTasksWithWorkTime: vi.fn(() => new Set()),
-  doTasksShareResources: vi.fn(() => false)
+  doTasksShareResources: vi.fn(() => false),
+  calculateTaskOverlapLayout: vi.fn(() => new Map())
 }));
 
 describe("Timeline", () => {

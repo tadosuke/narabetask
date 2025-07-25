@@ -34,7 +34,8 @@ vi.mock("../../../src/utils/timeUtils", () => ({
   }),
   findOverlappingTasks: vi.fn(() => new Set()),
   findOverlappingTasksWithWorkTime: vi.fn(() => new Set()),
-  doTasksShareResources: vi.fn(() => false)
+  doTasksShareResources: vi.fn(() => false),
+  calculateTaskOverlapLayout: vi.fn(() => new Map())
 }));
 
 describe('Timeline スパニングコーディネーション', () => {
