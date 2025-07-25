@@ -24,6 +24,23 @@
   font-weight: 500;
 }
 
+.timeline__tasks-row {
+  position: relative;
+  height: 100px;
+  margin-bottom: 20px;
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  overflow-x: auto;
+  padding: 10px;
+}
+
+.timeline__task-container {
+  position: absolute;
+  top: 0;
+  transition: left 0.3s ease;
+}
+
 .timeline__grid {
   display: flex;
   flex-direction: column;
@@ -40,5 +57,10 @@
   .timeline {
     padding: 10px;
     margin: 0 5px;
+  }
+  
+  .timeline__tasks-row {
+    height: 80px;
+    padding: 5px;
   }
 }

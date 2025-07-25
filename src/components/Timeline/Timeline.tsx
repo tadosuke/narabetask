@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { Task, BusinessHours } from '../../types';
 import { generateTimeSlots, canPlaceTaskWithWorkTime, getWorkTimeSlots, findOverlappingTasksWithWorkTime } from '../../utils/timeUtils';
 import { TimeSlot } from './TimeSlot';
+import { TaskCard } from '../TaskCard';
 import './Timeline.css';
 
 /**
@@ -118,14 +119,13 @@ export const Timeline: React.FC<TimelineProps> = ({
 
   /** 指定した時刻のタイムスロットをレンダリング */
   const renderTimeSlot = (time: string) => {
-    const task = placedTasks.find(t => t.startTime === time);
     const isOccupied = occupiedSlots.has(time);
 
     return (
       <TimeSlot
         key={time}
         time={time}
-        task={task}
+        task={undefined} // タスクは横並び表示で表示するため、個別スロットには表示しない
         isOccupied={isOccupied}
         dragOverSlot={dragOverSlot}
         draggedTaskId={draggedTaskId}
@@ -146,6 +146,46 @@ export const Timeline: React.FC<TimelineProps> = ({
     );
   };
 
+  /** 配置済みタスクを開始時間順にソートして横並びで表示 */
+  const renderHorizontalTasks = () => {
+    if (placedTasks.length === 0) return null;
+
+    // 開始時間順にソート
+    const sortedTasks = [...placedTasks].sort((a, b) => {
+      if (!a.startTime || !b.startTime) return 0;
+      return a.startTime.localeCompare(b.startTime);
+    });
+
+    return (
+      <div className="timeline__tasks-row">
+        {sortedTasks.map((task, index) => (
+          <div
+            key={task.id}
+            className="timeline__task-container"
+            style={{
+              left: `${index * 140}px`, // 140px間隔で配置（120px幅 + 20pxマージン）
+            }}
+          >
+            <TaskCard
+              task={task}
+              isSelected={selectedTask?.id === task.id}
+              isOverlapping={overlappingTaskIds.has(task.id)}
+              onClick={() => onTaskClick(task)}
+              onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
+              onDragEnd={onDragEnd}
+              onLockToggle={onLockToggle}
+              style={{
+                width: '120px',
+                height: '80px',
+                minHeight: '80px'
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="timeline">
       <div className="timeline__header">
@@ -154,6 +194,7 @@ export const Timeline: React.FC<TimelineProps> = ({
           業務時間: {businessHours.start} - {businessHours.end}
         </div>
       </div>
+      {renderHorizontalTasks()}
       <div className="timeline__grid">
         {timeSlots.map(renderTimeSlot)}
       </div>
