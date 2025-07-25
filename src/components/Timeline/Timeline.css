@@ -24,7 +24,14 @@
   font-weight: 500;
 }
 
-.timeline__tasks-row {
+.timeline__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.timeline__horizontal-tasks {
   position: relative;
   height: 100px;
   margin-bottom: 20px;
@@ -35,7 +42,7 @@
   padding: 10px;
 }
 
-.timeline__task-container {
+.timeline__horizontal-task {
   position: absolute;
   top: 0;
   transition: left 0.3s ease;
@@ -59,7 +66,7 @@
     margin: 0 5px;
   }
   
-  .timeline__tasks-row {
+  .timeline__horizontal-tasks {
     height: 80px;
     padding: 5px;
   }

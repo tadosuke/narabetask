@@ -119,13 +119,14 @@ export const Timeline: React.FC<TimelineProps> = ({
 
   /** 指定した時刻のタイムスロットをレンダリング */
   const renderTimeSlot = (time: string) => {
+    // 横並び表示では個別のタイムスロットにタスクは表示しない
     const isOccupied = occupiedSlots.has(time);
 
     return (
       <TimeSlot
         key={time}
         time={time}
-        task={undefined} // タスクは横並び表示で表示するため、個別スロットには表示しない
+        task={undefined}
         isOccupied={isOccupied}
         dragOverSlot={dragOverSlot}
         draggedTaskId={draggedTaskId}
@@ -157,11 +158,11 @@ export const Timeline: React.FC<TimelineProps> = ({
     });
 
     return (
-      <div className="timeline__tasks-row">
+      <div className="timeline__horizontal-tasks">
         {sortedTasks.map((task, index) => (
           <div
             key={task.id}
-            className="timeline__task-container"
+            className="timeline__horizontal-task"
             style={{
               left: `${index * 140}px`, // 140px間隔で配置（120px幅 + 20pxマージン）
             }}
@@ -194,9 +195,11 @@ export const Timeline: React.FC<TimelineProps> = ({
           業務時間: {businessHours.start} - {businessHours.end}
         </div>
       </div>
-      {renderHorizontalTasks()}
-      <div className="timeline__grid">
-        {timeSlots.map(renderTimeSlot)}
+      <div className="timeline__content">
+        {renderHorizontalTasks()}
+        <div className="timeline__grid">
+          {timeSlots.map(renderTimeSlot)}
+        </div>
       </div>
     </div>
   );

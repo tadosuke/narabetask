@@ -80,7 +80,7 @@ describe("Timeline - Horizontal Task Alignment", () => {
     expect(screen.getByText("タスク11:00")).toBeInTheDocument();
 
     // タスクが横並びで配置されている（同じ行に配置されている）
-    const tasksContainer = container.querySelector('.timeline__tasks-row');
+    const tasksContainer = container.querySelector('.timeline__horizontal-tasks');
     expect(tasksContainer).toBeInTheDocument();
   });
 
