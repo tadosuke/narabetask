@@ -40,11 +40,11 @@ describe("TimeSlot ドラッグフィードバック", () => {
 
   const defaultProps = {
     time: "09:30",
-    isLunchTime: false,
+    tasks: [],
     isOccupied: false,
     dragOverSlot: null,
     draggedTaskId: null,
-    tasks: mockTasks,
+    allTasks: mockTasks,
     timeSlots: mockTimeSlots,
     occupiedSlots: mockOccupiedSlots,
     selectedTask: null,

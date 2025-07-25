@@ -30,10 +30,11 @@ describe("TimeSlot 無効ドラッグ時のspanningスタイル", () => {
 
   const defaultProps = {
     time: "09:30",
+    tasks: [],
     isOccupied: false,
     dragOverSlot: "09:30",
     draggedTaskId: "1",
-    tasks: mockTasks,
+    allTasks: mockTasks,
     timeSlots: mockTimeSlots,
     occupiedSlots: mockOccupiedSlots,
     selectedTask: null,

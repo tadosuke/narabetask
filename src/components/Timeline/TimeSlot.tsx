@@ -10,8 +10,8 @@ import './TimeSlot.css';
 interface TimeSlotProps {
   /** 時刻 */
   time: string;
-  /** このスロットに配置されたタスク */
-  task?: Task;
+  /** このスロットに配置されたタスク一覧 */
+  tasks: Task[];
   /** 占有されているかどうか */
   isOccupied: boolean;
   /** ドラッグオーバー中のタイムスロット */
@@ -19,7 +19,7 @@ interface TimeSlotProps {
   /** 現在ドラッグ中のタスクのID */
   draggedTaskId?: string | null;
   /** 全タスクの配列 */
-  tasks: Task[];
+  allTasks: Task[];
   /** 利用可能なタイムスロットの配列 */
   timeSlots: string[];
   /** 占有されているタイムスロットのセット */
@@ -52,11 +52,11 @@ interface TimeSlotProps {
  */
 export const TimeSlot: React.FC<TimeSlotProps> = ({
   time,
-  task,
+  tasks,
   isOccupied,
   dragOverSlot,
   draggedTaskId,
-  tasks,
+  allTasks,
   timeSlots,
   occupiedSlots,
   selectedTask,
@@ -75,7 +75,7 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   let dragFeedbackClass = '';
   
   if (isDragOver && draggedTaskId) {
-    const draggedTask = tasks.find(t => t.id === draggedTaskId);
+    const draggedTask = allTasks?.find(t => t.id === draggedTaskId);
     if (draggedTask) {
       // For placed tasks being moved, exclude their current work time slots from collision detection
       const occupiedSlotsForCheck = new Set(occupiedSlots);
@@ -94,7 +94,7 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   let isInvalidDrag = false;
   
   if (dragOverSlot && draggedTaskId) {
-    const draggedTask = tasks.find(t => t.id === draggedTaskId);
+    const draggedTask = allTasks?.find(t => t.id === draggedTaskId);
     if (draggedTask) {
       // Check if this slot is part of the dragged task's span
       const draggedTaskSlots = getTaskSlots(dragOverSlot, draggedTask.duration);
@@ -141,23 +141,26 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
       data-time={time}
     >
       <div className="timeline__time-label">{time}</div>
-      {task && (
-        <TaskCard
-          task={task}
-          isSelected={selectedTask?.id === task.id}
-          isOverlapping={overlappingTaskIds.has(task.id)}
-          onClick={() => onTaskClick(task)}
-          onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
-          onDragEnd={onDragEnd}
-          onLockToggle={onLockToggle}
-          style={{
-            position: 'absolute',
-            left: '60px',
-            right: '8px',
-            top: '2px',
-            zIndex: 2
-          }}
-        />
+      {tasks.length > 0 && (
+        <div className="timeline__tasks-container">
+          {tasks.map((task, index) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              isSelected={selectedTask?.id === task.id}
+              isOverlapping={overlappingTaskIds.has(task.id)}
+              onClick={() => onTaskClick(task)}
+              onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
+              onDragEnd={onDragEnd}
+              onLockToggle={onLockToggle}
+              style={{
+                flex: `1 1 ${100 / tasks.length}%`,
+                marginRight: index < tasks.length - 1 ? '4px' : '0',
+                zIndex: 2
+              }}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

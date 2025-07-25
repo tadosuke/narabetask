@@ -35,10 +35,11 @@ describe("TimeSlot", () => {
 
   const defaultProps = {
     time: "09:00",
+    tasks: [],
     isOccupied: false,
     dragOverSlot: null,
     draggedTaskId: null,
-    tasks: mockTasks,
+    allTasks: mockTasks,
     timeSlots: mockTimeSlots,
     occupiedSlots: mockOccupiedSlots,
     selectedTask: null,
@@ -63,12 +64,12 @@ describe("TimeSlot", () => {
   });
 
   it("タスクが配置されている場合はタスクを表示する", () => {
-    const propsWithTask = {
+    const propsWithTasks = {
       ...defaultProps,
-      task: mockTasks[0]
+      tasks: [mockTasks[0]]
     };
     
-    render(<TimeSlot {...propsWithTask} />);
+    render(<TimeSlot {...propsWithTasks} />);
     
     expect(screen.getByText("テストタスク1")).toBeInTheDocument();
   });
@@ -125,7 +126,7 @@ describe("TimeSlot", () => {
     const mockOnTaskClick = vi.fn();
     const propsWithTask = {
       ...defaultProps,
-      task: mockTasks[0],
+      tasks: [mockTasks[0]],
       onTaskClick: mockOnTaskClick
     };
     

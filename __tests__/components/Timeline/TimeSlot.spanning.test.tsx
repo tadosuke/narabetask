@@ -42,11 +42,11 @@ describe('TimeSlot Drag Spanning', () => {
 
   const defaultProps = {
     time: "09:00",
-    isLunchTime: false,
+    tasks: [],
     isOccupied: false,
     dragOverSlot: "09:00",
     draggedTaskId: "1",
-    tasks: [mockTask],
+    allTasks: [mockTask],
     timeSlots: mockTimeSlots,
     occupiedSlots: mockOccupiedSlots,
     selectedTask: null,
@@ -107,7 +107,7 @@ describe('TimeSlot Drag Spanning', () => {
 
     const singleProps = {
       ...defaultProps,
-      tasks: [singleSlotTask],
+      allTasks: [singleSlotTask],
       draggedTaskId: "2"
     };
     
