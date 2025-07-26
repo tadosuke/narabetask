@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Task } from '../../types';
 import { canPlaceTaskWithWorkTime, getTaskSlots, getWorkTimeSlots } from '../../utils/timeUtils';
+import type { TaskOverlapInfo } from '../../utils/timeUtils';
 import { TaskCard } from '../TaskCard';
 import './TimeSlot.css';
 
@@ -28,6 +29,8 @@ interface TimeSlotProps {
   selectedTask: Task | null;
   /** 重複しているタスクのIDのセット */
   overlappingTaskIds: Set<string>;
+  /** 重複タスクのレイアウト情報 */
+  overlapLayout: Map<string, TaskOverlapInfo>;
   /** ドラッグオーバー時のハンドラ */
   onDragOver: (e: React.DragEvent, time: string) => void;
   /** ドラッグエンター時のハンドラ */
@@ -47,6 +50,40 @@ interface TimeSlotProps {
 }
 
 /**
+ * 重複レイアウト情報に基づいてタスクカードのスタイルを計算します
+ * @param {Task} task - タスク
+ * @param {Map<string, TaskOverlapInfo>} overlapLayout - 重複レイアウト情報
+ * @returns {React.CSSProperties} スタイルオブジェクト
+ */
+function calculateTaskStyle(task: Task, overlapLayout: Map<string, TaskOverlapInfo>): React.CSSProperties {
+  const overlapInfo = overlapLayout.get(task.id);
+  
+  if (!overlapInfo || overlapInfo.totalColumns === 1) {
+    // 重複なし：従来の位置
+    return {
+      position: 'absolute',
+      left: '60px',
+      right: '8px',
+      top: '2px',
+      zIndex: 2
+    };
+  }
+  
+  // 重複あり：タスクを左詰めで隙間なく配置
+  const baseLeft = 60; // 元の左端位置
+  const taskWidth = 120; // 各タスクの固定幅
+  const leftPosition = baseLeft + (overlapInfo.columnIndex * taskWidth);
+  
+  return {
+    position: 'absolute',
+    left: `${leftPosition}px`,
+    width: `${taskWidth}px`,
+    top: '2px',
+    zIndex: 2 + overlapInfo.columnIndex // 後のタスクが上に表示される
+  };
+}
+
+/**
  * タイムスロットコンポーネント
  * 個別の時間スロットを表示し、タスクの配置とドラッグ&ドロップを管理します
  */
@@ -61,6 +98,7 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   occupiedSlots,
   selectedTask,
   overlappingTaskIds,
+  overlapLayout,
   onDragOver,
   onDragEnter,
   onDragLeave,
@@ -150,13 +188,7 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
           onDragStart={onDragStart ? () => onDragStart(task.id) : undefined}
           onDragEnd={onDragEnd}
           onLockToggle={onLockToggle}
-          style={{
-            position: 'absolute',
-            left: '60px',
-            right: '8px',
-            top: '2px',
-            zIndex: 2
-          }}
+          style={calculateTaskStyle(task, overlapLayout)}
         />
       )}
     </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Task, BusinessHours } from '../../types';
-import { generateTimeSlots, canPlaceTaskWithWorkTime, getWorkTimeSlots, findOverlappingTasksWithWorkTime } from '../../utils/timeUtils';
+import { generateTimeSlots, canPlaceTaskWithWorkTime, getWorkTimeSlots, findOverlappingTasksWithWorkTime, calculateTaskOverlapLayout } from '../../utils/timeUtils';
 import { TimeSlot } from './TimeSlot';
 import './Timeline.css';
 
@@ -54,6 +54,9 @@ export const Timeline: React.FC<TimelineProps> = ({
   
   /** 重複しているタスクのIDのセット */
   const overlappingTaskIds = findOverlappingTasksWithWorkTime(placedTasks);
+  
+  /** 重複タスクのレイアウト情報 */
+  const overlapLayout = calculateTaskOverlapLayout(placedTasks);
   
   /** 占有されているタイムスロットのセットを作成（作業時間のみ） */
   const occupiedSlots = new Set<string>();
@@ -134,6 +137,7 @@ export const Timeline: React.FC<TimelineProps> = ({
         occupiedSlots={occupiedSlots}
         selectedTask={selectedTask}
         overlappingTaskIds={overlappingTaskIds}
+        overlapLayout={overlapLayout}
         onDragOver={handleDragOver}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}

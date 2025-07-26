@@ -23,7 +23,8 @@ vi.mock("../../../src/utils/timeUtils", () => ({
     if (duration >= 45) slots.push("09:30");
     if (duration >= 60) slots.push("09:45");
     return slots;
-  })
+  }),
+  calculateTaskOverlapLayout: vi.fn(() => new Map())
 }));
 
 import { getTaskSlots } from "../../../src/utils/timeUtils";
