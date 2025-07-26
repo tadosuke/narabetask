@@ -71,18 +71,26 @@ export function optimizeTaskPlacement(
   });
   
   // 最適化可能なタスクを効率の良い順にソート
-  // 作業時間が長く、待ち時間が短いタスクを優先
+  // 待ち時間があるタスクを先に配置し、その後に作業のみのタスクを配置
   const sortedTasks = [...optimizableTasks].sort((a, b) => {
     const aWorkTime = a.workTime ?? a.duration;
     const bWorkTime = b.workTime ?? b.duration;
     const aWaitTime = a.waitTime ?? 0;
     const bWaitTime = b.waitTime ?? 0;
     
-    // 作業時間／待ち時間の比率が高いものを優先
-    const aRatio = aWaitTime > 0 ? aWorkTime / aWaitTime : aWorkTime;
-    const bRatio = bWaitTime > 0 ? bWorkTime / bWaitTime : bWorkTime;
+    // 1. 待ち時間があるタスクを優先
+    if (aWaitTime > 0 && bWaitTime === 0) return -1;
+    if (aWaitTime === 0 && bWaitTime > 0) return 1;
     
-    return bRatio - aRatio;
+    // 2. 両方に待ち時間がある場合は、待ち時間が長いものを優先
+    if (aWaitTime > 0 && bWaitTime > 0) {
+      if (aWaitTime !== bWaitTime) return bWaitTime - aWaitTime;
+      // 待ち時間が同じ場合は作業時間が長いものを優先
+      return bWorkTime - aWorkTime;
+    }
+    
+    // 3. 両方とも待ち時間がない場合は、作業時間が長いものを優先
+    return bWorkTime - aWorkTime;
   });
   
   // 最適配置を計算
