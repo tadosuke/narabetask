@@ -2,6 +2,8 @@ import { createContext, useState, useCallback, useEffect } from "react";
 import type { Task } from "../types";
 import { generateId } from "../utils/idGenerator";
 import { saveToStorage, loadFromStorage } from "../utils/storage";
+import { optimizeTaskPlacement } from "../utils/taskOptimization";
+import type { BusinessHours } from "../types";
 
 /**
  * TaskContextの型定義
@@ -31,6 +33,8 @@ interface TaskContextType {
   startDrag: (taskId: string) => void;
   /** ドラッグ終了時の処理 */
   endDrag: () => void;
+  /** タスクの最適配置を実行する */
+  optimizeTasks: (businessHours: BusinessHours) => void;
 }
 
 /**
@@ -283,6 +287,15 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setDraggedTaskId(null);
   }, []);
 
+  /** タスクの最適配置を実行する */
+  const optimizeTasks = useCallback((businessHours: BusinessHours) => {
+    const result = optimizeTaskPlacement(tasks, businessHours);
+    setTasks(result.optimizedTasks);
+    
+    // 最適化後に選択状態をクリア
+    setSelectedTask(null);
+  }, [tasks]);
+
   const contextValue: TaskContextType = {
     tasks,
     selectedTask,
@@ -296,6 +309,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     selectTask,
     startDrag,
     endDrag,
+    optimizeTasks,
   };
 
   return (

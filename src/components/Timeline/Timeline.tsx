@@ -26,6 +26,8 @@ interface TimelineProps {
   onDragEnd?: () => void;
   /** ロック状態を切り替えるハンドラ */
   onLockToggle?: (taskId: string) => void;
+  /** タスク最適化時のハンドラ */
+  onOptimizeTasks?: () => void;
 }
 
 /**
@@ -42,7 +44,8 @@ export const Timeline: React.FC<TimelineProps> = ({
   draggedTaskId = null,
   onDragStart,
   onDragEnd,
-  onLockToggle
+  onLockToggle,
+  onOptimizeTasks
 }) => {
   /** ドラッグオーバー中のタイムスロット */
   const [dragOverSlot, setDragOverSlot] = useState<string | null>(null);
@@ -119,6 +122,13 @@ export const Timeline: React.FC<TimelineProps> = ({
     }
   };
 
+  /** 最適化ボタンクリック時の処理 */
+  const handleOptimizeClick = () => {
+    if (onOptimizeTasks) {
+      onOptimizeTasks();
+    }
+  };
+
   /** 指定した時刻のタイムスロットをレンダリング */
   const renderTimeSlot = (time: string) => {
     const task = placedTasks.find(t => t.startTime === time);
@@ -153,7 +163,17 @@ export const Timeline: React.FC<TimelineProps> = ({
   return (
     <div className="timeline">
       <div className="timeline__header">
-        <h3>タイムライン</h3>
+        <div className="timeline__title-section">
+          <h3>タイムライン</h3>
+          <button 
+            className="timeline__optimize-button"
+            onClick={handleOptimizeClick}
+            disabled={tasks.length === 0}
+            title="全タスクを最適配置"
+          >
+            最適化
+          </button>
+        </div>
         <div className="timeline__business-hours">
           業務時間: {businessHours.start} - {businessHours.end}
         </div>
