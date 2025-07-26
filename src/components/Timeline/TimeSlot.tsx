@@ -1,9 +1,13 @@
-import React from 'react';
-import type { Task } from '../../types';
-import { canPlaceTaskWithWorkTime, getTaskSlots, getWorkTimeSlots } from '../../utils/timeUtils';
-import type { TaskOverlapInfo } from '../../utils/timeUtils';
-import { TaskCard } from '../TaskCard';
-import './TimeSlot.css';
+import React from "react";
+import type { Task } from "../../types";
+import {
+  canPlaceTaskWithWorkTime,
+  getTaskSlots,
+  getWorkTimeSlots,
+} from "../../utils/timeUtils";
+import type { TaskOverlapInfo } from "../../utils/timeUtils";
+import { TaskCard } from "../TaskCard";
+import "./TimeSlot.css";
 
 /**
  * TimeSlotコンポーネントのプロパティ
@@ -55,31 +59,36 @@ interface TimeSlotProps {
  * @param {Map<string, TaskOverlapInfo>} overlapLayout - 重複レイアウト情報
  * @returns {React.CSSProperties} スタイルオブジェクト
  */
-function calculateTaskStyle(task: Task, overlapLayout: Map<string, TaskOverlapInfo>): React.CSSProperties {
+function calculateTaskStyle(
+  task: Task,
+  overlapLayout: Map<string, TaskOverlapInfo>
+): React.CSSProperties {
   const overlapInfo = overlapLayout.get(task.id);
-  
+
   if (!overlapInfo || overlapInfo.totalColumns === 1) {
     // 重複なし：従来の位置
     return {
-      position: 'absolute',
-      left: '60px',
-      right: '8px',
-      top: '2px',
-      zIndex: 2
+      position: "absolute",
+      left: "60px",
+      right: "8px",
+      top: "2px",
+      zIndex: 2,
     };
   }
-  
-  // 重複あり：タスクを左詰めで隙間なく配置
+
+  // 重複あり：タスク同士の間隔を10px空けて配置
   const baseLeft = 60; // 元の左端位置
   const taskWidth = 120; // 各タスクの固定幅
-  const leftPosition = baseLeft + (overlapInfo.columnIndex * taskWidth);
-  
+  const taskGap = 10; // タスク間の間隔
+  const leftPosition =
+    baseLeft + overlapInfo.columnIndex * (taskWidth + taskGap);
+
   return {
-    position: 'absolute',
+    position: "absolute",
     left: `${leftPosition}px`,
     width: `${taskWidth}px`,
-    top: '2px',
-    zIndex: 2 + overlapInfo.columnIndex // 後のタスクが上に表示される
+    top: "2px",
+    zIndex: 2 + overlapInfo.columnIndex, // 後のタスクが上に表示される
   };
 }
 
@@ -106,33 +115,47 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
   onTaskClick,
   onDragStart,
   onDragEnd,
-  onLockToggle
+  onLockToggle,
 }) => {
   // ドラッグ中の視覚的フィードバック用のクラス決定
   const isDragOver = dragOverSlot === time;
-  let dragFeedbackClass = '';
-  
+  let dragFeedbackClass = "";
+
   if (isDragOver && draggedTaskId) {
-    const draggedTask = tasks.find(t => t.id === draggedTaskId);
+    const draggedTask = tasks.find((t) => t.id === draggedTaskId);
     if (draggedTask) {
       // For placed tasks being moved, exclude their current work time slots from collision detection
       const occupiedSlotsForCheck = new Set(occupiedSlots);
       if (draggedTask.isPlaced && draggedTask.startTime) {
-        const taskWorkSlots = getWorkTimeSlots(draggedTask.startTime, draggedTask.duration, draggedTask.workTime, draggedTask.waitTime);
-        taskWorkSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
+        const taskWorkSlots = getWorkTimeSlots(
+          draggedTask.startTime,
+          draggedTask.duration,
+          draggedTask.workTime,
+          draggedTask.waitTime
+        );
+        taskWorkSlots.forEach((slot) => occupiedSlotsForCheck.delete(slot));
       }
-      
-      const canPlace = canPlaceTaskWithWorkTime(dragOverSlot, draggedTask.duration, draggedTask.workTime, draggedTask.waitTime, occupiedSlotsForCheck, timeSlots);
-      dragFeedbackClass = canPlace ? 'timeline__slot--drag-over' : 'timeline__slot--drag-invalid';
+
+      const canPlace = canPlaceTaskWithWorkTime(
+        dragOverSlot,
+        draggedTask.duration,
+        draggedTask.workTime,
+        draggedTask.waitTime,
+        occupiedSlotsForCheck,
+        timeSlots
+      );
+      dragFeedbackClass = canPlace
+        ? "timeline__slot--drag-over"
+        : "timeline__slot--drag-invalid";
     }
   }
 
   // ドラッグ中のタスクが複数スロットにまたがる場合の視覚フィードバック
-  let dragSpanningClass = '';
+  let dragSpanningClass = "";
   let isInvalidDrag = false;
-  
+
   if (dragOverSlot && draggedTaskId) {
-    const draggedTask = tasks.find(t => t.id === draggedTaskId);
+    const draggedTask = tasks.find((t) => t.id === draggedTaskId);
     if (draggedTask) {
       // Check if this slot is part of the dragged task's span
       const draggedTaskSlots = getTaskSlots(dragOverSlot, draggedTask.duration);
@@ -140,38 +163,52 @@ export const TimeSlot: React.FC<TimeSlotProps> = ({
         // Determine if the drag is invalid (check placement from the drag over slot)
         const occupiedSlotsForCheck = new Set(occupiedSlots);
         if (draggedTask.isPlaced && draggedTask.startTime) {
-          const taskWorkSlots = getWorkTimeSlots(draggedTask.startTime, draggedTask.duration, draggedTask.workTime, draggedTask.waitTime);
-          taskWorkSlots.forEach(slot => occupiedSlotsForCheck.delete(slot));
+          const taskWorkSlots = getWorkTimeSlots(
+            draggedTask.startTime,
+            draggedTask.duration,
+            draggedTask.workTime,
+            draggedTask.waitTime
+          );
+          taskWorkSlots.forEach((slot) => occupiedSlotsForCheck.delete(slot));
         }
-        isInvalidDrag = !canPlaceTaskWithWorkTime(dragOverSlot, draggedTask.duration, draggedTask.workTime, draggedTask.waitTime, occupiedSlotsForCheck, timeSlots);
-        
+        isInvalidDrag = !canPlaceTaskWithWorkTime(
+          dragOverSlot,
+          draggedTask.duration,
+          draggedTask.workTime,
+          draggedTask.waitTime,
+          occupiedSlotsForCheck,
+          timeSlots
+        );
+
         const slotIndex = draggedTaskSlots.indexOf(time);
         const totalSlots = draggedTaskSlots.length;
-        
+
         if (totalSlots === 1) {
-          dragSpanningClass = 'timeline__slot--drag-spanning-single';
+          dragSpanningClass = "timeline__slot--drag-spanning-single";
         } else if (slotIndex === 0) {
-          dragSpanningClass = 'timeline__slot--drag-spanning-first';
+          dragSpanningClass = "timeline__slot--drag-spanning-first";
         } else if (slotIndex === totalSlots - 1) {
-          dragSpanningClass = 'timeline__slot--drag-spanning-last';
+          dragSpanningClass = "timeline__slot--drag-spanning-last";
         } else {
-          dragSpanningClass = 'timeline__slot--drag-spanning-middle';
+          dragSpanningClass = "timeline__slot--drag-spanning-middle";
         }
-        
+
         // 基本の spanning クラスも追加
         dragSpanningClass = `timeline__slot--drag-spanning ${dragSpanningClass}`;
       }
     }
   }
-  
+
   // Apply invalid class to spanning slots when drag is invalid
   if (isInvalidDrag && dragSpanningClass) {
-    dragFeedbackClass = 'timeline__slot--drag-invalid';
+    dragFeedbackClass = "timeline__slot--drag-invalid";
   }
 
   return (
     <div
-      className={`timeline__slot ${isOccupied ? 'timeline__slot--occupied' : ''} ${dragFeedbackClass} ${dragSpanningClass}`}
+      className={`timeline__slot ${
+        isOccupied ? "timeline__slot--occupied" : ""
+      } ${dragFeedbackClass} ${dragSpanningClass}`}
       onDragOver={(e) => onDragOver(e, time)}
       onDragEnter={(e) => onDragEnter(e, time)}
       onDragLeave={onDragLeave}
