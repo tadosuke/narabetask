@@ -35,9 +35,15 @@ function AppContent() {
     selectTask,
     startDrag,
     endDrag,
+    optimizeTasks,
   } = useTaskContext();
 
   const [settings] = useState<AppSettings>(defaultSettings);
+
+  /** タスク最適化の処理 */
+  const handleOptimizeTasks = useCallback(() => {
+    optimizeTasks(settings.businessHours);
+  }, [optimizeTasks, settings.businessHours]);
 
   /** メインエリアクリック時の処理 - カード以外をクリックした場合は選択解除 */
   const handleMainClick = (e: React.MouseEvent) => {
@@ -112,6 +118,7 @@ function AppContent() {
           onDragStart={startDrag}
           onDragEnd={endDrag}
           onLockToggle={toggleLock}
+          onOptimizeTasks={handleOptimizeTasks}
         />
         
         <TaskSidebarProvider 
